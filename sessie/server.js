@@ -14,7 +14,7 @@ if(Meteor.is_server) {
   // TODO CONFIGURATION - CHANGE THIS
   Sessie.expires = 1; //Days
   Sessie.encryption_password = "mak3th1sd1ff1cult";
-  Sessie.session_key_timeout = 5; //in minutes, causes new key generation, must always be less than session_timeout
+  Sessie.session_key_timeout = 1; //in minutes, causes new key generation, must always be less than session_timeout
   /*
   * { "created" : ISODate("2012-05-18T22:28:22.517Z"), 
   * "updated" : ISODate("2012-05-18T22:28:22.517Z"),
@@ -102,7 +102,9 @@ if(Meteor.is_server) {
       return null;
     }  
   };
+  Sessie.updateSession = function(id, key){
 
+  }
   Sessie.validateSession = function(session) {
     if(serverSession = Sessie.Sessions.findOne({
       _id: session.session_id
@@ -122,16 +124,29 @@ if(Meteor.is_server) {
         Sessie.cleanUp();
         return false;
       } else {
+        var expires = new Date();
+        expires.setDate(expires.getDate()+Sessie.expires);
         if(this.validateKey(serverSession.key_id, session.session_key)){
-          //TODO session_key_timeout
-          var expires = new Date();
-          expires.setDate(expires.getDate()+Sessie.expires);
-          Sessie.Sessions.update({_id: session.session_id}, 
+          if(serverSession.updated <  session_key_timeout){
+            console.log('key timed out');
+            var key = this.generateKey();
+            Sessie.Sessions.update({_id: session.session_id}, 
+            {$set: {
+            expires: expires, 
+            expiry: Sessie.expires,
+            updated: new Date(),
+            key_id: key.id,
+            key: key.key
+            }});
+          } else {
+            console.log('key not timed out');
+            Sessie.Sessions.update({_id: session.session_id}, 
             {$set: {
             expires: expires, 
             expiry: Sessie.expires,
             updated: new Date()
-          }});
+            }});
+          }
           return true;
         } else {
           Sessie.delete(session.session_id);
