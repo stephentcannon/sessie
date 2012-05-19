@@ -60,7 +60,7 @@ if(Meteor.is_server) {
   Sessie.generateKey = function(){
     var key = {};
     key.id = Meteor.uuid();
-    var hash = CryptoJS.HmacSHA512(key.uuid, Sessie.encryption_password); 
+    var hash = CryptoJS.HmacSHA512(key.id, Sessie.encryption_password); 
     key.key = hash.toString(CryptoJS.enc.Hex); 
     console.log('*** generateKey ***');
     console.log('generateKey key.id: ' + key.id);
@@ -85,19 +85,20 @@ if(Meteor.is_server) {
   }
 
   Sessie.createSession = function() {
+    console.log('*** createSession ***');
     var expires = new Date();
     expires.setDate(expires.getDate()+Sessie.expires);
-    var uuid = Meteor.uuid();
-    var hash = CryptoJS.HmacSHA512(uuid, Sessie.encryption_password); 
-    var key = hash.toString(CryptoJS.enc.Hex);
-    //var key = this.generateKey();
+    //TODO remove - var uuid = Meteor.uuid();
+    //TODO remove - var hash = CryptoJS.HmacSHA512(uuid, Sessie.encryption_password); 
+    //TODO remove - var lkey = hash.toString(CryptoJS.enc.Hex);
+    var key = this.generateKey();
     id = Sessie.Sessions.insert({ 
       created: new Date(),
       updated: new Date(), 
       expires: expires,
       expiry: Sessie.expires,
-      key_id: uuid,
-      key: key
+      key_id: key.id,
+      key: key.key
     });
     if(id){
       return id;      
@@ -126,9 +127,10 @@ if(Meteor.is_server) {
         Sessie.cleanUp();
         return false;
       } else {
-        var hash = CryptoJS.HmacSHA512(serverSession.key_id, Sessie.encryption_password); 
-        var test_key = (hash.toString(CryptoJS.enc.Hex));
-        if(test_key === session.session_key){
+        //TODO remove - var hash = CryptoJS.HmacSHA512(serverSession.key_id, Sessie.encryption_password); 
+        //TODO remove - var test_key = (hash.toString(CryptoJS.enc.Hex));
+        //TODO remove -if(test_key === session.session_key){
+        if(this.validateKey(serverSession.key_id, session.session_key)){
           //TODO session_key_timeout
           var expires = new Date();
           expires.setDate(expires.getDate()+Sessie.expires);
