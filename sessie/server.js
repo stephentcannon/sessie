@@ -66,11 +66,11 @@ if(Meteor.is_server) {
     return key;
   }
 
-  Sessie.validateKey = function(key1, key2){
+  Sessie.validateKey = function(id, key2){
     console.log('*** validateKey ***');
-    console.log('key1: ' + key1);
+    console.log('id: ' + id);
     console.log('key2: ' + key2);
-    var hash = CryptoJS.HmacSHA512(key1, Sessie.encryption_password); 
+    var hash = CryptoJS.HmacSHA512(id, Sessie.encryption_password); 
     var test_key = (hash.toString(CryptoJS.enc.Hex));
     console.log('test_key: ' + test_key);
     if(test_key === key2){
@@ -102,17 +102,39 @@ if(Meteor.is_server) {
       return null;
     }  
   };
-  Sessie.updateSession = function(id, key){
-
+  Sessie.updateSessionKey = function(session, key){
+    console.log('*** updateSessionKey ***');
+    var expires = new Date();
+    expires.setDate(expires.getDate()+Sessie.expires);
+    Sessie.Sessions.update({_id: session.session_id}, 
+      {$set: {
+      expires: expires, 
+      expiry: Sessie.expires,
+      updated: new Date(),
+      key_id: key.id,
+      key: key.key
+    }});
+  }
+  Sessie.updateSessionExpiry = function(session){
+    console.log('*** updateSessionExpiry ***');
+    var expires = new Date();
+    expires.setDate(expires.getDate()+Sessie.expires);
+    Sessie.Sessions.update({_id: session.session_id}, 
+      {$set: {
+      expires: expires, 
+      expiry: Sessie.expires,
+      updated: new Date()
+    }});
   }
   Sessie.validateSession = function(session) {
+    console.log('*** validateSession ***');
     if(serverSession = Sessie.Sessions.findOne({
       _id: session.session_id
       })) 
     {
       var now = new Date();
       var session_key_timeout = new Date();
-      console.log('*** validateSession ***');
+      
       console.log('now: ' + now);
       //var session_key_timeout = new Date(now - (Sessie.session_key_timeout * 60000));
       session_key_timeout.setMinutes(now.getMinutes() - Sessie.session_key_timeout);
@@ -124,28 +146,15 @@ if(Meteor.is_server) {
         Sessie.cleanUp();
         return false;
       } else {
-        var expires = new Date();
-        expires.setDate(expires.getDate()+Sessie.expires);
         if(this.validateKey(serverSession.key_id, session.session_key)){
           if(serverSession.updated <  session_key_timeout){
             console.log('key timed out');
             var key = this.generateKey();
-            Sessie.Sessions.update({_id: session.session_id}, 
-            {$set: {
-            expires: expires, 
-            expiry: Sessie.expires,
-            updated: new Date(),
-            key_id: key.id,
-            key: key.key
-            }});
+            this.updateSessionKey(session, key);
           } else {
             console.log('key not timed out');
-            Sessie.Sessions.update({_id: session.session_id}, 
-            {$set: {
-            expires: expires, 
-            expiry: Sessie.expires,
-            updated: new Date()
-            }});
+            var key = {};
+            this.updateSessionExpiry(session);
           }
           return true;
         } else {
