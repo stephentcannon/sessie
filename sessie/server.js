@@ -1,7 +1,7 @@
 if(Meteor.is_server) {
   
   Meteor.startup(function () {
-  _.each(['sessieSessions'], function(collection) {
+  _.each(['sessieSessions', 'sessieLoch'], function(collection) {
     _.each(['insert', 'update', 'remove'], function(method) {
       Meteor.default_server.method_handlers['/' + collection + '/' + method] = function() {};
       });
@@ -10,6 +10,7 @@ if(Meteor.is_server) {
 
   Sessie = {}
   Sessie.Sessions = new Meteor.Collection('sessieSessions');
+  Sessie.Loch = new Meteor.Collection('sessieLoch');
 
   // TODO CONFIGURATION - CHANGE THIS
   Sessie.expires = 1; //Days
