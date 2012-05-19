@@ -24,8 +24,6 @@ if(Meteor.is_server) {
   * "key" : "asdhf7ehadfuhaksduhfakeufhaksdufasdf",    
   * "_id" : "9ad1a292-7e9e-45f7-82fb-530734f1de01" }   
   */
-  // TODO do we really want to store the key?
-  // Maybe we shouldn't store it?
 
   Meteor.publish('sessieSessions', function(session) {
     var sessionId = Sessie.validateOrCreateSession(session);
@@ -88,9 +86,6 @@ if(Meteor.is_server) {
     console.log('*** createSession ***');
     var expires = new Date();
     expires.setDate(expires.getDate()+Sessie.expires);
-    //TODO remove - var uuid = Meteor.uuid();
-    //TODO remove - var hash = CryptoJS.HmacSHA512(uuid, Sessie.encryption_password); 
-    //TODO remove - var lkey = hash.toString(CryptoJS.enc.Hex);
     var key = this.generateKey();
     id = Sessie.Sessions.insert({ 
       created: new Date(),
@@ -127,9 +122,6 @@ if(Meteor.is_server) {
         Sessie.cleanUp();
         return false;
       } else {
-        //TODO remove - var hash = CryptoJS.HmacSHA512(serverSession.key_id, Sessie.encryption_password); 
-        //TODO remove - var test_key = (hash.toString(CryptoJS.enc.Hex));
-        //TODO remove -if(test_key === session.session_key){
         if(this.validateKey(serverSession.key_id, session.session_key)){
           //TODO session_key_timeout
           var expires = new Date();
@@ -143,7 +135,7 @@ if(Meteor.is_server) {
           return true;
         } else {
           Sessie.delete(session.session_id);
-          //TODO invalid session credentials on client, maybe tampered with
+          //TODO invalid session credentials on client, maybe tampered with TEST ME
           console.log('invalid session key validation failed');
           return false;
         }
