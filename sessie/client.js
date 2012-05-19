@@ -1,19 +1,16 @@
 if(Meteor.is_client) {
   Sessie = {}
   Sessie.session = {};
-
-  function Sessie_session_start() {
-  }
-  function Sessie_session_validate(){
-  }
-  Sessie.session.setCookie = function (c_name,value,exdays)
+  //CONFIGURATION
+  Sessie.cookie_prefix = 'sessie';
+  Sessie.setCookie = function (c_name,value,exdays)
   {
     var exdate=new Date();
     exdate.setDate(exdate.getDate() + exdays);
     var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
     document.cookie=c_name + "=" + c_value;
   } 
-  Sessie.session.getCookie = function(c_name)
+  Sessie.getCookie = function(c_name)
   {
   var i,x,y,ARRcookies=document.cookie.split(";");
   for (i=0;i<ARRcookies.length;i++)
@@ -27,42 +24,40 @@ if(Meteor.is_client) {
       }
     }
   }
-  Sessie.session.createSession = function(callback){
-    Meteor.call('Sessie_session_start', function(error, result){
-        var retval;
-        if(result){
-          Sessie.session.setCookie("sessie_session_id", result.session_id, result.expires);
-          Sessie.session.setCookie("sessie_session_key", result.session_key, result.expires);
-          retval = true;
-        } else {
-          retval = false;
-        }
-        callback(error, result);
-        return retval;
-    });
-  }
-  Sessie.session.validateSession = function(callback){
-    Meteor.call('Sessie_session_validate',Sessie.session.getSession(), function(error, result){
-      var retval;
-      if(result){
-        retval = true;
-      } else {
-        retval = false;
-      }
-      callback(error, result);
-      return retval;
-    });
-  }
-  Sessie.session.getSessionId = function() {
-    return Sessie.session.getCookie("sessie_session_id");
+  
+  Sessie.getSessionId = function() {
+    return Sessie.getCookie("sessie_session_id");
   };
-  Sessie.session.getSessionKey = function() {
-    return Sessie.session.getCookie("sessie_session_key");
+  Sessie.getSessionKey = function() {
+    return Sessie.getCookie("sessie_session_key");
   };
-  Sessie.session.getSession = function(){
+  Sessie.getSession = function(){
     var session = {};
-    session.session_id = Sessie.session.getSessionId();
-    session.session_key = Sessie.session.getSessionKey();
+    session.session_id = Sessie.getSessionId();
+    session.session_key = Sessie.getSessionKey();
     return session;
   }
+
+  Sessie.Sessions = new Meteor.Collection('sessieSessions');
+  Meteor.subscribe("sessieSessions", Sessie.getSession());
+
+  Meteor.autosubscribe(function() {
+    var clientSession = Sessie.Sessions.findOne();
+    if (clientSession) {
+      if (clientSession._id && clientSession.key && clientSession.key) {
+        //console.log('setting session cookies');
+        //console.log('clientSession._id: ' + clientSession._id);
+        //console.log('clientSession.key: ' + clientSession.key);
+        //console.log('clientSession.expires: ' + clientSession.expires);
+        //console.log('clientSession.expiry: ' + clientSession.expiry);
+        Sessie.setCookie(Sessie.cookie_prefix + "_session_id", clientSession._id, clientSession.expiry);
+        Sessie.setCookie(Sessie.cookie_prefix + "_session_key", clientSession.key, clientSession.expiry);
+      } else {
+        //console.log('deleting session cookies');
+        Sessie.setCookie(Sessie.cookie_prefix + "_session_id", '', 0);
+        Sessie.setCookie(Sessie.cookie_prefix + "_session_key", '', 0);
+      }
+    }
+  });
+
 }
