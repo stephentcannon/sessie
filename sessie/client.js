@@ -43,6 +43,9 @@ if(Meteor.is_client) {
     return session;
   };
 
+  Sessie.getLoch = function(){
+    return Sessie.Loch.find();
+  }
   Sessie.setLochData = function(name, value){
     this.unblock
     session = Sessie.getSession();

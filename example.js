@@ -99,7 +99,6 @@ if (Meteor.is_client) {
         //$("#searchResultName").text(r.name);
         //$("#searchResultValue").text(r.value);
         //$("#searchResultAction").html('<i class="icon-trash"></i>');
-        // TODO maybe fix this when Sessie is reactive
         console.log('getlochform params.searchName: ' + params.searchName);
         Session.set("getSessieLochSearchValue", params.searchName);
         $("#getloch-form").reset();
@@ -147,7 +146,6 @@ if (Meteor.is_client) {
   Template.GetSessieLoch.GetSessieLoch = function(){
     console.log('*** Template.GetSessieLoch.GetSessieLoch ***');
     console.log('session.get("getSessieLochSearchValue"): ' + Session.get("getSessieLochSearchValue"));
-    //TODO
     x =  Sessie.getLochData(Session.get("getSessieLochSearchValue"));
     console.log(x);
     return Sessie.getLochData(Session.get("getSessieLochSearchValue"));
@@ -156,7 +154,8 @@ if (Meteor.is_client) {
   Template.SessieLoch.SessieLoch = function() {
     console.log('*** Template.SessieLoch.SessieLoch  ***');
     // TODO abstract this into Sessie client.js should never have to call collection direclty
-    return Sessie.Loch.find();
+    //return Sessie.Loch.find();
+    return Sessie.getLoch();
   };
 
 }

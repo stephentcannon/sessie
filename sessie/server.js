@@ -65,7 +65,7 @@ if(Meteor.is_server) {
     now = new Date();
     // TODO get collection of expired sessions to handle the two TODOs below.
     // TODO delete expired session Loch data
-    // TODO hand expired sessions to Monster to clean up colleciton items IF turned on.
+    // TODO pass session_id to Monster to clean up colleciton items IF turned on.
     Sessie.Sessions.remove({expires: {$lt: now}})
   };
 
@@ -205,49 +205,53 @@ if(Meteor.is_server) {
 
   Sessie.setLochData = function(session, name, value){
     this.unblock;
-    console.log('*** setLochData ***');
-    console.log('*** setLochData session.session_id: ' + session.session_id);
-    console.log('*** setLochData session.session_key: ' + session.session_key);
-    console.log('*** setLochData name: ' + name);
-    console.log('*** setLochData value: ' + value);
-    // TODO validate session maybe?
-    if(name && value){
-      if(Sessie.getLochData(session, name)){
-        console.log('*** setLochData updating existing data');
-        Sessie.Loch.update({session_id: session.session_id, name: name}, 
-          {$set: {
-          updated: new Date(),
+    if(Sessie.validateSession(session)){
+      console.log('*** setLochData ***');
+      console.log('*** setLochData session.session_id: ' + session.session_id);
+      console.log('*** setLochData session.session_key: ' + session.session_key);
+      console.log('*** setLochData name: ' + name);
+      console.log('*** setLochData value: ' + value);
+      // TODO validate session maybe?
+      if(name && value){
+        if(Sessie.getLochData(session, name)){
+          console.log('*** setLochData updating existing data');
+          Sessie.Loch.update({session_id: session.session_id, name: name}, 
+            {$set: {
+            updated: new Date(),
+            value: value
+          }}, function(error, result){
+            console.log('error: ' + JSON.stringify(error, 0,4));
+            console.log('result: ' + JSON.stringify(result, 0,4));
+          });
+        } else {
+          console.log('*** setLochData inserting new data');
+          Sessie.Loch.insert({ 
+          created: new Date(),
+          updated: new Date(), 
+          session_id: session.session_id,
+          name: name,
           value: value
-        }}, function(error, result){
-          console.log('error: ' + JSON.stringify(error, 0,4));
-          console.log('result: ' + JSON.stringify(result, 0,4));
-        });
-      } else {
-        console.log('*** setLochData inserting new data');
-        Sessie.Loch.insert({ 
-        created: new Date(),
-        updated: new Date(), 
-        session_id: session.session_id,
-        name: name,
-        value: value
-        },function(error, result){
-          console.log('error: ' + JSON.stringify(error, 0,4));
-          console.log('result: ' + JSON.stringify(result, 0,4));
-        });
+          },function(error, result){
+            console.log('error: ' + JSON.stringify(error, 0,4));
+            console.log('result: ' + JSON.stringify(result, 0,4));
+          });
+        }
       }
     }
   };
   
   Sessie.getLochData = function(session, name){
     this.unblock;
-    //TODO validate session key
-    return Sessie.Loch.findOne({session_id: session.session_id, name: name});
+    if(Sessie.validateSession(session)){
+      return Sessie.Loch.findOne({session_id: session.session_id, name: name});
+    }
   };
 
   Sessie.deleteLochData = function(session, name){
     this.unblock;
-    //TODO validate session key
-    Sessie.Loch.remove({session_id: session.session_id, name: name});
+    if(Sessie.validateSession(session)){
+      Sessie.Loch.remove({session_id: session.session_id, name: name});
+    }
   };
 
   Meteor.methods({
