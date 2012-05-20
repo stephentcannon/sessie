@@ -13,7 +13,7 @@ if(Meteor.is_server) {
   Sessie.Loch = new Meteor.Collection('sessieLoch');
 
   // TODO CONFIGURATION - CHANGE THIS
-  Sessie.expires = 1; //Days
+  Sessie.expires = 3; //Days
   Sessie.encryption_password = "mak3th1sd1ff1cult";
   Sessie.session_key_timeout = 1; //in minutes, causes new key generation, must always be less than session_timeout
   Sessie.delete_loch_items = true; //delete session loch items when session deleted/cleaned up
@@ -34,6 +34,7 @@ if(Meteor.is_server) {
   */
 
   Meteor.publish('sessieSessions', function(session) {
+    console.log('*** Meteor.publish sessieSessions ***');
     var sessionId = Sessie.validateOrCreateSession(session);
     return Sessie.Sessions.find({ _id: sessionId}, { limit: 1, fields: { key_id: false } });
   });
@@ -47,21 +48,22 @@ if(Meteor.is_server) {
   * or anything really
   */
   Meteor.publish('sessieLoch', function(session){
-    console.log('*** publish sessieLoch ***');
+    console.log('*** Meteor.publish sessieLoch ***');
     console.log('session: ' + JSON.stringify(session, 0, 4));
     //TODO add security
     return Sessie.Loch.find({session_id: session._id});
   });
   
-
   Sessie.delete = function(id) {
     // TODO pass session_id to Monster to clean up colleciton items IF turned on.
+    console.log('*** Sessie.delete sessieLoch ***');
     Sessie.Loch.remove({session_id: id});
     Sessie.Sessions.remove({_id: id});
     return true;
   };
 
   Sessie.cleanUp = function() {
+    console.log('*** Sessie.cleanUp sessieLoch ***');
     now = new Date();
     // TODO get collection of expired sessions to handle the two TODOs below.
     // TODO delete expired session Loch data
@@ -70,6 +72,7 @@ if(Meteor.is_server) {
   };
 
   Sessie.validateOrCreateSession = function(session) {
+    console.log('*** validateOrCreateSession ***');
     var sessionId;
     session = session || {};
     if (session.session_id) {
@@ -85,11 +88,11 @@ if(Meteor.is_server) {
   };
 
   Sessie.generateKey = function(){
+    console.log('*** generateKey ***');
     var key = {};
     key.id = Meteor.uuid();
     var hash = CryptoJS.HmacSHA512(key.id, Sessie.encryption_password); 
     key.key = hash.toString(CryptoJS.enc.Hex); 
-    console.log('*** generateKey ***');
     console.log('generateKey key.id: ' + key.id);
     console.log('generateKey key.key: ' + key.key);
     return key;
@@ -205,8 +208,8 @@ if(Meteor.is_server) {
 
   Sessie.setLochData = function(session, name, value){
     this.unblock;
+    console.log('*** setLochData ***');
     if(Sessie.validateSession(session)){
-      console.log('*** setLochData ***');
       console.log('*** setLochData session.session_id: ' + session.session_id);
       console.log('*** setLochData session.session_key: ' + session.session_key);
       console.log('*** setLochData name: ' + name);
@@ -242,6 +245,7 @@ if(Meteor.is_server) {
   
   Sessie.getLochData = function(session, name){
     this.unblock;
+    console.log('*** getLochData ***');
     if(Sessie.validateSession(session)){
       return Sessie.Loch.findOne({session_id: session.session_id, name: name});
     }
@@ -249,6 +253,7 @@ if(Meteor.is_server) {
 
   Sessie.deleteLochData = function(session, name){
     this.unblock;
+    console.log('*** deleteLochData ***');
     if(Sessie.validateSession(session)){
       Sessie.Loch.remove({session_id: session.session_id, name: name});
     }

@@ -18,7 +18,16 @@
       Your session id is: {{sessionId}}<br />
       Your session key is: {{sessionKey}}<br />
       Your session expires on: {{sessionExpires}}<br />
-      Your session expires in <b>{{sessionExpiry}}</b> day unless you visit again.<br />
+      Your session expires in <b>{{sessionExpiry}}</b> days from your expiry date unless you visit again.<br />
+    </div>
+
+    <div class="row">
+      <div class="span12">
+        <h2 id="example1">Set, Get and Delete</h2>
+        <div class="well">
+          Feed Sessie and she stores the items in the Loch.  Use a name to retrieve a value. To update a value use the same form to enter values.  If the name already exists the value gets updated.  If the name is new, then a new item is stored.  Click delete to delete an item.  Sessie will add and update items every 10 seconds to demonstrate server side control of session variables.  Read more below.
+        </div>
+      </div>
     </div>
     
     <div class="row">
@@ -26,16 +35,20 @@
       <div class="span8">{{> SessieLoch}}</div>
     </div>
 
+    
+
     <div class="row">
       <div class="span4">{{> getlochform}}</div>
       <div class="span8">{{> GetSessieLoch}}</div>
     </div>
 
+    
+
     <div class="row">
       <div class="span12">
-        <h2>All your session are belong to us!</h2>
+        <h2 id="example1">All your session are belong to us!</h2>
         <div class="well">
-          TODO In example.js the server has a timer that will randomly change values and add values to the client's session ever few minutes. This provides you with an example where client sessions can be controlled server side. Imagine an administrative control panel to control the user experience, timed work flows, logic based work flows and anything else you might want to do.
+          Control all your session variable server side.  In example.js the server has a timer that will randomly change values and add values to the client's session every 10 seconds.  Sessie will not go past 9 Loch items, but you can add as many elements as you like. This provides you with an example of how client sessions can be controlled server side. Imagine an administrative control panel to control the user experience, timed work flows, logic based work flows and anything else you might want to do.
         </div>
       </div>
     </div>
@@ -94,7 +107,7 @@
 
 
 <template name="lochform">
-  <h2>Add Loch Items</h2>
+  <h2>Feed Sessie Loch Items</h2>
   <div id="alert-loch" class="alert hide fade in">
     <strong><span id="alert-title-loch"></span></strong> <span id="alert-message-loch"></span>
   </div>
@@ -119,9 +132,9 @@
 </template>
 
 <template name="SessieLoch">
-  <h2>Items in your Loch</h2>
+  <h2>Items in the Loch</h2>
   <div class="well">
-    <div class="span2"><b>name</b></div><div class="span2"><b>value</b></div><div class="span2"><b>delete</b></div><br />
+    <div class="span2"><b>name</b></div><div class="span2"><b>value</b></div><div class="span1"><b>delete</b></div><br />
     {{#each SessieLoch}}
       {{> lochdata}}
     {{/each}}
@@ -155,7 +168,7 @@
 </template>
 
 <template name="GetSessieLoch">
-  <h2>Item retrieved from your Loch</h2>
+  <h2>Item retrieved from the Loch</h2>
   <div class="well">
     <div class="span2"><b>name</b></div><div class="span2"><b>value</b></div><div class="span2"><b>delete</b></div><br />
     {{#each GetSessieLoch}}

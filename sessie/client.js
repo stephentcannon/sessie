@@ -83,7 +83,6 @@ if(Meteor.is_client) {
     console.log('deleteLochData stub session.session_id: ' + session.session_id);
     console.log('deleteLochData stub session.session_key: ' + session.session_key);
     console.log('deleteLochData stub name: ' + name);
-    console.log('deleteLochData stub value: ' + value);
   }
   Sessie.getLochData = function(name){
     console.log('*** in Sessie.getLochData ***');
