@@ -8,7 +8,7 @@ if(Meteor.is_server) {
     });
   });
 
-  Sessie = {}
+  Sessie = {};
   Sessie.Sessions = new Meteor.Collection('sessieSessions');
   Sessie.Loch = new Meteor.Collection('sessieLoch');
 
@@ -16,6 +16,9 @@ if(Meteor.is_server) {
   Sessie.expires = 1; //Days
   Sessie.encryption_password = "mak3th1sd1ff1cult";
   Sessie.session_key_timeout = 1; //in minutes, causes new key generation, must always be less than session_timeout
+  Sessie.delete_loch_items = true; //delete session loch items when session deleted/cleaned up
+  Sessie.monster_delete_ness_items = false; //delete collection items stored with session
+
   /*
   * { "created" : ISODate("2012-05-18T22:28:22.517Z"), 
   * "updated" : ISODate("2012-05-18T22:28:22.517Z"),
@@ -25,19 +28,44 @@ if(Meteor.is_server) {
   * "key" : "asdhf7ehadfuhaksduhfakeufhaksdufasdf",    
   * "_id" : "9ad1a292-7e9e-45f7-82fb-530734f1de01" }   
   */
+  /*  session object structure from client through subscription
+  * session.session_id
+  * session.session_key
+  */
 
   Meteor.publish('sessieSessions', function(session) {
     var sessionId = Sessie.validateOrCreateSession(session);
     return Sessie.Sessions.find({ _id: sessionId}, { limit: 1, fields: { key_id: false } });
   });
 
+  /* sessieLoch - where Sessie stores session data
+  * { "created" : ISODate("2012-05-18T22:28:22.517Z"), 
+  * "updated" : ISODate("2012-05-18T22:28:22.517Z"),
+  * "session_id" : "229e5a1a-fb27-4e17-8580-80c67efc9313", 
+  * "name" : "firstName",    
+  * "value" : "John" }   
+  * or anything really
+  */
+  Meteor.publish('sessieLoch', function(session){
+    console.log('*** publish sessieLoch ***');
+    console.log('session: ' + JSON.stringify(session, 0, 4));
+    //TODO add security
+    return Sessie.Loch.find({session_id: session.session_id});
+  });
+  
+
   Sessie.delete = function(id) {
-    Sessie.Sessions.remove({id: id});
+    // TODO pass session_id to Monster to clean up colleciton items IF turned on.
+    Sessie.Loch.remove({session_id: id});
+    Sessie.Sessions.remove({_id: id});
     return true;
   };
 
   Sessie.cleanUp = function() {
     now = new Date();
+    // TODO get collection of expired sessions to handle the two TODOs below.
+    // TODO delete expired session Loch data
+    // TODO hand expired sessions to Monster to clean up colleciton items IF turned on.
     Sessie.Sessions.remove({expires: {$lt: now}})
   };
 
@@ -65,7 +93,7 @@ if(Meteor.is_server) {
     console.log('generateKey key.id: ' + key.id);
     console.log('generateKey key.key: ' + key.key);
     return key;
-  }
+  };
 
   Sessie.validateKey = function(id, key2){
     console.log('*** validateKey ***');
@@ -81,7 +109,7 @@ if(Meteor.is_server) {
       console.log('returning false');
       return false;
     }
-  }
+  };
 
   Sessie.createSession = function() {
     console.log('*** createSession ***');
@@ -103,6 +131,7 @@ if(Meteor.is_server) {
       return null;
     }  
   };
+
   Sessie.updateSessionKey = function(session, key){
     console.log('*** updateSessionKey ***');
     var expires = new Date();
@@ -115,7 +144,8 @@ if(Meteor.is_server) {
       key_id: key.id,
       key: key.key
     }});
-  }
+  };
+
   Sessie.updateSessionExpiry = function(session){
     console.log('*** updateSessionExpiry ***');
     var expires = new Date();
@@ -126,7 +156,8 @@ if(Meteor.is_server) {
       expiry: Sessie.expires,
       updated: new Date()
     }});
-  }
+  };
+
   Sessie.validateSession = function(session) {
     console.log('*** validateSession ***');
     if(serverSession = Sessie.Sessions.findOne({
@@ -172,4 +203,56 @@ if(Meteor.is_server) {
     }
   };
 
+  Sessie.setLochData = function(session, name, value){
+    this.unblock;
+    console.log('*** setLochData ***');
+    console.log('*** setLochData session.session_id: ' + session.session_id);
+    console.log('*** setLochData session.session_key: ' + session.session_key);
+    console.log('*** setLochData name: ' + name);
+    console.log('*** setLochData value: ' + value);
+    
+    //TODO validate session key
+    //TODO make sure no duplicates or overwrite instead
+    // Sessie.Loch.update({_id: session.session_id}, 
+    //   {$set: {
+    //   updated: new Date(),
+    //   name: name,
+    //   value: value
+    // }}, function(error, result){
+    //   console.log('error: ' + JSON.stringify(error, 0,4));
+    //   console.log('result: ' + JSON.stringify(result, 0,4));
+    // });
+    Sessie.Loch.insert({ 
+      created: new Date(),
+      updated: new Date(), 
+      session_id: session.session_id,
+      name: name,
+      value: value
+    },function(error, result){
+      console.log('error: ' + JSON.stringify(error, 0,4));
+      console.log('result: ' + JSON.stringify(result, 0,4));
+    });
+  };
+
+  Sessie.getLochData = function(session, name){
+    this.unblock;
+    //TODO validate session key
+    //TODO make sure no duplicates or overwrite instead
+    return Sessie.Loch.findOne({session_id: session.session_id, name: name});
+  };
+
+  Sessie.deleteLochData = function(session, name, value){
+    this.unblock;
+    //TODO validate session key
+    //TODO make sure no duplicates or overwrite instead
+    Sessie.Loch.remove({session_id: session.session_id, name: name});
+  };
+
+  Meteor.methods({
+    setLochData: Sessie.setLochData,
+    getLochData: Sessie.getLochData,
+    deleteLochData: Sessie.deleteLochData
+  });
+
+  
 }

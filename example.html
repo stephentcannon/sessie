@@ -1,5 +1,5 @@
 <head>
-  <title>Sessie</title>
+  <title>Sessie, Loch, Ness and Monster</title>
 </head>
 
 <body>
@@ -7,11 +7,55 @@
 </body>
 
 <template name="main">
-  <h1>Sessie</h1>
-  <p>Sessie is a simple, small, lightweight, secure, encrypted and authenticated server side session management package for Meteor.</p>
-  Your session id is: {{sessionId}}<br />
-  Your session key is: {{sessionKey}}<br />
-  Your session expires on: {{sessionExpires}}<br />
-  Your session expiry without renewing is: {{sessionExpiry}} day<br />
- 
+  <div class="hero-unit">
+  <h1 id="title">SESSIE</h1>
+    <p>Sessie is a weird and simple attempt at a server side session management package for Meteor.<br />
+    Loch is where Sessie stores persistent session data.<br />
+    Ness is where Sessie stores references to Collections that contain persistent data.<br />
+    Monster destroys collection items associated with a session.<br />
+    Yes, Sessie as in Nessie.  Loch aka Lake for storage. Ness as in that Irish Princess to take care of you and watch your shit for you. Monster cuz he wrecks your shit.</p>
+    Your session id is: {{sessionId}}<br />
+    Your session key is: {{sessionKey}}<br />
+    Your session expires on: {{sessionExpires}}<br />
+    Your session expires in <b>{{sessionExpiry}}</b> day unless you visit again.<br />
+  </div>
+  <div class="row">
+  <div class="span4">{{> lochform}}</div>
+  </div>
+
+
+  <footer>
+    <p><center>...caveat...this code is noobular...i have only been coding javascript since the launch of meteor...<br />...critiques and recommendations welcome...i am not scottish, stop asking...</center></p>
+    <p><a data-toggle="modal" href="#">made with meteor</a> | <a data-toggle="modal" href="#">github</a></p>
+  </footer>  
 </template>
+
+
+<template name="lochform">
+  <h2>Add Loch Items</h2>
+  <div class="well form-inline">
+    <form class"form-horizontal" id="loch-form">
+      <fieldset>
+        <div class="control-group">
+          <div class="controls">
+            Name <input type="text" class="input-medium" id="inputName" name="inputName" maxlength="100" autofocus>
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            Value <input type="text" class="input-medium" id="inputValue" name="inputValue" maxlength="100">
+          </div>
+        </div>
+        <div id="buttons-loch" class="form-actions">
+          <button id="btLoch" name="btnLoch" type="button" class="btn btn-primary">submit</button>
+          <button type="reset" class="btn">reset</button>
+        </div>
+        <div id="progress-loch" class="progress progress-striped active hide">
+          <div id="bar-loch" class="bar" style="width: 33%;"></div>
+        </div> 
+      </fieldset>
+    </form>
+  </div>
+</template>
+
+

@@ -1,1 +1,18 @@
-/* CSS declarations go here */
+body {
+  padding-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 20px;
+}
+
+#title{
+  text-indent: 170px;
+  height: 130px;
+  background-image:url('/logo.png');
+  background-repeat:no-repeat;
+  background-position:left center;
+  vertical-align:middle;
+  text-shadow: 2px 2px #ff0000;
+  font-size:130px;
+}
+
