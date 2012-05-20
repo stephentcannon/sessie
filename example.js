@@ -28,34 +28,139 @@ if (Meteor.is_client) {
     }
   };
 
-  /**
-  Template.SessieLoch.SessieLoch = function() {
-      return Sessie.Loch.find();
-  };
-  Template.main.events = {
+  //An example of storing data in a Sessie.Loch
+  Template.lochform.events = {
     'click #btnLoch': function (event) { 
-      console.log('button clicked');
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      console.log('lochform button clicked');
       var params = $('#loch-form').toJSON();
       console.log('params.inputName: ' + params.inputName);
       console.log('params.inputValue: ' + params.inputValue);
       try{
         validateParams(params);
-          //session, name, value
-          Sessie.setLochData(params.inputName, params.inputValue);
+        console.log('after lochform validate params');
+        Sessie.setLochData(params.inputName, params.inputValue);
+        $("#loch-form").reset();
+        $("#inputName").focus();
       } catch(error) {
-        Alert.setAlert('uh-oh!', error.reason, 'alert-error', 'contact');
+        Alert.setAlert('ERROR', error.reason, 'alert-error', 'loch');
       }
     }
   };
+
+  Template.lochform.events = {
+    'click #btnLoch': function (event) { 
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      console.log('lochform button clicked');
+      var params = $('#loch-form').toJSON();
+      console.log('params.inputName: ' + params.inputName);
+      console.log('params.inputValue: ' + params.inputValue);
+      try{
+        validateParams(params);
+        console.log('after lochform validate params');
+        Sessie.setLochData(params.inputName, params.inputValue);
+        $("#loch-form").reset();
+        $("#inputName").focus();
+      } catch(error) {
+        Alert.setAlert('ERROR', error.reason, 'alert-error', 'loch');
+      }
+    }
+  };
+  
+  Template.lochdata.events = {
+    'click i': function(event){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      console.log('i clicked');
+      var curT = event.currentTarget; 
+      console.log('curT.id: ' + curT.id);
+      console.log('curT.className: ' + curT.className);
+      var clickedElement = event.target; 
+      console.log('clickedElement.id: ' + clickedElement.id);
+      console.log('clickedElement.className: ' + clickedElement.className);
+      console.log('this: ' + JSON.stringify(this,0,4));
+      Sessie.deleteLochData(this.name);
+    }
+  }
+
+  Template.getlochform.events = {
+    'click #btnGetLoch': function(event){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      console.log('getlochform button clicked');
+      var params = $('#getloch-form').toJSON();
+      try{
+        validateParams(params);
+        console.log('after getlochform validate params');
+        //r = Sessie.getLochData(params.searchName);
+        //console.log(r);
+        //$("#searchResultName").text(r.name);
+        //$("#searchResultValue").text(r.value);
+        //$("#searchResultAction").html('<i class="icon-trash"></i>');
+        // TODO maybe fix this when Sessie is reactive
+        console.log('getlochform params.searchName: ' + params.searchName);
+        Session.set("getSessieLochSearchValue", params.searchName);
+        $("#getloch-form").reset();
+        $("#searchName").focus();
+      } catch(error){
+        var errormsg;
+        if(error.message){
+          errormsg = error.message;
+        }else if(error.reason){
+          errormsg = error.reason;
+        }else{
+          errormsg = 'Unknown error';
+        }
+        Alert.setAlert('ERROR', errormsg, 'alert-error', 'getloch');
+      }
+    }
+  };
+
+  Template.GetSessieLoch.events = {
+    'click i': function(event){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      console.log('i clicked');
+      var curT = event.currentTarget; 
+      console.log('curT.id: ' + curT.id);
+      console.log('curT.className: ' + curT.className);
+      var clickedElement = event.target; 
+      console.log('clickedElement.id: ' + clickedElement.id);
+      console.log('clickedElement.className: ' + clickedElement.className);
+      console.log('this: ' + JSON.stringify(this,0,4));
+      Sessie.deleteLochData(this.name);
+    }
+  }
 
   validateParams = function(params) {
     for (var key in params) {
       value = params[key];
       if(_.isEmpty(value) || _.isUndefined(value) || 
       _.isNull(value)) {
-       throw new Meteor.Error(600, 'Please enter your "'+ key + '".');
+        throw new Meteor.Error(600, 'Please enter your "'+ key + '".');
       }
     }
+  }
+
+  Template.GetSessieLoch.GetSessieLoch = function(){
+    console.log('*** Template.GetSessieLoch.GetSessieLoch ***');
+    console.log('session.get("getSessieLochSearchValue"): ' + Session.get("getSessieLochSearchValue"));
+    //TODO
+    x =  Sessie.getLochData(Session.get("getSessieLochSearchValue"));
+    console.log(x);
+    return Sessie.getLochData(Session.get("getSessieLochSearchValue"));
+  }
+
+  Template.SessieLoch.SessieLoch = function() {
+    console.log('*** Template.SessieLoch.SessieLoch  ***');
+    // TODO abstract this into Sessie client.js should never have to call collection direclty
+    return Sessie.Loch.find();
   };
-  */
+
+}
+
+if(Meteor.is_server) {
+
 }

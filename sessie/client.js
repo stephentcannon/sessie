@@ -46,22 +46,47 @@ if(Meteor.is_client) {
   Sessie.setLochData = function(name, value){
     this.unblock
     session = Sessie.getSession();
-    console.log('session.session_id: ' + session.session_id);
-    console.log('ession.session_key: ' + session.session_key);
+    console.log('*** Sessie.setLochData ***');
+    console.log('Sessie.setLochData session.session_id: ' + session.session_id);
+    console.log('Sessie.setLochData session.session_key: ' + session.session_key);
     Meteor.call('setLochData', session, name, value, function (error, result) { 
-      console.log('error: ' + JSON.stringify(error, 0,4));
-      console.log('result: ' + JSON.stringify(result, 0,4));
+      console.log('Sessie.setLochData error: ' + JSON.stringify(error, 0,4));
+      console.log('Sessie.setLochData result: ' + JSON.stringify(result, 0,4));
     });
   };
 
   function setLochData(session, name, value){
-    console.log('setLochData stub');
+    console.log('*** setLochData stub ***');
     console.log('setLochData stub session: ' + session);
     console.log('setLochData stub session.session_id: ' + session.session_id);
     console.log('setLochData stub session.session_key: ' + session.session_key);
     console.log('setLochData stub name: ' + name);
     console.log('setLochData stub value: ' + value);
   };
+  Sessie.deleteLochData = function(name){
+    this.unblock;
+    session = Sessie.getSession();
+    console.log('*** Sessie.deleteLochData ***');
+    console.log('Sessie.deleteLochData session.session_id: ' + session.session_id);
+    console.log('Sessie.deleteLochData session.session_key: ' + session.session_key);
+    Meteor.call('deleteLochData', session, name, function (error, result) { 
+      console.log('Sessie.deleteLochData error: ' + JSON.stringify(error, 0,4));
+      console.log('Sessie.deleteLochData result: ' + JSON.stringify(result, 0,4));
+    });
+  }
+  function deleteLochData(session, name){
+    console.log('*** deleteLochData stub ***');
+    console.log('deleteLochData stub session: ' + session);
+    console.log('deleteLochData stub session.session_id: ' + session.session_id);
+    console.log('deleteLochData stub session.session_key: ' + session.session_key);
+    console.log('deleteLochData stub name: ' + name);
+    console.log('deleteLochData stub value: ' + value);
+  }
+  Sessie.getLochData = function(name){
+    console.log('*** in Sessie.getLochData ***');
+    console.log('Sessie.getLochData name: ' + name);
+    return Sessie.Loch.find({session_id: Sessie.getSessionId(), name: name});
+  }
 
   Sessie.Sessions = new Meteor.Collection('sessieSessions');
   Meteor.subscribe("sessieSessions", Sessie.getSession());
@@ -81,13 +106,18 @@ if(Meteor.is_client) {
         Session.set(Sessie.cookie_prefix + "_session_id", clientSession._id);
         Sessie.setCookie(Sessie.cookie_prefix + "_session_key", clientSession.key, clientSession.expiry);
         Session.set(Sessie.cookie_prefix + "_session_key", clientSession.key);
-        Meteor.subscribe("sessieLoch", Session.get(Sessie.cookie_prefix + "_session_id"));
+        Meteor.subscribe("sessieLoch", clientSession);
       } else {
         console.log('deleting session cookies');
         Sessie.setCookie(Sessie.cookie_prefix + "_session_id", '', 0);
         Sessie.setCookie(Sessie.cookie_prefix + "_session_key", '', 0);
       }
     }
+  });
+
+  Meteor.methods({
+    setLochData: setLochData,
+    deleteLochData: deleteLochData
   });
 
 }

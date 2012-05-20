@@ -7,55 +7,165 @@
 </body>
 
 <template name="main">
-  <div class="hero-unit">
-  <h1 id="title">SESSIE</h1>
-    <p>Sessie is a weird and simple attempt at a server side session management package for Meteor.<br />
-    Loch is where Sessie stores persistent session data.<br />
-    Ness is where Sessie stores references to Collections that contain persistent data.<br />
-    Monster destroys collection items associated with a session.<br />
-    Yes, Sessie as in Nessie.  Loch aka Lake for storage. Ness as in that Irish Princess to take care of you and watch your shit for you. Monster cuz he wrecks your shit.</p>
-    Your session id is: {{sessionId}}<br />
-    Your session key is: {{sessionKey}}<br />
-    Your session expires on: {{sessionExpires}}<br />
-    Your session expires in <b>{{sessionExpiry}}</b> day unless you visit again.<br />
-  </div>
-  <div class="row">
-  <div class="span4">{{> lochform}}</div>
-  </div>
+  <div class="span12">
+    <div class="hero-unit">
+    <h1 id="title">SESSIE</h1>
+      <p>Sessie is a weird and simple attempt at a server side session management package for Meteor.<br />
+      Loch is where Sessie stores persistent session data when you feed her.<br />
+      Ness stores and tracks Collection items associated with a session.<br />
+      Monster destroys collection items associated with a session.<br />
+      Yes, Sessie as in Nessie.  Loch aka Lake for storage. Ness as in that Irish Princess to take care of you and watch your shit for you. Monster cuz he wrecks your shit.</p>
+      Your session id is: {{sessionId}}<br />
+      Your session key is: {{sessionKey}}<br />
+      Your session expires on: {{sessionExpires}}<br />
+      Your session expires in <b>{{sessionExpiry}}</b> day unless you visit again.<br />
+    </div>
+    
+    <div class="row">
+      <div class="span4">{{> lochform}}</div>
+      <div class="span8">{{> SessieLoch}}</div>
+    </div>
 
+    <div class="row">
+      <div class="span4">{{> getlochform}}</div>
+      <div class="span8">{{> GetSessieLoch}}</div>
+    </div>
 
-  <footer>
-    <p><center>...caveat...this code is noobular...i have only been coding javascript since the launch of meteor...<br />...critiques and recommendations welcome...i am not scottish, stop asking...</center></p>
-    <p><a data-toggle="modal" href="#">made with meteor</a> | <a data-toggle="modal" href="#">github</a></p>
-  </footer>  
+    <div class="row">
+      <div class="span12">
+        <h2>All your session are belong to us!</h2>
+        <div class="well">
+          TODO In example.js the server has a timer that will randomly change values and add values to the client's session ever few minutes. This provides you with an example where client sessions can be controlled server side. Imagine an administrative control panel to control the user experience, timed work flows, logic based work flows and anything else you might want to do.
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span12">
+        <h2>Mutable or immutable that is the question!</h2>
+        <div class="well">
+          TODO In example.js the server has a timer that produces session variables sets some of them as immutable.  You cannot change them or delete them.  Mutability should always be set on the server and not the client.
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span12">
+        <h2>Visible or invisible, Houdini would be proud!</h2>
+        <div class="well">
+          TODO In example.js the server has a timer that produces session variables sets some of them as invisible.  Visibility can be set on either the server or the client.
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span12">
+        <h2>Pull the trigger bitch!</h2>
+        <div class="well">
+          TODO Trigger server side events based on changes to client side session variables.Use simple reactivity sparked by client side actions that execute server side. 
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span12">
+        <h2>Let the reactivity sparks fly in both direction!</h2>
+        <div class="well">
+          TODO Let the reactivity spark and fly in both directions.
+          will this be an _extend or just calling Sessions.set
+          what about testing tying reactivity on a subscription to Loch session variables and then changing them server side to show front end changes.
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span12">
+        <h2>Caveat Emptor!</h2>
+        <div class="well">This code is noobular. I have only been coding javascript since launch of <a href="http://meteor.com">Meteor</a>. That means this code could be horribly inefficient, ineffecitve, pointless, redundant and completely un(in)secure. You have been warned!  Critiques and recommendations welcome.  No, I am not scottish, stop asking.
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p><a data-toggle="modal" href="#">made with meteor</a> | <a data-toggle="modal" href="#">github</a></p>
+    </footer> 
+  </div> 
 </template>
 
 
 <template name="lochform">
   <h2>Add Loch Items</h2>
-  <div class="well form-inline">
-    <form class"form-horizontal" id="loch-form">
-      <fieldset>
-        <div class="control-group">
-          <div class="controls">
-            Name <input type="text" class="input-medium" id="inputName" name="inputName" maxlength="100" autofocus>
-          </div>
+  <div id="alert-loch" class="alert hide fade in">
+    <strong><span id="alert-title-loch"></span></strong> <span id="alert-message-loch"></span>
+  </div>
+  <form class="well" name="loch-form" id="loch-form"> 
+   <fieldset>
+      <div class="control-group">
+        <div class="controls">
+          Name <input type="text" class="input-medium" id="inputName" name="inputName" maxlength="100" autofocus>
         </div>
-        <div class="control-group">
-          <div class="controls">
-            Value <input type="text" class="input-medium" id="inputValue" name="inputValue" maxlength="100">
-          </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          Value <input type="text" class="input-medium" id="inputValue" name="inputValue" maxlength="100">
         </div>
-        <div id="buttons-loch" class="form-actions">
-          <button id="btLoch" name="btnLoch" type="button" class="btn btn-primary">submit</button>
-          <button type="reset" class="btn">reset</button>
-        </div>
-        <div id="progress-loch" class="progress progress-striped active hide">
-          <div id="bar-loch" class="bar" style="width: 33%;"></div>
-        </div> 
-      </fieldset>
-    </form>
+      </div>
+      <div id="buttons-loch" class="form-actions">
+        <button id="btnLoch" name="btnLoch" type="button" class="btn btn-primary">submit</button>
+        <button type="reset" class="btn">reset</button>
+      </div>
+    </fieldset> 
+  </form>
+</template>
+
+<template name="SessieLoch">
+  <h2>Items in your Loch</h2>
+  <div class="well">
+    <div class="span2"><b>name</b></div><div class="span2"><b>value</b></div><div class="span2"><b>delete</b></div><br />
+    {{#each SessieLoch}}
+      {{> lochdata}}
+    {{/each}}
   </div>
 </template>
 
+<template name="lochdata">
+  <div class="span2">{{this.name}}</div><div class="span2">{{this.value}}</div>
+<div class="span2"><i class="icon-trash"></i></div>
+  <br />
+</template>
 
+<template name="getlochform">
+  <h2>Get a Loch Item</h2>
+  <div id="alert-getloch" class="alert hide fade in">
+    <strong><span id="alert-title-getloch"></span></strong> <span id="alert-message-getloch"></span>
+  </div>
+  <form class="well" name="getloch-form" id="getloch-form"> 
+   <fieldset>
+      <div class="control-group">
+        <div class="controls">
+          Name <input type="text" class="input-medium" id="searchName" name="searchName" maxlength="100" autofocus>
+        </div>
+      </div>
+      <div id="buttons-getloch" class="form-actions">
+        <button id="btnGetLoch" name="btnGetLoch" type="button" class="btn btn-primary">submit</button>
+        <button type="reset" class="btn">reset</button>
+      </div>
+    </fieldset> 
+  </form>
+</template>
+
+<template name="GetSessieLoch">
+  <h2>Item retrieved from your Loch</h2>
+  <div class="well">
+    <div class="span2"><b>name</b></div><div class="span2"><b>value</b></div><div class="span2"><b>delete</b></div><br />
+    {{#each GetSessieLoch}}
+      {{> getlochdata}}
+    {{/each}}
+  </div>
+</template>
+
+<template name="getlochdata">
+  <div class="span2">{{this.name}}</div><div class="span2">{{this.value}}</div>
+<div class="span2"><i class="icon-trash"></i></div>
+  <br />
+</template>

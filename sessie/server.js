@@ -50,7 +50,7 @@ if(Meteor.is_server) {
     console.log('*** publish sessieLoch ***');
     console.log('session: ' + JSON.stringify(session, 0, 4));
     //TODO add security
-    return Sessie.Loch.find({session_id: session.session_id});
+    return Sessie.Loch.find({session_id: session._id});
   });
   
 
@@ -143,7 +143,7 @@ if(Meteor.is_server) {
       updated: new Date(),
       key_id: key.id,
       key: key.key
-    }});
+    }},function(error, result){});
   };
 
   Sessie.updateSessionExpiry = function(session){
@@ -155,7 +155,7 @@ if(Meteor.is_server) {
       expires: expires, 
       expiry: Sessie.expires,
       updated: new Date()
-    }});
+    }}, function(error, result){});
   };
 
   Sessie.validateSession = function(session) {
@@ -210,47 +210,48 @@ if(Meteor.is_server) {
     console.log('*** setLochData session.session_key: ' + session.session_key);
     console.log('*** setLochData name: ' + name);
     console.log('*** setLochData value: ' + value);
-    
-    //TODO validate session key
-    //TODO make sure no duplicates or overwrite instead
-    // Sessie.Loch.update({_id: session.session_id}, 
-    //   {$set: {
-    //   updated: new Date(),
-    //   name: name,
-    //   value: value
-    // }}, function(error, result){
-    //   console.log('error: ' + JSON.stringify(error, 0,4));
-    //   console.log('result: ' + JSON.stringify(result, 0,4));
-    // });
-    Sessie.Loch.insert({ 
-      created: new Date(),
-      updated: new Date(), 
-      session_id: session.session_id,
-      name: name,
-      value: value
-    },function(error, result){
-      console.log('error: ' + JSON.stringify(error, 0,4));
-      console.log('result: ' + JSON.stringify(result, 0,4));
-    });
+    // TODO validate session maybe?
+    if(name && value){
+      if(Sessie.getLochData(session, name)){
+        console.log('*** setLochData updating existing data');
+        Sessie.Loch.update({session_id: session.session_id, name: name}, 
+          {$set: {
+          updated: new Date(),
+          value: value
+        }}, function(error, result){
+          console.log('error: ' + JSON.stringify(error, 0,4));
+          console.log('result: ' + JSON.stringify(result, 0,4));
+        });
+      } else {
+        console.log('*** setLochData inserting new data');
+        Sessie.Loch.insert({ 
+        created: new Date(),
+        updated: new Date(), 
+        session_id: session.session_id,
+        name: name,
+        value: value
+        },function(error, result){
+          console.log('error: ' + JSON.stringify(error, 0,4));
+          console.log('result: ' + JSON.stringify(result, 0,4));
+        });
+      }
+    }
   };
-
+  
   Sessie.getLochData = function(session, name){
     this.unblock;
     //TODO validate session key
-    //TODO make sure no duplicates or overwrite instead
     return Sessie.Loch.findOne({session_id: session.session_id, name: name});
   };
 
-  Sessie.deleteLochData = function(session, name, value){
+  Sessie.deleteLochData = function(session, name){
     this.unblock;
     //TODO validate session key
-    //TODO make sure no duplicates or overwrite instead
     Sessie.Loch.remove({session_id: session.session_id, name: name});
   };
 
   Meteor.methods({
     setLochData: Sessie.setLochData,
-    getLochData: Sessie.getLochData,
     deleteLochData: Sessie.deleteLochData
   });
 
