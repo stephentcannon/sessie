@@ -15,9 +15,7 @@ if(Meteor.is_server) {
   // TODO CONFIGURATION - CHANGE THIS
   Sessie.expires = 3; //Days
   Sessie.encryption_password = "mak3th1sd1ff1cult";
-  Sessie.session_key_timeout = 1; //in minutes, causes new key generation, must always be less than session_timeout
-  Sessie.delete_loch_items = true; //delete session loch items when session deleted/cleaned up
-  Sessie.monster_delete_ness_items = false; //delete collection items stored with session
+  Sessie.session_key_timeout = 60; //in minutes, causes new key generation, must always be less than session_timeout
 
   /*
   * { "created" : ISODate("2012-05-18T22:28:22.517Z"), 

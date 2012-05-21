@@ -161,7 +161,7 @@ if (Meteor.is_client) {
 }
 
 if(Meteor.is_server) {
-  Meteor.setInterval(alterSession, 10000);
+  Meteor.setInterval(alterSession, 30000);
 
   function alterSession(){
     console.log('*** alterSession ***');
