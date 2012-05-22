@@ -1,3 +1,4 @@
+//even though this is in a /server/ directory we are going to keep it wrapped just in case.
 if(Meteor.is_server) {
   
   Meteor.startup(function () {
@@ -9,8 +10,8 @@ if(Meteor.is_server) {
   });
 
   Sessie = {};
-  Sessie.Sessions = new Meteor.Collection('sessieSessions');
-  Sessie.Loch = new Meteor.Collection('sessieLoch');
+  SessieSessions = new Meteor.Collection('sessieSessions');
+  SessieLoch = new Meteor.Collection('sessieLoch');
 
   // CONFIGURATION
   // Your application can change this by hosting a sessie_config.js with these settings.
@@ -36,7 +37,7 @@ if(Meteor.is_server) {
     console.log('*** Meteor.publish sessieSessions ***');
     console.log('*** Meteor.publish seed: ' + seed);
     var sessionId = Sessie.validateOrCreateSession(session, seed);
-    return Sessie.Sessions.find({ _id: sessionId}, { limit: 1, fields: { key_id: false, seed: false } });
+    return SessieSessions.find({ _id: sessionId}, { limit: 1, fields: { key_id: false, seed: false } });
   });
 
   /* sessieLoch - where Sessie stores session data
@@ -51,14 +52,14 @@ if(Meteor.is_server) {
     console.log('*** Meteor.publish sessieLoch ***');
     console.log('session: ' + JSON.stringify(session, 0, 4));
     //TODO add security
-    return Sessie.Loch.find({session_id: session._id});
+    return SessieLoch.find({session_id: session._id});
   });
   
   Sessie.delete = function(id) {
     // TODO pass session_id to Monster to clean up colleciton items IF turned on.
     console.log('*** Sessie.delete sessieLoch ***');
-    Sessie.Loch.remove({session_id: id});
-    Sessie.Sessions.remove({_id: id});
+    SessieLoch.remove({session_id: id});
+    SessieSessions.remove({_id: id});
     return true;
   };
 
@@ -68,7 +69,7 @@ if(Meteor.is_server) {
     // TODO get collection of expired sessions to handle the two TODOs below.
     // TODO delete expired session Loch data
     // TODO pass session_id to Monster to clean up colleciton items IF turned on.
-    Sessie.Sessions.remove({expires: {$lt: now}})
+    SessieSessions.remove({expires: {$lt: now}})
   };
 
   Sessie.validateOrCreateSession = function(session, seed) {
@@ -119,7 +120,7 @@ if(Meteor.is_server) {
     var expires = new Date();
     expires.setDate(expires.getDate()+Sessie.expires);
     var key = this.generateKey(seed);
-    id = Sessie.Sessions.insert({ 
+    id = SessieSessions.insert({ 
       created: new Date(),
       updated: new Date(), 
       expires: expires,
@@ -140,7 +141,7 @@ if(Meteor.is_server) {
     console.log('*** updateSessionKey ***');
     var expires = new Date();
     expires.setDate(expires.getDate()+Sessie.expires);
-    Sessie.Sessions.update({_id: session.session_id}, 
+    SessieSessions.update({_id: session.session_id}, 
       {$set: {
       expires: expires, 
       expiry: Sessie.expires,
@@ -154,7 +155,7 @@ if(Meteor.is_server) {
     console.log('*** updateSessionExpiry ***');
     var expires = new Date();
     expires.setDate(expires.getDate()+Sessie.expires);
-    Sessie.Sessions.update({_id: session.session_id}, 
+    SessieSessions.update({_id: session.session_id}, 
       {$set: {
       expires: expires, 
       expiry: Sessie.expires,
@@ -164,7 +165,7 @@ if(Meteor.is_server) {
 
   Sessie.validateSession = function(session) {
     console.log('*** validateSession ***');
-    if(serverSession = Sessie.Sessions.findOne({
+    if(serverSession = SessieSessions.findOne({
       _id: session.session_id
       })) 
     {
@@ -219,7 +220,7 @@ if(Meteor.is_server) {
       if(name && value){
         if(Sessie.getLochData(session, name)){
           console.log('*** setLochData updating existing data');
-          Sessie.Loch.update({session_id: session.session_id, name: name}, 
+          SessieLoch.update({session_id: session.session_id, name: name}, 
             {$set: {
             updated: new Date(),
             value: value
@@ -229,7 +230,7 @@ if(Meteor.is_server) {
           });
         } else {
           console.log('*** setLochData inserting new data');
-          Sessie.Loch.insert({ 
+          SessieLoch.insert({ 
           created: new Date(),
           updated: new Date(), 
           session_id: session.session_id,
@@ -248,7 +249,7 @@ if(Meteor.is_server) {
     this.unblock;
     console.log('*** getLochData ***');
     if(Sessie.validateSession(session)){
-      return Sessie.Loch.findOne({session_id: session.session_id, name: name});
+      return SessieLoch.findOne({session_id: session.session_id, name: name});
     }
   };
 
@@ -256,7 +257,7 @@ if(Meteor.is_server) {
     this.unblock;
     console.log('*** deleteLochData ***');
     if(Sessie.validateSession(session)){
-      Sessie.Loch.remove({session_id: session.session_id, name: name});
+      SessieLoch.remove({session_id: session.session_id, name: name});
     }
   };
 

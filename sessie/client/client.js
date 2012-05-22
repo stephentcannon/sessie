@@ -1,3 +1,4 @@
+//even though this is in a /client/ directory we are going to keep it wrapped just in case.
 if(Meteor.is_client) {
   
   Sessie = {};
@@ -46,7 +47,7 @@ if(Meteor.is_client) {
   };
 
   Sessie.getLoch = function(){
-    return Sessie.Loch.find();
+    return SessieLoch.find();
   }
   Sessie.setLochData = function(name, value){
     this.unblock
@@ -89,16 +90,16 @@ if(Meteor.is_client) {
   Sessie.getLochData = function(name){
     console.log('*** in Sessie.getLochData ***');
     console.log('Sessie.getLochData name: ' + name);
-    return Sessie.Loch.find({session_id: Sessie.getSessionId(), name: name});
+    return SessieLoch.find({session_id: Sessie.getSessionId(), name: name});
   }
 
-  Sessie.Sessions = new Meteor.Collection('sessieSessions');
+  SessieSessions = new Meteor.Collection('sessieSessions');
   Meteor.subscribe("sessieSessions", Sessie.getSession(), Sessie.cookie_seed);
 
-  Sessie.Loch = new Meteor.Collection('sessieLoch');
+  SessieLoch = new Meteor.Collection('sessieLoch');
 
   Meteor.autosubscribe(function() {
-    var clientSession = Sessie.Sessions.findOne();
+    var clientSession = SessieSessions.findOne();
     if (clientSession) {
       if (clientSession._id && clientSession.key && clientSession.key) {
         console.log('setting session cookies');
