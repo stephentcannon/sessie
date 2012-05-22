@@ -45,11 +45,7 @@ in your project directory
 
 Todo
 ------------
-  loch
-  ness library - references to collections that contain items related to a session.
-  monster library - destroys items in ness tracked collections when a session is destroyed.
-  extend meteor sessions 
-  reactivity
+
 
 License
 ------------
