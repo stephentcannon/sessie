@@ -24,7 +24,7 @@
 
     <div class="row">
       <div class="span12">
-        <h2 id="example1">The Sessie Session</h2>
+        <h2 >The Sessie Session</h2>
         <div class="well">
           The Sessie session consists of a semi-permanent or absolutely permanent session including session ids, secret key ids, hmac SHA512 session keys based on the secret key and browser specific individuated data, session expiry configurable in days, key re-generation configurable in minutes, configurable session cookie names and automated session creation, and key validation and key generation. See example.js and sessie_config.js. Set it and forget it!
         </div>
@@ -33,7 +33,7 @@
 
     <div class="row">
       <div class="span12">
-        <h2 id="example1">Set, Get and Delete</h2>
+        <h2 >Set, Get and Delete</h2>
         <div class="well">
           Feed Sessie and she stores items in the Loch. Set a name value pair. Use a name to get a value. To update a value use the same name and set it. If the name already exists the value gets updated. If the name is new, then a new item is stored.  Delete items. See example.js and sessie_config.js.
         </div>
@@ -42,7 +42,7 @@
 
     <div class="row">
       <div class="span12">
-        <h2 id="example1">Quick spin</h2>
+        <h2 >Quick spin</h2>
         <div class="well">
           Add a Loch Item in the Feed Sessie Loch Items form. Use the get a Loch Item. Change the Loch Item through the Feed Sessie Loch Items form and watch. Do it a few times. Delete some items. Watch Sessie alter your items and add items. In this example implementation, Sessie will add and update items every 30 seconds to demonstrate server side control of session variables. See example.js for ways you could use Sessie.
         </div>
@@ -63,14 +63,14 @@
       <div class="span12">
         <h2>Permanents did not die with the 70s!</h2>
         <div class="well">
-          TODO Out of the box, Sessie has semi-permanent session lifetimes based on session configuration parameters you control. But wait, you need session data to persist for your users so it is available when they log back in? But you don't want to be tied to a specific user registration and authorization system? No problem. Sit down and we will have your permanent done in seconds! Permanent sessions that is! Unless of course you want curls! Just register a permanent unique id with a session and it won't get expired, deleted, destroyed and the Monster won't wreck shit associated with any permanent sessions! But, you are in charge of housekeeping for permanent sessions. Hint, just remove the permanent unique id and it will get wrecked by the Monster. For example, register an email, userid, username or pretty much any unique id associated with some kind of profile or account within our system. No fuss, no muss and you can either feather your hair or keep it curled, we don't care!
+          TODO Out of the box, Sessie has semi-permanent session lifetimes based on session configuration parameters you control. But wait, you need session data to persist for your users so it is available when they log back in? But you don't want to be tied to a specific user registration and authorization system? No problem. Sit down and we will have your permanent done in seconds! Permanent sessions that is! Unless of course you want curls! Just register a permanent unique id with a session and it won't get expired, deleted, destroyed and the Monster won't wreck shit associated with any permanent sessions! If you register permanent sessions, you are in charge of housekeeping and clean up. Hint, just remove the permanent unique id from the session record and it will get wrecked by the Monster. For example, register an email, userid, username or pretty much any unique id associated with some kind of profile or account within our system. No fuss, no muss and you can either feather your hair or keep it curled, we don't care!
         </div>
       </div>
     </div>
     
     <div class="row">
       <div class="span12">
-        <h2 id="example1">All your session are belong to us!</h2>
+        <h2 >All your session are belong to us!</h2>
         <div class="well">
           Control all your session variable server side. In example.js the server has a timer that will randomly change values and add values to the client's session every 30 seconds. Sessie will not add more than 9 Loch items, but you can add as many elements as you like. This provides you with an example of how client sessions can be controlled server side. Imagine an administrative control panel to control the user experience, timed work flows, logic based work flows and anything else you might want to do.
         </div>
@@ -127,7 +127,7 @@
     <div class="row">
       <div class="span12">
         <h2>Caveat Emptor!</h2>
-        <div class="well">This code is noobular. I have only been coding javascript since launch of <a href="http://meteor.com">Meteor</a>. That means this code could be horribly inefficient, ineffecitve, pointless, redundant and completely un(in)secure. You have been warned!  Critiques and recommendations welcome.  No, I am not scottish, stop asking.
+        <div class="well">This code is noobular. I have only been coding javascript since launch of <a href="http://meteor.com">Meteor</a>. That means this code could be horribly inefficient, ineffecitve, pointless, redundant and completely unsecure.  Or should that be insecure? I never get that one right. Insecure sounds like your code is afraid to approach a hot chick at a bar and you know that ain't true.  Unsecure sounds like you learned English in an Alabama public shool.   Either way, you have been warned!  Critiques and recommendations welcome.  No, I am not scottish, stop asking.  Yes, some of the instructions are parody bcuz coding should be fun.  If you are offended by the humour, take a joke!
         </div>
       </div>
     </div>
@@ -148,7 +148,7 @@
    <fieldset>
       <div class="control-group">
         <div class="controls">
-          Name <input type="text" class="input-medium" id="inputName" name="inputName" maxlength="100" autofocus>
+          Name <input type="text" class="input-medium" id="inputName" name="inputName" maxlength="100">
         </div>
       </div>
       <div class="control-group">
@@ -189,7 +189,7 @@
    <fieldset>
       <div class="control-group">
         <div class="controls">
-          Name <input type="text" class="input-medium" id="searchName" name="searchName" maxlength="100" autofocus>
+          Name <input type="text" class="input-medium" id="searchName" name="searchName" maxlength="100">
         </div>
       </div>
       <div id="buttons-getloch" class="form-actions">

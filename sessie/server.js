@@ -12,7 +12,8 @@ if(Meteor.is_server) {
   Sessie.Sessions = new Meteor.Collection('sessieSessions');
   Sessie.Loch = new Meteor.Collection('sessieLoch');
 
-  // TODO CONFIGURATION - CHANGE THIS
+  // CONFIGURATION
+  // Your application can change this by hosting a sessie_config.js with these settings.
   Sessie.expires = 3; //Days
   Sessie.encryption_password = "mak3th1sd1ff1cult";
   Sessie.session_key_timeout = 60; //in minutes, causes new key generation, must always be less than session_timeout
@@ -31,10 +32,11 @@ if(Meteor.is_server) {
   * session.session_key
   */
 
-  Meteor.publish('sessieSessions', function(session) {
+  Meteor.publish('sessieSessions', function(session, seed) {
     console.log('*** Meteor.publish sessieSessions ***');
-    var sessionId = Sessie.validateOrCreateSession(session);
-    return Sessie.Sessions.find({ _id: sessionId}, { limit: 1, fields: { key_id: false } });
+    console.log('*** Meteor.publish seed: ' + seed);
+    var sessionId = Sessie.validateOrCreateSession(session, seed);
+    return Sessie.Sessions.find({ _id: sessionId}, { limit: 1, fields: { key_id: false, seed: false } });
   });
 
   /* sessieLoch - where Sessie stores session data
@@ -69,27 +71,27 @@ if(Meteor.is_server) {
     Sessie.Sessions.remove({expires: {$lt: now}})
   };
 
-  Sessie.validateOrCreateSession = function(session) {
+  Sessie.validateOrCreateSession = function(session, seed) {
     console.log('*** validateOrCreateSession ***');
     var sessionId;
     session = session || {};
     if (session.session_id) {
-      if(this.validateSession(session)){
+      if(this.validateSession(session, seed)){
         sessionId = session.session_id;
       } else {
-        sessionId = this.createSession();
+        sessionId = this.createSession(seed);
       }
     } else {
-      sessionId = this.createSession();
+      sessionId = this.createSession(seed);
     }
     return sessionId;
   };
 
-  Sessie.generateKey = function(){
+  Sessie.generateKey = function(seed){
     console.log('*** generateKey ***');
     var key = {};
     key.id = Meteor.uuid();
-    var hash = CryptoJS.HmacSHA512(key.id, Sessie.encryption_password); 
+    var hash = CryptoJS.HmacSHA512(key.id + seed, Sessie.encryption_password); 
     key.key = hash.toString(CryptoJS.enc.Hex); 
     console.log('generateKey key.id: ' + key.id);
     console.log('generateKey key.key: ' + key.key);
@@ -112,17 +114,18 @@ if(Meteor.is_server) {
     }
   };
 
-  Sessie.createSession = function() {
+  Sessie.createSession = function(seed) {
     console.log('*** createSession ***');
     var expires = new Date();
     expires.setDate(expires.getDate()+Sessie.expires);
-    var key = this.generateKey();
+    var key = this.generateKey(seed);
     id = Sessie.Sessions.insert({ 
       created: new Date(),
       updated: new Date(), 
       expires: expires,
       expiry: Sessie.expires,
       key_id: key.id,
+      seed: seed,
       key: key.key
     });
     if(id){
@@ -179,7 +182,7 @@ if(Meteor.is_server) {
         Sessie.cleanUp();
         return false;
       } else {
-        if(this.validateKey(serverSession.key_id, session.session_key)){
+        if(this.validateKey(serverSession.key_id + serverSession.seed, session.session_key)){
           if(serverSession.updated <  session_key_timeout){
             console.log('key timed out');
             var key = this.generateKey();

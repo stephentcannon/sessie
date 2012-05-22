@@ -94,11 +94,6 @@ if (Meteor.is_client) {
       try{
         validateParams(params);
         console.log('after getlochform validate params');
-        //r = Sessie.getLochData(params.searchName);
-        //console.log(r);
-        //$("#searchResultName").text(r.name);
-        //$("#searchResultValue").text(r.value);
-        //$("#searchResultAction").html('<i class="icon-trash"></i>');
         console.log('getlochform params.searchName: ' + params.searchName);
         Session.set("getSessieLochSearchValue", params.searchName);
         $("#getloch-form").reset();

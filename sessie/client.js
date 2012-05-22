@@ -5,7 +5,9 @@ if(Meteor.is_client) {
   Sessie.session = {};
   
   //CONFIGURATION
+  // Your application can change this by hosting a sessie_config.js with these settings.
   Sessie.cookie_prefix = 'sessie';
+  Sessie.cookie_seed = navigator.userAgent;
   
   Sessie.setCookie = function (c_name,value,exdays){
     var exdate=new Date();
@@ -91,7 +93,7 @@ if(Meteor.is_client) {
   }
 
   Sessie.Sessions = new Meteor.Collection('sessieSessions');
-  Meteor.subscribe("sessieSessions", Sessie.getSession());
+  Meteor.subscribe("sessieSessions", Sessie.getSession(), Sessie.cookie_seed);
 
   Sessie.Loch = new Meteor.Collection('sessieLoch');
 
