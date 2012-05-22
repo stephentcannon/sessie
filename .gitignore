@@ -1,0 +1,6 @@
+# you can .git/info/exclude this as well
+config.js
+config-sessie-client.js
+config-sessie-server.js
+TODO.md
+start.sh

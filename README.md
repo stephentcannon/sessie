@@ -34,13 +34,14 @@ Reset data:
   To reset all data
   cd sessie
   meteor reset
-  meteor
 
 How to Use
 ------------
 copy the lowest level sessie directory to your meteor packages directory
 in your project directory
   meteor add sessie
+  create a /client/config-sessie-client.js
+  create a /server/config-sessie-server.js
 
 Todo
 ------------
