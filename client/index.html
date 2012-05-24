@@ -17,7 +17,7 @@
       Monster destroys collection items associated with a session.<br />
       Yes, Sessie as in Nessie. Loch aka Lake for storage. Ness as in that Irish Princess to take care of you and watch your shit for you. Monster cuz he wrecks your shit.</p>
       Your session id is: {{sessionId}}<br />
-      Your session key is: {{sessionKey}}<br />
+      Your session crypto key is: {{sessionKey}}<br />
       Your session expires on: {{sessionExpires}}<br />
       Your session expires in <b>{{sessionExpiry}}</b> days from your expiry date unless you visit again.<br />
     </div>
@@ -30,11 +30,11 @@
           <ul>
             <li>Permanent or semi-permanent sessions.</li>
             <li>Authorization and user management system independent.</li>
-            <li>Session id and a session key based session authentication.</li>
-            <li>SHA512 hmac session key based on a secret key id and additional unique and secret data you configure.</li>
-            <li>Automated session creation, session validation and session key validation.</li>
+            <li>Session id and a session crypto key based session authentication.</li>
+            <li>SHA512 hmac session crypto key based on a secret key id and additional unique and secret data you configure.</li>
+            <li>Automated session creation, session validation and session crypto key authentication and validation.</li>
             <li>Automated session expiration configurable in days.</li>
-            <li>Automated session key regeneration configurable in minutes.</li>
+            <li>Automated session crypto key regeneration configurable in minutes.</li>
             <li>Configurable sesssion cookie names customizable to your site and domain.</li>
             <li>Automated session clean up and session object destruction.</li>
             <li>Associate any collection item with a session for automated session loading or destruction.</li>
@@ -73,8 +73,9 @@
       <div class="span12">
         <h2>Installation</h2>
         <div class="well">
-          Copy the underlying sessie sub-directory to your Meteor packages directly and then from your project type: <br />
+          Copy the underlying sessie sub-directory to your Meteor packages directory.  This will probably be at /usr/lib/meteor/packages.<br/>Then from your project directory type: <br />
           <code>meteor add sessie</code><br />
+          Create a /client/config-sessie-client.js and a /server/config-sessie-server.js in your project and set your own configuration settings.  DO NOT use only <code>is_server</code> and <code>is_client</code> instead use the /server/ and /client/ directories in your project for these configuration files.  Files not put in the /server/ directory will get pushed to the client and your configuration settings will be publicly visible even if they are surrouding by <code>is_server</code>.  Example files are included with the example application that comes with the Sessie project.
         </div>
       </div>
     </div>
@@ -82,13 +83,13 @@
     <div class="row">
       <div class="span12">
         <h2>Configuration: Set it and forget it!</h2>
-        <div class="well">In the example application example.js for an example implementation and /server/sessie-config-server.js and /client/sessie-config-client.js for basic configuation settings.<br />
+        <div class="well">See the example application example.js for an example implementation and /server/sessie-config-server.js and /client/sessie-config-client.js for basic configuation settings.<br />
           <p>Example sessie-config-server.js</p>
           Set Sessie.expires in days.<br/>
           <code>Sessie.expires = 3;</code><br/>
-          Change the key Sessie.encryption_password, this encrypted the secret session key.<br/>
+          Change the crypto key Sessie.encryption_password, this encrypts the secret session key id and secret unique phrase to create the session crypto key.<br/>
           <code>Sessie.encryption_password = "mak3th1sd1ff1cult";</code><br/>
-          Set the Sessie.session_key_timeout in minutes.  This is how often the session keys are regenerated.<br />
+          Set the Sessie.session_key_timeout in minutes.  This is how often the session crypto keys are regenerated.<br />
           <code>Sessie.session_key_timeout = 60;</code><br />
 
           <p>Example sessie-config-client.js</p>
@@ -104,6 +105,15 @@
         <h2>Set, Get and Delete</h2>
         <div class="well">
           Feed Sessie and she stores items in the Loch. <b>Set</b> a name value pair. Use a name to <b>get</b> a value. To update a value use the same name and <b>set</b> it. If the name already exists the value gets updated. If the name is new, then a new item is stored.  <b>Delete</b> items by name.  See the example.js for basic usage.
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span12">
+        <h2>The Session Id and Crypto Key</h2>
+        <div class="well">
+          The reason for both a session id and session crypto key is to provide more authentication and validation of sessions.  First by matching each on requests against servers side session records.  Second, the session crypto key is a SHA512 hmac of a unique secret key id and secret unique phrase unknown to the client and validated and authenticated on each request.  Fourth, you can specify how the unique secret phrase is created by providing a unique id, a function to call or some kind of unique environment variable.  Fifth, the session key can be configured to regenerate based on a period of minutes that have passed.  All of this combined helps prevent fraudulent sessions and session hijacking.
         </div>
       </div>
     </div>

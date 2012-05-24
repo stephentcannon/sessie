@@ -37,7 +37,7 @@ Reset data:
 
 How to Use
 ------------
-copy the lowest level sessie directory to your meteor packages directory
+copy the sessie directory to your meteor packages directory
 in your project directory
   meteor add sessie
   create a /client/config-sessie-client.js
