@@ -1,8 +1,6 @@
 //even though this is in a /client/ directory we are going to keep it wrapped just in case.
 if(Meteor.is_client) {
-  
-  Sessie = {};
-  
+
   Sessie.session = {};
   
   //CONFIGURATION
@@ -56,8 +54,11 @@ if(Meteor.is_client) {
     console.log('Sessie.setLochData session.session_id: ' + session.session_id);
     console.log('Sessie.setLochData session.session_key: ' + session.session_key);
     Meteor.call('setLochData', session, name, value, function (error, result) { 
-      console.log('Sessie.setLochData error: ' + JSON.stringify(error, 0,4));
-      console.log('Sessie.setLochData result: ' + JSON.stringify(result, 0,4));
+      if(result){
+        console.log('Sessie.setLochData result: ' + JSON.stringify(result, 0,4));
+      } else {
+        console.log('Sessie.setLochData error: ' + JSON.stringify(error, 0,4));
+      }
     });
   };
 
@@ -93,32 +94,39 @@ if(Meteor.is_client) {
     return SessieLoch.find({session_id: Sessie.getSessionId(), name: name});
   }
 
-  SessieSessions = new Meteor.Collection('sessieSessions');
-  Meteor.subscribe("sessieSessions", Sessie.getSession(), Sessie.cookie_seed);
+  Meteor.startup(function () {
+    Meteor.subscribe("sessieSessions", Sessie.getSession(), Sessie.cookie_seed);
 
-  SessieLoch = new Meteor.Collection('sessieLoch');
-
-  Meteor.autosubscribe(function() {
-    var clientSession = SessieSessions.findOne();
-    if (clientSession) {
-      if (clientSession._id && clientSession.key && clientSession.key) {
-        console.log('setting session cookies');
-        console.log('clientSession._id: ' + clientSession._id);
-        console.log('clientSession.key: ' + clientSession.key);
-        console.log('clientSession.expires: ' + clientSession.expires);
-        console.log('clientSession.expiry: ' + clientSession.expiry);
-        Sessie.setCookie(Sessie.cookie_prefix + "_session_id", clientSession._id, clientSession.expiry);
-        Session.set(Sessie.cookie_prefix + "_session_id", clientSession._id);
-        Sessie.setCookie(Sessie.cookie_prefix + "_session_key", clientSession.key, clientSession.expiry);
-        Session.set(Sessie.cookie_prefix + "_session_key", clientSession.key);
-        Meteor.subscribe("sessieLoch", clientSession);
-      } else {
-        console.log('deleting session cookies');
-        Sessie.setCookie(Sessie.cookie_prefix + "_session_id", '', 0);
-        Sessie.setCookie(Sessie.cookie_prefix + "_session_key", '', 0);
+    Meteor.autosubscribe(function() {
+      var clientSession = SessieSessions.findOne();
+      if (clientSession) {
+        if (clientSession._id && clientSession.key && clientSession.key) {
+          console.log('setting session cookies');
+          console.log('clientSession._id: ' + clientSession._id);
+          console.log('clientSession.key: ' + clientSession.key);
+          console.log('clientSession.expires: ' + clientSession.expires);
+          console.log('clientSession.expiry: ' + clientSession.expiry);
+          Sessie.setCookie(Sessie.cookie_prefix + "_session_id", clientSession._id, clientSession.expiry);
+          Session.set(Sessie.cookie_prefix + "_session_id", clientSession._id);
+          Sessie.setCookie(Sessie.cookie_prefix + "_session_key", clientSession.key, clientSession.expiry);
+          Session.set(Sessie.cookie_prefix + "_session_key", clientSession.key);
+          Meteor.subscribe("sessieLoch", clientSession);
+          var clientLoch = SessieLoch.find();
+          if(clientLoch){
+            console.log('LOCH DATA FIRED');
+            clientLoch.forEach(function (lochitem) {
+              console.log('loch item: ' + JSON.stringify(lochitem));
+            });
+            
+          }
+        } else {
+          console.log('deleting session cookies');
+          Sessie.setCookie(Sessie.cookie_prefix + "_session_id", '', 0);
+          Sessie.setCookie(Sessie.cookie_prefix + "_session_key", '', 0);
+        }
       }
-    }
-  });
+    });
+});
 
   Meteor.methods({
     setLochData: setLochData,

@@ -73,9 +73,9 @@
       <div class="span12">
         <h2>Installation</h2>
         <div class="well">
-          Copy the underlying sessie sub-directory to your Meteor packages directory.  This will probably be at /usr/lib/meteor/packages.<br/>Then from your project directory type: <br />
+          Sessie comes packaged inside this very example applicaton.  Inside of the example application you will see a /sessie/ sub-directory.  You will know you have the right sub-directory because there is a package.json file in it and three directories (server, client and lib).  Copy that sessie directory to your Meteor packages directory.  This will probably be at /usr/lib/meteor/packages.<br/>Then from your project directory type: <br />
           <code>meteor add sessie</code><br />
-          Create a /client/config-sessie-client.js and a /server/config-sessie-server.js in your project and set your own configuration settings.  DO NOT use only <code>is_server</code> and <code>is_client</code> instead use the /server/ and /client/ directories in your project for these configuration files.  Files not put in the /server/ directory will get pushed to the client and your configuration settings will be publicly visible even if they are surrouding by <code>is_server</code>.  Example files are included with the example application that comes with the Sessie project.
+          Create a /client/config-sessie-client.js and a /server/config-sessie-server.js in your project and set your own configuration settings.  DO NOT use only <code>is_server</code> and <code>is_client</code> to protect your configuration settings.  Always use the /server/ and /client/ directories in your project for these configuration files.  Files not put in the /server/ directory will get pushed to the client and your configuration settings will be publicly visible even if they are surrouded by <code>is_server</code>.  Example files are included with the example application that comes with the Sessie project.
         </div>
       </div>
     </div>
@@ -83,7 +83,8 @@
     <div class="row">
       <div class="span12">
         <h2>Configuration: Set it and forget it!</h2>
-        <div class="well">See the example application example.js for an example implementation and /server/sessie-config-server.js and /client/sessie-config-client.js for basic configuation settings.<br />
+        <div class="well">
+          <p>You can use Sessie out of the box with the default settings or you can create your own custom settings.  See the example application example.js for an example implementation and /server/sessie-config-server.js and /client/sessie-config-client.js for basic configuation settings. Just set it and forget it!</p>
           <p>Example sessie-config-server.js</p>
           Set Sessie.expires in days.<br/>
           <code>Sessie.expires = 3;</code><br/>
@@ -113,7 +114,7 @@
       <div class="span12">
         <h2>The Session Id and Crypto Key</h2>
         <div class="well">
-          The reason for both a session id and session crypto key is to provide more authentication and validation of sessions.  First by matching each on requests against servers side session records.  Second, the session crypto key is a SHA512 hmac of a unique secret key id and secret unique phrase unknown to the client and validated and authenticated on each request.  Fourth, you can specify how the unique secret phrase is created by providing a unique id, a function to call or some kind of unique environment variable.  Fifth, the session key can be configured to regenerate based on a period of minutes that have passed.  All of this combined helps prevent fraudulent sessions and session hijacking.
+          The reason for both a session id and session crypto key is to provide more authentication and validation of sessions.  First by matching each element during requests against the server side session records.  Second, the session crypto key is a SHA512 hmac of a unique secret key id and secret unique phrase unknown to the client and validated and authenticated on each request.  Fourth, you can specify how the unique secret phrase is created by providing a unique id, a function to call or some kind of unique environment variable.  Fifth, the session key can be configured to regenerate based on a period of minutes that have passed.  All of this combined helps prevent counterfeit or fraudulent sessions and session hijacking.
         </div>
       </div>
     </div>
@@ -132,7 +133,9 @@
       <div class="span12">
         <h2>Mutable or immutable? That is the question!</h2>
         <div class="well">
-          TODO In example.js the server has a timer that creates one immutable session variables and changes one random session variable to immutable.  You will not be able to change them or delete them.  Mutability can be set on the server and not the client but obviously server side is a more realistic solution.
+          <p>In order to provide a modicume of security, by default all Loch items are immutable and the client cannot change them.  Server side you can do whatever you want to sessions and session variables.  Mutability must be explicitly set as TRUE when you set Loch items.  Mutability is controlled by passing an options object when setting a Loch item.
+          <br /><code>{ mutable:true } OR { mutable: false }</code></p>
+          In example.js the server has a timer that creates one immutable session variable and changes one random session variable to immutable.  You will not be able to change them or delete them.  Mutability can be set on the server and not the client but obviously server side is a more realistic solution.
         </div>
       </div>
     </div>

@@ -9,10 +9,6 @@ if(Meteor.is_server) {
     });
   });
 
-  Sessie = {};
-  SessieSessions = new Meteor.Collection('sessieSessions');
-  SessieLoch = new Meteor.Collection('sessieLoch');
-
   // CONFIGURATION
   // Your application can change this by hosting a sessie_config.js with these settings.
   Sessie.expires = 3; //Days
@@ -208,43 +204,6 @@ if(Meteor.is_server) {
     }
   };
 
-  Sessie.setLochData = function(session, name, value){
-    this.unblock;
-    console.log('*** setLochData ***');
-    if(Sessie.validateSession(session)){
-      console.log('*** setLochData session.session_id: ' + session.session_id);
-      console.log('*** setLochData session.session_key: ' + session.session_key);
-      console.log('*** setLochData name: ' + name);
-      console.log('*** setLochData value: ' + value);
-      // TODO validate session maybe?
-      if(name && value){
-        if(Sessie.getLochData(session, name)){
-          console.log('*** setLochData updating existing data');
-          SessieLoch.update({session_id: session.session_id, name: name}, 
-            {$set: {
-            updated: new Date(),
-            value: value
-          }}, function(error, result){
-            console.log('error: ' + JSON.stringify(error, 0,4));
-            console.log('result: ' + JSON.stringify(result, 0,4));
-          });
-        } else {
-          console.log('*** setLochData inserting new data');
-          SessieLoch.insert({ 
-          created: new Date(),
-          updated: new Date(), 
-          session_id: session.session_id,
-          name: name,
-          value: value
-          },function(error, result){
-            console.log('error: ' + JSON.stringify(error, 0,4));
-            console.log('result: ' + JSON.stringify(result, 0,4));
-          });
-        }
-      }
-    }
-  };
-  
   Sessie.getLochData = function(session, name){
     this.unblock;
     console.log('*** getLochData ***');
@@ -253,6 +212,65 @@ if(Meteor.is_server) {
     }
   };
 
+  //PRIVATE DO NOT EVER EXPOSE
+  Sessie.setSessionData = function(session, name, value){
+    console.log('*** setLochData ***');
+    if(name && value){
+      if(Sessie.getLochData(session, name)){
+        console.log('*** setLochData updating existing data');
+        SessieLoch.update({session_id: session.session_id, name: name}, 
+        {$set: {
+        updated: new Date(),
+        value: value
+        }}, function(error, result){
+          console.log('error: ' + JSON.stringify(error, 0,4));
+          console.log('result: ' + JSON.stringify(result, 0,4));
+          if(result){
+            return true;
+          } else {
+            return false;
+          }
+        });
+      } else {
+        console.log('*** setLochData inserting new data');
+        SessieLoch.insert({ 
+        created: new Date(),
+        updated: new Date(), 
+        session_id: session.session_id,
+        name: name,
+        value: value
+        },function(error, result){
+          console.log('error: ' + JSON.stringify(error, 0,4));
+          console.log('result: ' + JSON.stringify(result, 0,4));
+          if(result){
+            return true;
+          } else {
+            return false;
+          }
+        });
+      }
+    }
+  }
+
+  //BELOW THIS LINE ARE ALL EXPOSED AKA PUBLIC METEOR METHODS
+
+  //EXPOSED WITH METEOR.METHOD
+  Sessie.setLochData = function(session, name, value){
+    this.unblock;
+    console.log('*** setLochData ***');
+    if(Sessie.validateSession(session)){
+      console.log('*** setLochData session.session_id: ' + session.session_id);
+      console.log('*** setLochData session.session_key: ' + session.session_key);
+      console.log('*** setLochData name: ' + name);
+      console.log('*** setLochData value: ' + value);
+      // TODO only if it is mutable?
+      // TODO should probably have callback support for error, result like Meteor does
+      Sessie.setSessionData(session, name, value);
+
+    }
+  };
+  
+  //EXPOSED WITH METEOR.METHOD
   Sessie.deleteLochData = function(session, name){
     this.unblock;
     console.log('*** deleteLochData ***');
