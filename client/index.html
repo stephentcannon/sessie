@@ -10,7 +10,7 @@
   <div class="span12">
     <div class="hero-unit">
     <h1 id="title">SESSIE</h1>
-      <p>Sessie is a simple and weird persistent server side session management package for Meteor.<br />
+      <p>Sessie is a simple and weird server side persistent session management package for Meteor.<br />
       Sessie creates, validates and manages sessions.<br />
       Loch is where Sessie stores persistent session data when you feed her.<br />
       Ness stores and tracks Collection items associated with a session.<br />
@@ -24,27 +24,38 @@
 
     <div class="row">
       <div class="span12">
-        <h2 >The Sessie Session</h2>
+        <h2>Sessie Feature List</h2>
         <div class="well">
-          The Sessie session consists of a semi-permanent or absolutely permanent session including session ids, secret key ids, hmac SHA512 session keys based on the secret key and browser specific individuated data, session expiry configurable in days, key re-generation configurable in minutes, configurable session cookie names and automated session creation, and key validation and key generation. See example.js and sessie_config.js. Set it and forget it!
+          The Sessie session consists of a...
+          <ul>
+            <li>Permanent or semi-permanent sessions.</li>
+            <li>Authorization and user management system independent.</li>
+            <li>Session id and a session key based session authentication.</li>
+            <li>SHA512 hmac session key based on a secret key id and additional unique and secret data you configure.</li>
+            <li>Automated session creation, session validation and session key validation.</li>
+            <li>Automated session expiration configurable in days.</li>
+            <li>Automated session key regeneration configurable in minutes.</li>
+            <li>Configurable sesssion cookie names customizable to your site and domain.</li>
+            <li>Automated session clean up and session object destruction.</li>
+            <li>Associate any collection item with a session for automated session loading or destruction.</li>
+            <li>Permanent session data objects.</li>
+            <li>Full server side control of sessions.</li>
+            <li>Mutable or immutable session data objects.</li>
+            <li>Visible of invisible session data objects.</li>
+            <li>Trigger server or client side events on session and session object data.</li>
+            <li>See example.js for an example implementation.</li>
+            <li>See /server/sessie-config-server.js and /client/sessie-config-client.js.</li>
+            <li>Just set it and forget it!</li>
+          </ul>
         </div>
       </div>
     </div>
 
     <div class="row">
       <div class="span12">
-        <h2 >Set, Get and Delete</h2>
+        <h2>Quick spin</h2>
         <div class="well">
-          Feed Sessie and she stores items in the Loch. Set a name value pair. Use a name to get a value. To update a value use the same name and set it. If the name already exists the value gets updated. If the name is new, then a new item is stored.  Delete items. See example.js and sessie_config.js.
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="span12">
-        <h2 >Quick spin</h2>
-        <div class="well">
-          Add a Loch Item in the Feed Sessie Loch Items form. Use the get a Loch Item. Change the Loch Item through the Feed Sessie Loch Items form and watch. Do it a few times. Delete some items. Watch Sessie alter your items and add items. In this example implementation, Sessie will add and update items every 30 seconds to demonstrate server side control of session variables. See example.js for ways you could use Sessie.
+          Add a Loch Item in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Use the <a href="#getitems">Get a Loch Item</a>. Change the Loch Item by submitting an existing Loch Item name with a different value in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Do it a few times. Use the delete icon in the <a href="#lochitems">Items in your Loch</a> table to delete session items. <b>Warning!</b> In this example demonstration, Sessie will add, update, delete, change mutability and change visibility of items every 30 seconds to demonstrate server side control of the session. See example.js for some ways you could use Sessie.
         </div>
       </div>
     </div>
@@ -58,21 +69,51 @@
       <div class="span4">{{> getlochform}}</div>
       <div class="span8">{{> GetSessieLoch}}</div>
     </div>
+    <div class="row">
+      <div class="span12">
+        <h2>Installation</h2>
+        <div class="well">
+          Copy the underlying sessie sub-directory to your Meteor packages directly and then from your project type: <br />
+          <code>meteor add sessie</code><br />
+        </div>
+      </div>
+    </div>
 
     <div class="row">
       <div class="span12">
-        <h2>Permanents did not die with the 70s!</h2>
+        <h2>Configuration: Set it and forget it!</h2>
+        <div class="well">In the example application example.js for an example implementation and /server/sessie-config-server.js and /client/sessie-config-client.js for basic configuation settings.<br />
+          <p>Example sessie-config-server.js</p>
+          Set Sessie.expires in days.<br/>
+          <code>Sessie.expires = 3;</code><br/>
+          Change the key Sessie.encryption_password, this encrypted the secret session key.<br/>
+          <code>Sessie.encryption_password = "mak3th1sd1ff1cult";</code><br/>
+          Set the Sessie.session_key_timeout in minutes.  This is how often the session keys are regenerated.<br />
+          <code>Sessie.session_key_timeout = 60;</code><br />
+
+          <p>Example sessie-config-client.js</p>
+          Set the Sessie.cookie_prefix to your application or site.
+          <code>Sessie.cookie_prefix = 'sessie'; </code><br/>
+          Set the Sessie.cookie_seed to a unique id, function or environment variable.<br/>
+          <code>Sessie.cookie_seed = navigator.userAgent;</code>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span12">
+        <h2>Set, Get and Delete</h2>
         <div class="well">
-          TODO Out of the box, Sessie has semi-permanent session lifetimes based on session configuration parameters you control. But wait, you need session data to persist for your users so it is available when they log back in? But you don't want to be tied to a specific user registration and authorization system? No problem. Sit down and we will have your permanent done in seconds! Permanent sessions that is! Unless of course you want curls! Just register a permanent unique id with a session and it won't get expired, deleted, destroyed and the Monster won't wreck shit associated with any permanent sessions! If you register permanent sessions, you are in charge of housekeeping and clean up. Hint, just remove the permanent unique id from the session record and it will get wrecked by the Monster. For example, register an email, userid, username or pretty much any unique id associated with some kind of profile or account from an external system. No fuss, no muss and you can either feather your hair or keep it curled, we don't care, just rock your permanents like a pro!
+          Feed Sessie and she stores items in the Loch. <b>Set</b> a name value pair. Use a name to <b>get</b> a value. To update a value use the same name and <b>set</b> it. If the name already exists the value gets updated. If the name is new, then a new item is stored.  <b>Delete</b> items by name.  See the example.js for basic usage.
         </div>
       </div>
     </div>
     
     <div class="row">
       <div class="span12">
-        <h2 >All your session are belong to us!</h2>
+        <h2>All your session are belong to us!</h2>
         <div class="well">
-          Control all your session variable server side. In example.js the server has a timer that will randomly change values and add values to the client's session every 30 seconds. The example will not add more than 9 Loch items, but you can add as many elements as you like. This provides you with an example of how client sessions can be controlled server side. Imagine an administrative control panel to control the user experience, timed work flows, logic based work flows and anything else you might want to do.
+          TODO add delete, mutability (removes delete button), visibility
+          Control all your session variable server side. In example.js the server has a timer that will randomly create, update and delete variables on your client session every 30 seconds. The example will not add more than 9 Loch items, but you can add as many elements as you like.  It will delete and change any of them. This provides you with an example of how client sessions can be controlled server side. Imagine an administrative control panel to control the user experience, timed work flows, logic based work flows and anything else you might want to do.
         </div>
       </div>
     </div>
@@ -81,7 +122,7 @@
       <div class="span12">
         <h2>Mutable or immutable? That is the question!</h2>
         <div class="well">
-          TODO In example.js the server has a timer that produces session variables sets some of them as immutable.  You cannot change them or delete them.  Mutability should always be set on the server and not the client.
+          TODO In example.js the server has a timer that creates one immutable session variables and changes one random session variable to immutable.  You will not be able to change them or delete them.  Mutability can be set on the server and not the client but obviously server side is a more realistic solution.
         </div>
       </div>
     </div>
@@ -90,16 +131,16 @@
       <div class="span12">
         <h2>Visible or invisible? Houdini would be proud!</h2>
         <div class="well">
-          TODO In example.js the server has a timer that produces session variables sets some of them as invisible.  Visibility can be set on either the server or the client.
+          TODO In example.js the server has a timer that changes two session variables to invisible.  Visibility can be set on either the server or the client but obviously server side is a more realistic solution.
         </div>
       </div>
     </div>
 
     <div class="row">
       <div class="span12">
-        <h2>Pull the trigger bitch! I dare ya!</h2>
+        <h2>Permanents did not die with the 70s!</h2>
         <div class="well">
-          TODO Trigger server side events based on changes to client side session variables or vice versa!  Store and execute functions!
+          TODO Out of the box, Sessie has semi-permanent session lifetimes based on session configuration parameters you control. Basically, if you set a session to expire and one day and the session is not refreshed by a visit in one day then Monster wrecks it.  But wait, you need session data to persist for your users so it is available when they log back in? But you don't want to be tied to a specific user registration and authorization system? No problem. Sit down and we will have your permanent done in seconds! Permanent sessions that is! Unless of course you want curls! Just register a permanent unique id with a session and it won't get expired, deleted, destroyed and the Monster won't wreck shit associated with any permanent sessions! If you register permanent sessions, you are in charge of housekeeping and clean up. Hint, just remove the permanent unique id from the session record and it will get wrecked by the Monster. For example, register an email, userid, username or pretty much any unique id associated with some kind of profile or account from an external system. No fuss, no muss and you can either feather your hair or keep it curled, we don't care, just rock your permanents like a supastar!
         </div>
       </div>
     </div>
@@ -140,7 +181,7 @@
 
 
 <template name="lochform">
-  <h2>Feed Sessie Loch Items</h2>
+  <h2><a name="feedsessie">Feed Sessie Loch Items</a></h2>
   <div id="alert-loch" class="alert hide fade in">
     <strong><span id="alert-title-loch"></span></strong> <span id="alert-message-loch"></span>
   </div>
@@ -165,7 +206,7 @@
 </template>
 
 <template name="SessieLoch">
-  <h2>Items in the Loch</h2>
+  <h2><a name="lochitems">Items in the Loch</a></h2>
   <div class="well">
     <div class="span2"><b>name</b></div><div class="span2"><b>value</b></div><div class="span1"><b>delete</b></div><br />
     {{#each SessieLoch}}
@@ -181,7 +222,7 @@
 </template>
 
 <template name="getlochform">
-  <h2>Get a Loch Item</h2>
+  <h2><a name="getitems">Get a Loch Item</a></h2>
   <div id="alert-getloch" class="alert hide fade in">
     <strong><span id="alert-title-getloch"></span></strong> <span id="alert-message-getloch"></span>
   </div>
