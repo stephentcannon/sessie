@@ -2,3 +2,5 @@
 Sessie = {};
 SessieSessions = new Meteor.Collection('sessieSessions');
 SessieLoch = new Meteor.Collection('sessieLoch');
+SessieNess = new Meteor.Collection('sessieNess');
+

@@ -35,19 +35,21 @@ if (Meteor.is_client) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      console.log('lochform button clicked');
+      //console.log('lochform button clicked');
       var params = $('#loch-form').toJSON();
-      console.log('params.inputName: ' + params.inputName);
-      console.log('params.inputValue: ' + params.inputValue);
-      console.log('params.inputMutable: ' + params.inputMutable);
-      console.log('params.inputVisible: ' + params.inputVisible);
+      //console.log('params.inputName: ' + params.inputName);
+      //console.log('params.inputValue: ' + params.inputValue);
+      //console.log('params.inputMutable: ' + params.inputMutable);
+      //console.log('params.inputVisible: ' + params.inputVisible);
+      //console.log('params.inputMeteorized: '+ params.inputMeteorized);
       var options = {};
       options.mutable = (params.inputMutable === "true")? true:false;
       options.visible = (params.inputVisible === "true")? true:false;
-      console.log('options.mutable: ' + options.mutable);
+      options.meteorized = (params.inputMeteorized === "true")? true:false;
+      //console.log('options.mutable: ' + options.mutable);
       try{
         validateParams(params);
-        console.log('after lochform validate params');
+        //console.log('after lochform validate params');
         Sessie.setLochData(params.inputName, params.inputValue, options);
         $("#loch-form").reset();
         $("#inputName").focus();
@@ -62,14 +64,14 @@ if (Meteor.is_client) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      console.log('i clicked');
+      //console.log('i clicked');
       var curT = event.currentTarget; 
-      console.log('curT.id: ' + curT.id);
-      console.log('curT.className: ' + curT.className);
+      //console.log('curT.id: ' + curT.id);
+      //console.log('curT.className: ' + curT.className);
       var clickedElement = event.target; 
-      console.log('clickedElement.id: ' + clickedElement.id);
-      console.log('clickedElement.className: ' + clickedElement.className);
-      console.log('this: ' + JSON.stringify(this,0,4));
+      //console.log('clickedElement.id: ' + clickedElement.id);
+      //console.log('clickedElement.className: ' + clickedElement.className);
+      //console.log('this: ' + JSON.stringify(this,0,4));
       Sessie.deleteLochData(this.name);
     }
   }
@@ -79,12 +81,12 @@ if (Meteor.is_client) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      console.log('getlochform button clicked');
+      //console.log('getlochform button clicked');
       var params = $('#getloch-form').toJSON();
       try{
         validateParams(params);
-        console.log('after getlochform validate params');
-        console.log('getlochform params.searchName: ' + params.searchName);
+        //console.log('after getlochform validate params');
+        //console.log('getlochform params.searchName: ' + params.searchName);
         Session.set("getSessieLochSearchValue", params.searchName);
         $("#getloch-form").reset();
         $("#searchName").focus();
@@ -107,14 +109,14 @@ if (Meteor.is_client) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      console.log('i clicked');
+      //console.log('i clicked');
       var curT = event.currentTarget; 
-      console.log('curT.id: ' + curT.id);
-      console.log('curT.className: ' + curT.className);
+      //console.log('curT.id: ' + curT.id);
+      //console.log('curT.className: ' + curT.className);
       var clickedElement = event.target; 
-      console.log('clickedElement.id: ' + clickedElement.id);
-      console.log('clickedElement.className: ' + clickedElement.className);
-      console.log('this: ' + JSON.stringify(this,0,4));
+      //console.log('clickedElement.id: ' + clickedElement.id);
+      //console.log('clickedElement.className: ' + clickedElement.className);
+      //console.log('this: ' + JSON.stringify(this,0,4));
       Sessie.deleteLochData(this.name);
     }
   }
@@ -130,18 +132,40 @@ if (Meteor.is_client) {
   }
 
   Template.GetSessieLoch.GetSessieLoch = function(){
-    console.log('*** Template.GetSessieLoch.GetSessieLoch ***');
-    console.log('session.get("getSessieLochSearchValue"): ' + Session.get("getSessieLochSearchValue"));
+    //console.log('*** Template.GetSessieLoch.GetSessieLoch ***');
+    //console.log('session.get("getSessieLochSearchValue"): ' + Session.get("getSessieLochSearchValue"));
     x =  Sessie.getLochData(Session.get("getSessieLochSearchValue"));
-    console.log(x);
+    //console.log(x);
     return Sessie.getLochData(Session.get("getSessieLochSearchValue"));
   }
 
   Template.SessieLoch.SessieLoch = function() {
-    console.log('*** Template.SessieLoch.SessieLoch  ***');
-    // TODO abstract this into Sessie client.js should never have to call collection direclty
-    //return Sessie.Loch.find();
+    //console.log('*** Template.SessieLoch.SessieLoch  ***');
     return Sessie.getLoch();
   };
+
+  // TODO explore this
+  Template.meteorsessions.sessions = function(){
+    //console.log('Template.meteorsessions.sessions');
+    //console.log('Session.keys: ' + JSON.stringify(Session.keys,0,4));
+    return Session.keys;
+  }
+
+  // TODO used this instead of next method bcuz could not figure out how to return session
+  Handlebars.registerHelper('getsessions', function() {
+    var a = '<div class="span2"><b>name</b></div><div class="span2"><b>value</b></div><br />';
+    _.each(Session.keys, function(element, index, list){
+      // TODO don't show anything with session_id and session_key in it
+      // this is really ugly code
+      if(index.indexOf('session_id') == -1 && 
+        index.indexOf('session_key') == -1 &&
+        index.indexOf('getSessieLochSearchValue') == -1){
+        Session.get(index);
+        a = a + '<div class="span2">' + index + '</div>' + 
+        '<div class="span2">' + element + '</div><div class="span2"></div><br />';
+      }
+    });
+    return a;
+  });
 
 }

@@ -212,7 +212,8 @@ if(Meteor.is_server) {
     }
   };
 
-  //PRIVATE DO NOT EVER EXPOSE
+  // PRIVATE DO NOT EVER 
+  // USE SERVER SIDE
   Sessie.setLochSessionData = function(session, name, value, options){
     console.log('*** setSessionData ***');
     console.log('*** setSessionData options: ' + JSON.stringify(options));
@@ -220,13 +221,13 @@ if(Meteor.is_server) {
     if(!options){
       //set default
       var options = {};
-      options.mutable = false;
+      options.mutable = true;
       options.visible = true;
       options.meteorized = true;
     } else {
       if(options.mutable !== true){options.mutable=false;}
       if(options.visible !== true){options.visible=false;}
-      if(options.meteorized !== false){options.meteorized=true;}
+      if(options.meteorized !== true){options.meteorized=false;}
     }
     if(name && value){
       if(Sessie.getLochData(session, name)){
@@ -267,15 +268,16 @@ if(Meteor.is_server) {
     }
   };
 
-  //PRIVATE DO NOT EVER EXPOSE
+  // PRIVATE DO NOT EVER EXPOSE
+  // USE SERVER SIDE
   Sessie.deleteLochSessionData = function(session, name){
-    //NO security and no checking, happens in Meteor.method
+    // NO security and no checking, happens in Meteor.method
     SessieLoch.remove({session_id: session.session_id, name: name});
   };
 
-  //BELOW THIS LINE ARE ALL EXPOSED AKA PUBLIC METEOR METHODS
-
-  //EXPOSED WITH METEOR.METHOD
+  // BELOW THIS LINE ARE ALL EXPOSED VIA PUBLIC METEOR METHODS
+  // TREAD WITH CAUTION
+  // EXPOSED WITH METEOR.METHOD
   Sessie.setLochData = function(session, name, value, options){
     this.unblock;
     console.log('*** Meteor Method setLochData ***');
@@ -294,7 +296,6 @@ if(Meteor.is_server) {
       } else {
         Sessie.setLochSessionData(session, name, value, options);
       }
-      
     }
   };
   
@@ -312,9 +313,17 @@ if(Meteor.is_server) {
     }
   };
 
+  //EXPOSED WITH METEOR.METHOD
+  Sessie.registerNessCollection = function(session, name){
+    this.unblock;
+    console.log('*** registerNessCollection ***');
+    return 'this be bullshit';
+  };
+
   Meteor.methods({
     setLochData: Sessie.setLochData,
-    deleteLochData: Sessie.deleteLochData
+    deleteLochData: Sessie.deleteLochData,
+    //registerNessCollection: registerNessCollection
   });
 
   

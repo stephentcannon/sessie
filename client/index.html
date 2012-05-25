@@ -10,7 +10,7 @@
   <div class="span12">
     <div class="hero-unit">
     <h1 id="title">SESSIE</h1>
-      <p>Sessie is a simple and weird server side persistent session management package for Meteor.<br />
+      <p>Sessie is an <i>attempt</i> at a simple and quite weird server side persistent session management package for Meteor.<br />
       Sessie creates, validates and manages sessions.<br />
       Loch is where Sessie stores persistent session data when you feed her.<br />
       Ness stores and tracks Collection items associated with a session.<br />
@@ -35,15 +35,15 @@
             <li>Automated session expiration configurable in days.</li>
             <li>Automated session crypto key regeneration configurable in minutes.</li>
             <li>Configurable sesssion cookie names customizable to your site and domain.</li>
-            <li>Automated session clean up and session object destruction.</li>
+            <li>Automated session clean up and session variable destruction.</li>
             <li>Associate any collection item with a session for automated session loading or destruction.</li>
-            <li>Permanent session Loch data items.</li>
-            <li>Full server side control of sessions.</li>
-            <li>Mutable or immutable session Loch data items.</li>
-            <li>Visible of invisible session Loch data items.</li>
-            <li>Meteor Session object data items can be session Loch data items.</li> 
-            <li>Trigger server or client side events on session and session object data.</li>
-            <li>See example.js for an example implementation.</li>
+            <li>Permanent session variables aka Loch items.</li>
+            <li>Full server side control of sessions and session variables.</li>
+            <li>Mutable or immutable session variables aka Loch items.</li>
+            <li>Visible of invisible session variables aka Loch items.</li>
+            <li>Meteor Session variables can be populated by session Loch variables aka Meteorized.</li> 
+            <li>TODO Trigger server or client side events on session and session variables.</li>
+            <li>See example-client.js and example-server.js for both client and server side example implementations.</li>
             <li>See /server/sessie-config-server.js and /client/sessie-config-client.js.</li>
             <li>Just set it and forget it!</li>
           </ul>
@@ -55,7 +55,7 @@
       <div class="span12">
         <h2>Quick spin</h2>
         <div class="well">
-          Add a Loch Item in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Use the <a href="#getitems">Get a Loch Item</a>. Change the Loch Item by submitting an existing Loch Item name with a different value in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Do it a few times. Use the delete icon in the <a href="#lochitems">Items in your Loch</a> table to delete session items. <b>Warning!</b> In this example demonstration, Sessie will add, update, delete, change mutability and change visibility of items every 30 seconds to demonstrate server side control of the session. See example.js for some ways you could use Sessie.
+          Add a Loch Item in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Use the <a href="#getitems">Get a Loch Item</a>. Change the Loch Item by submitting an existing Loch Item name with a different values in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Do it a few times. Use the delete icon in the <a href="#lochitems">Items in your Loch</a> table to delete session items. <b>Warning!</b> In this example demonstration, Sessie will add, update, delete, change mutability and change visibility of items every 30 seconds to demonstrate server side control of the session. So don't be alarmed if your session variables change without your interaction.  See example-client.js and example-servers.hs for some ways you could use Sessie server side.
         </div>
       </div>
     </div>
@@ -65,17 +65,23 @@
       <div class="span8">{{> SessieLoch}}</div>
     </div>
 
+
     <div class="row">
       <div class="span4">{{> getlochform}}</div>
       <div class="span8">{{> GetSessieLoch}}</div>
     </div>
+
+    <div class="row">
+      <div class="span12">{{> meteorsessions }}</div>
+    </div>
+
     <div class="row">
       <div class="span12">
-        <h2>Installation</h2>
+        <h2>Sessie Package Installation</h2>
         <div class="well">
-          Sessie comes packaged inside this very example applicaton.  Inside of the example application you will see a /sessie/ sub-directory.  You will know you have the right sub-directory because there is a package.json file in it and three directories (server, client and lib).  Copy that sessie directory to your Meteor packages directory.  This will probably be at /usr/lib/meteor/packages.<br/>Then from your project directory type: <br />
+          Sessie comes packaged inside this example applicaton.  Inside of the example application you will see a /sessie/ sub-directory.  You will know you have the correct sub-directory because there is a package.json file in it and three directories (server, client and lib).  Copy that sessie directory to your Meteor packages directory.  This will probably be at /usr/lib/meteor/packages.<br/>Then from your project directory type: <br />
           <code>meteor add sessie</code><br />
-          Create a /client/config-sessie-client.js and a /server/config-sessie-server.js in your project and set your own configuration settings.  DO NOT use only <code>is_server</code> and <code>is_client</code> to protect your configuration settings.  Always use the /server/ and /client/ directories in your project for these configuration files.  Files not put in the /server/ directory will get pushed to the client and your configuration settings will be publicly visible even if they are surrouded by <code>is_server</code>.  Example files are included with the example application that comes with the Sessie project.
+          Create a /client/config-sessie-client.js and a /server/config-sessie-server.js in your project and set your own configuration settings.  DO NOT ever use <code>is_server</code> and <code>is_client</code> to protect your configuration settings.  Always use the /server/ and /client/ directories in your project to protect these configuration files.  Files not put in the /server/ directory will get pushed to the client and your configuration settings will be publicly visible even if they are surrouded by <code>is_server</code>.  Example files are included with this example application that comes with the Sessie project.
         </div>
       </div>
     </div>
@@ -84,17 +90,16 @@
       <div class="span12">
         <h2>Configuration: Set it and forget it!</h2>
         <div class="well">
-          <p>You can use Sessie out of the box with the default settings or you can create your own custom settings.  See the example application example.js for an example implementation and /server/sessie-config-server.js and /client/sessie-config-client.js for basic configuation settings. Just set it and forget it!</p>
-          <p>Example sessie-config-server.js</p>
+          <p>You can use Sessie out of the box with the default settings or you can create your own custom settings.  See the example application example-client.js and example-server.js for an example implementation and /server/sessie-config-server.js and /client/sessie-config-client.js for basic configuation settings. Just set it and forget it!</p>
+          <h3>Example sessie-config-server.js</h3>
           Set Sessie.expires in days.<br/>
           <code>Sessie.expires = 3;</code><br/>
           Change the crypto key Sessie.encryption_password, this encrypts the secret session key id and secret unique phrase to create the session crypto key.<br/>
           <code>Sessie.encryption_password = "mak3th1sd1ff1cult";</code><br/>
           Set the Sessie.session_key_timeout in minutes.  This is how often the session crypto keys are regenerated.<br />
           <code>Sessie.session_key_timeout = 60;</code><br />
-
-          <p>Example sessie-config-client.js</p>
-          Set the Sessie.cookie_prefix to your application or site.
+          <h3>Example sessie-config-client.js</h3>
+          Set the Sessie.cookie_prefix to your application or site.<br />
           <code>Sessie.cookie_prefix = 'sessie'; </code><br/>
           Set the Sessie.cookie_seed to a unique id, function or environment variable.<br/>
           <code>Sessie.cookie_seed = navigator.userAgent;</code>
@@ -105,7 +110,7 @@
       <div class="span12">
         <h2>Set, Get and Delete</h2>
         <div class="well">
-          Feed Sessie and she stores items in the Loch. <b>Set</b> a name value pair. Use a name to <b>get</b> a value. To update a value use the same name and <b>set</b> it. If the name already exists the value gets updated. If the name is new, then a new item is stored.  <b>Delete</b> items by name.  See the example.js for basic usage.
+          Feed Sessie and she stores items in the Loch. <b>Set</b> a name value pair. Use a name to <b>get</b> a value. To update a value use the same name and <b>set</b> it. If the name already exists the values and options get updated. If the name is new, then a new item is stored.  <b>Delete</b> items by name.  See example-client.js and example-server.js for basic usage.
         </div>
       </div>
     </div>
@@ -114,7 +119,7 @@
       <div class="span12">
         <h2>The Session Id and Crypto Key</h2>
         <div class="well">
-          The reason for both a session id and session crypto key is to provide more authentication and validation of sessions.  First by matching each element during requests against the server side session records.  Second, the session crypto key is a SHA512 hmac of a unique secret key id and secret unique phrase unknown to the client and validated and authenticated on each request.  Fourth, you can specify how the unique secret phrase is created by providing a unique id, a function to call or some kind of unique environment variable.  Fifth, the session key can be configured to regenerate based on a period of minutes that have passed.  All of this combined helps prevent counterfeit or fraudulent sessions and session hijacking.
+          The reason for both a session id and session crypto key is to provide more authentication and validation of sessions.  First by matching each element during requests against the server side session records.  Second, the session crypto key is a SHA512 hmac of a unique secret key id and secret unique phrase unknown to the client and validated and authenticated on each request.  Fourth, you can specify how the unique secret phrase is created by providing a unique id, using their username or password, a captcha, a time stamp, a function call or some kind of unique environment variable.  Fifth, the session key can be configured to regenerate based on a period of minutes that have passed.  All of these in combination helps prevent counterfeit or fraudulent sessions and session hijacking.
         </div>
       </div>
     </div>
@@ -123,8 +128,7 @@
       <div class="span12">
         <h2>All your session are belong to us!</h2>
         <div class="well">
-          TODO do some as immutable and mutable and visibile and invisible<br />
-          Control all your session variable server side. In example.js the server has a timer that will randomly create, update and delete variables on your client session every 30 seconds. The example will not add more than 9 Loch items, but you can add as many elements as you like.  It will delete and change any of them.  It will also change the mutability and visibility of them. This provides you with an example of how client sessions can be controlled server side. Imagine an administrative control panel to control the user experience, timed work flows, logic based work flows and anything else you might want to do.
+          Control all your session variable server side. In example-server.js the server has a timer that will randomly create, update, delete, change meteorization, change mutability and change visibility of your session variables on your client session every 30 seconds. The example will not add more than 9 Loch items aka session variables, but you can add as many elements as you like.  It will delete and change any of them once there are more than 5 Loch session variables.  It will also change the meteorization, mutability and visibility of 30% of them. This provides you with an example of how client sessions can be controlled server side. Imagine an administrative control panel to control the user experience, timed work flows, logic based work flows and anything else you might want to do.
         </div>
       </div>
     </div>
@@ -133,8 +137,8 @@
       <div class="span12">
         <h2>Meteorize your session Loch data items</h2>
         <div class="well">
-          <p>Want your session's Loch data items to automatically be avialable as Meteor Session object data values? Then do absolutely nothing! Otherwise you have to turn it off when you create Loch data items.
-          <br /><code>{ meteorized:true } //default</code><br />OR</br><code>{ meteorized: false }</code></p>
+          <p>Want your session's Loch session variables to be automatically avialable as Meteor Session variables? Then just do nothing!  They are by default.  If you don't want them to be you must set them the meteorized option to false.</p>
+          <br /><p><code>{ meteorized:true }//default</code></p><p>OR</p><code>{ meteorized: false }</code>
         </div>
       </div>
     </div>
@@ -143,9 +147,8 @@
       <div class="span12">
         <h2>Mutable or immutable? That is the question!</h2>
         <div class="well">
-          <p>In order to provide a modicum of security, by default all Loch items are immutable and the client cannot change them.  Server side you can do whatever you want to sessions and session variables.  Mutability must be explicitly set as TRUE when you set Loch items.  Mutability is controlled by passing an options object when setting a Loch item.
-          <br /><code>{ mutable: false } //default</code><br />OR<br /><code>{ mutable:true }</code></p>
-          In example.js the server has a timer that creates some immutable session variables and change some session variables to immutable.  You will not be able to change them or delete them.  Mutability can be set on the server and not the client but obviously server side is a more realistic solution.
+          <p>Want to protect some session variables from being altered?  Then make them immutable! Once you do the client cannot alter them.  Server side you can do whatever you want to sessions and session variables.  Mutability must be explicitly set as FALSE when you set Loch session variable items.  By defaeult all session variables are mutable.  Mutability is controlled by passing an options object when setting a Loch session variable item.</p>
+          <br /><p><code>{ mutable:true }//default</code></p><p>OR</p><code>{ mutable: false } t</code></p>
         </div>
       </div>
     </div>
@@ -155,18 +158,51 @@
         <h2>Visible or invisible? Houdini would be proud!</h2>
         <div class="well">
           TODO
-          <p>Want to hold session variables but don't want them visible on the client?  No problem!  Set their visibility to false and they will not be published with the Loch collection.  You can still modify and alter them server and client side but they will not be visible client side.  Obviously, if you want to set or delete them client side and they are not visible you must already know their name.  The visible option can be used to hold Loch session data instead of deleting it.</p>
-          <br /><code>{ visible: true } //default</code><br />OR<br /><code>{ visible:false }</code></p>
-          In example.js the server has a timer that will update session variables and change their visibility from time to time.  So you may see session variables appear and disappear from time to time.  Visibility does not protect session variables, mutability does.
+          <p>Want to hold session variables but don't want them visible on the client?  No problem!  Set their visibility to false and they will not be published with the Loch collection.  You can still modify and alter them server and client side but they will not be visible client side.  Obviously, if you want to set or delete them client side and they are not visible you must already know their name.  The visible option can be used to hold Loch session variable data items instead of deleting it.</p>
+          <br /><p><code>{ visible: true } //default</code></p><p>OR</p><code>{ visible:false }</code>
         </div>
       </div>
     </div>
 
     <div class="row">
       <div class="span12">
+        <h2>Ness! A princess that looks after your shit.</h2>
+        <div class="well">
+          <p>TODO Ness stores collection names associated with a session. When a Sessie session is loaded, Ness autosubscribed to all NESS registered collections for the active session id.  Obviously your collections and their items are accessible directly but they are also accessible through Sessie's Ness feaures as well.</p>
+          <h3>Usage</h3>
+          <h4>Register the collection with Ness</h4>
+          <h4>Store the session id with the collection item as sessie_session_id.</h4>
+          <h4>Store a sessie_options object with the collection to implement rights such as mutability, visibility and meteorization.</h4>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="span12">
         <h2>Permanents did not die with the 70s!</h2>
         <div class="well">
-          TODO Out of the box, Sessie has semi-permanent session lifetimes based on session configuration parameters you control. Basically, if you set a session to expire and one day and the session is not refreshed by a visit in one day then Monster wrecks it.  But wait, you need session data to persist for your users so it is available when they log back in? But you don't want to be tied to a specific user registration and authorization system? No problem. Sit down and we will have your permanent done in seconds! Permanent sessions that is! Unless of course you want curls! Just register a permanent unique id with a session and it won't get expired, deleted, destroyed and the Monster won't wreck shit associated with any permanent sessions! If you register permanent sessions, you are in charge of housekeeping and clean up. Hint, just remove the permanent unique id from the session record and it will get wrecked by the Monster. For example, register an email, userid, username or pretty much any unique id associated with some kind of profile or account from an external system. No fuss, no muss and you can either feather your hair or keep it curled, we don't care, just rock your permanents like a supastar!
+          <p>TODO Out of the box, Sessie has semi-permanent session lifetimes based on session configuration parameters you control. Basically, if you set a session to expire and the session is not refreshed by a visit then Monster wrecks it.  But wait!  You need session data to persist for your users so it is available when they log back in. But you don't want to be tied to a specific user registration and authorization system? No problem. Sit down and we will have your permanent done in seconds! Permanent sessions that is! Unless of course you want curls!</p>
+
+          <p>Just register a permanent unique id with a session and it won't get expired, deleted, destroyed and the Monster won't wreck shit associated with any permanent sessions! If you register permanent sessions, you are in charge of housekeeping and clean up. Hint, just remove the permanent unique id from the session record and it will get wrecked by the Monster. For example, register an email, userid, username or pretty much any unique id associated with some kind of profile or account from an external system. No fuss, no muss and you can either feather your hair or keep it curled, we don't care, just rock your permanents like a supastar!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span12">
+        <h2>Monster safe your session objects!</h2>
+        <div class="well">
+          <p>TODO When the session expires the Monster will destroy all sessions variables and Ness collection items marked as belonging to the session unless you protect them from him.  Remember, you can protect an entire session, Loch session variables and Ness session collection items by getting a Permanent Session.</p>
+          <p>But you might not dig curly hair and didn't opt for a Permanent Session.  As well, you might want to have Ness mark collection items as session data but you don't want the Monster wrecking your collection item data when the session expires.   Well the good news is your non-Permanent Ness session collection items are Monster safe by default, but you can set them as unsafe and the Monster will wreck the shit out of them.</p>
+          <p>So, this is kinda like safe home base right?  Lets review because Monster's scare people and they tend to get confused when scared.</p>
+          <h3>To protect Ness collection items</h3>
+          <p>If you are using Permanent sessions then you don't need to do this.</p>
+          <p>As part of the sessie_session_options set monster_safe = true</p>
+          <p><code>{ monster_safe:true }//default</code></p><p>OR</p><p><code>{ monster_safe: false }</code></p>
+          <h3>To protect a Sessie session, Loch session variables and Ness session collection items.</h3>
+          Just give the Sessie session a Permanent! Monsters are naturally terrified of curly hair!  Assign a permanent id from your system to the session in the session options.
+          <p><code>{ permanent_id: }//default</code></p><p>OR</p><p><code>{ permanent_id: 'something_uniqie}</code></p>
+          </ol> 
         </div>
       </div>
     </div>
@@ -182,14 +218,7 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="span12">
-        <h2>Monster safe your session objects!</h2>
-        <div class="well">
-          TODO The Monster will clean up all session and session objects unless you protect them from him.  Remember, you can protect an entire session and it's objects by getting a permanent.  Did you get it?  Cool, now you have awesome curly hair, but we actually meant a permanent session.  Go read that section again!  But, you may have told Ness to mark collection items as session objects but you don't want the Monster wrecking all of your data.  Simply mark those Ness session collection items as monster safe and the Monster won't go wrecking them when he cleans house.Kinda like Home Base!
-        </div>
-      </div>
-    </div>
+    
 
     <div class="row">
       <div class="span12">
@@ -225,6 +254,11 @@
       </div>
       <div class="control-group">
         <div class="controls">
+          <input type="checkbox" id="inputMeteorized" name="inputMeteorized" value="true" checked="true"> Meteorized
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
           <input type="checkbox" id="inputMutable" name="inputMutable" value="true" checked="true"> Mutable
         </div>
       </div>
@@ -255,6 +289,13 @@
   <div class="span2">{{this.name}}</div><div class="span2">{{this.value}}</div>
 <div class="span2">{{#if this.options.mutable}}<i class="icon-trash"></i>{{/if}}</div>
   <br />
+</template>
+
+<template name="meteorsessions">
+  <h2>Meteorized! Meteor Session Variables</h2>
+  <div class="well">
+  {{#getsessions }}{{/getsessions}}
+  </div>
 </template>
 
 <template name="getlochform">
