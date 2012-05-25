@@ -21,3 +21,8 @@ body {
 .icon-trash:hover {
   background-color: red;
 }
+
+.nameanchor, .nameanchor:hover {
+  color: black;
+  text-decoration: none;
+}

@@ -33,15 +33,22 @@ if (Meteor.is_client) {
   Template.lochform.events = {
     'click #btnLoch': function (event) { 
       event.preventDefault();
+      event.stopPropagation();
       event.stopImmediatePropagation();
       console.log('lochform button clicked');
       var params = $('#loch-form').toJSON();
       console.log('params.inputName: ' + params.inputName);
       console.log('params.inputValue: ' + params.inputValue);
+      console.log('params.inputMutable: ' + params.inputMutable);
+      console.log('params.inputVisible: ' + params.inputVisible);
+      var options = {};
+      options.mutable = (params.inputMutable === "true")? true:false;
+      options.visible = (params.inputVisible === "true")? true:false;
+      console.log('options.mutable: ' + options.mutable);
       try{
         validateParams(params);
         console.log('after lochform validate params');
-        Sessie.setLochData(params.inputName, params.inputValue);
+        Sessie.setLochData(params.inputName, params.inputValue, options);
         $("#loch-form").reset();
         $("#inputName").focus();
       } catch(error) {
@@ -49,30 +56,11 @@ if (Meteor.is_client) {
       }
     }
   };
-
-  Template.lochform.events = {
-    'click #btnLoch': function (event) { 
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      console.log('lochform button clicked');
-      var params = $('#loch-form').toJSON();
-      console.log('params.inputName: ' + params.inputName);
-      console.log('params.inputValue: ' + params.inputValue);
-      try{
-        validateParams(params);
-        console.log('after lochform validate params');
-        Sessie.setLochData(params.inputName, params.inputValue);
-        $("#loch-form").reset();
-        $("#inputName").focus();
-      } catch(error) {
-        Alert.setAlert('ERROR', error.reason, 'alert-error', 'loch');
-      }
-    }
-  };
-  
+  //example of delete items from the front end
   Template.lochdata.events = {
     'click i': function(event){
       event.preventDefault();
+      event.stopPropagation();
       event.stopImmediatePropagation();
       console.log('i clicked');
       var curT = event.currentTarget; 
@@ -85,10 +73,11 @@ if (Meteor.is_client) {
       Sessie.deleteLochData(this.name);
     }
   }
-
+  //example of retrieving a session element
   Template.getlochform.events = {
     'click #btnGetLoch': function(event){
       event.preventDefault();
+      event.stopPropagation();
       event.stopImmediatePropagation();
       console.log('getlochform button clicked');
       var params = $('#getloch-form').toJSON();
@@ -112,10 +101,11 @@ if (Meteor.is_client) {
       }
     }
   };
-
+  //example of delete a session element
   Template.GetSessieLoch.events = {
     'click i': function(event){
       event.preventDefault();
+      event.stopPropagation();
       event.stopImmediatePropagation();
       console.log('i clicked');
       var curT = event.currentTarget; 

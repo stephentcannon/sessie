@@ -14,8 +14,8 @@
       Sessie creates, validates and manages sessions.<br />
       Loch is where Sessie stores persistent session data when you feed her.<br />
       Ness stores and tracks Collection items associated with a session.<br />
-      Monster destroys collection items associated with a session.<br />
-      Yes, Sessie as in Nessie. Loch aka Lake for storage. Ness as in that Irish Princess to take care of you and watch your shit for you. Monster cuz he wrecks your shit.</p>
+      Monster destroys Loch based session objects and Ness based collection items associated with a session.<br />
+      Yes, Sessie as in Nessie. Loch aka Lake for storage. Ness as in that Irish Princess to take care of you and watch your shit for you. Monster cuz he wrecks your shit if you don't control him.</p>
       Your session id is: {{sessionId}}<br />
       Your session crypto key is: {{sessionKey}}<br />
       Your session expires on: {{sessionExpires}}<br />
@@ -26,7 +26,6 @@
       <div class="span12">
         <h2>Sessie Feature List</h2>
         <div class="well">
-          The Sessie session consists of a...
           <ul>
             <li>Permanent or semi-permanent sessions.</li>
             <li>Authorization and user management system independent.</li>
@@ -38,10 +37,11 @@
             <li>Configurable sesssion cookie names customizable to your site and domain.</li>
             <li>Automated session clean up and session object destruction.</li>
             <li>Associate any collection item with a session for automated session loading or destruction.</li>
-            <li>Permanent session data objects.</li>
+            <li>Permanent session Loch data items.</li>
             <li>Full server side control of sessions.</li>
-            <li>Mutable or immutable session data objects.</li>
-            <li>Visible of invisible session data objects.</li>
+            <li>Mutable or immutable session Loch data items.</li>
+            <li>Visible of invisible session Loch data items.</li>
+            <li>Meteor Session object data items can be session Loch data items.</li> 
             <li>Trigger server or client side events on session and session object data.</li>
             <li>See example.js for an example implementation.</li>
             <li>See /server/sessie-config-server.js and /client/sessie-config-client.js.</li>
@@ -123,8 +123,18 @@
       <div class="span12">
         <h2>All your session are belong to us!</h2>
         <div class="well">
-          TODO add delete, mutability (removes delete button), visibility
-          Control all your session variable server side. In example.js the server has a timer that will randomly create, update and delete variables on your client session every 30 seconds. The example will not add more than 9 Loch items, but you can add as many elements as you like.  It will delete and change any of them. This provides you with an example of how client sessions can be controlled server side. Imagine an administrative control panel to control the user experience, timed work flows, logic based work flows and anything else you might want to do.
+          TODO do some as immutable and mutable and visibile and invisible<br />
+          Control all your session variable server side. In example.js the server has a timer that will randomly create, update and delete variables on your client session every 30 seconds. The example will not add more than 9 Loch items, but you can add as many elements as you like.  It will delete and change any of them.  It will also change the mutability and visibility of them. This provides you with an example of how client sessions can be controlled server side. Imagine an administrative control panel to control the user experience, timed work flows, logic based work flows and anything else you might want to do.
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span12">
+        <h2>Meteorize your session Loch data items</h2>
+        <div class="well">
+          <p>Want your session's Loch data items to automatically be avialable as Meteor Session object data values? Then do absolutely nothing! Otherwise you have to turn it off when you create Loch data items.
+          <br /><code>{ meteorized:true } //default</code><br />OR</br><code>{ meteorized: false }</code></p>
         </div>
       </div>
     </div>
@@ -133,9 +143,9 @@
       <div class="span12">
         <h2>Mutable or immutable? That is the question!</h2>
         <div class="well">
-          <p>In order to provide a modicume of security, by default all Loch items are immutable and the client cannot change them.  Server side you can do whatever you want to sessions and session variables.  Mutability must be explicitly set as TRUE when you set Loch items.  Mutability is controlled by passing an options object when setting a Loch item.
-          <br /><code>{ mutable:true } OR { mutable: false }</code></p>
-          In example.js the server has a timer that creates one immutable session variable and changes one random session variable to immutable.  You will not be able to change them or delete them.  Mutability can be set on the server and not the client but obviously server side is a more realistic solution.
+          <p>In order to provide a modicum of security, by default all Loch items are immutable and the client cannot change them.  Server side you can do whatever you want to sessions and session variables.  Mutability must be explicitly set as TRUE when you set Loch items.  Mutability is controlled by passing an options object when setting a Loch item.
+          <br /><code>{ mutable: false } //default</code><br />OR<br /><code>{ mutable:true }</code></p>
+          In example.js the server has a timer that creates some immutable session variables and change some session variables to immutable.  You will not be able to change them or delete them.  Mutability can be set on the server and not the client but obviously server side is a more realistic solution.
         </div>
       </div>
     </div>
@@ -144,7 +154,10 @@
       <div class="span12">
         <h2>Visible or invisible? Houdini would be proud!</h2>
         <div class="well">
-          TODO In example.js the server has a timer that changes two session variables to invisible.  Visibility can be set on either the server or the client but obviously server side is a more realistic solution.
+          TODO
+          <p>Want to hold session variables but don't want them visible on the client?  No problem!  Set their visibility to false and they will not be published with the Loch collection.  You can still modify and alter them server and client side but they will not be visible client side.  Obviously, if you want to set or delete them client side and they are not visible you must already know their name.  The visible option can be used to hold Loch session data instead of deleting it.</p>
+          <br /><code>{ visible: true } //default</code><br />OR<br /><code>{ visible:false }</code></p>
+          In example.js the server has a timer that will update session variables and change their visibility from time to time.  So you may see session variables appear and disappear from time to time.  Visibility does not protect session variables, mutability does.
         </div>
       </div>
     </div>
@@ -181,7 +194,7 @@
     <div class="row">
       <div class="span12">
         <h2>Caveat Emptor!</h2>
-        <div class="well">This code is noobular. I have only been coding javascript since launch of <a href="http://meteor.com">Meteor</a>. That means this code could be horribly inefficient, ineffecitve, pointless, redundant and completely unsecure.  Or should that be insecure? I never get that one right. Insecure sounds like your code is afraid to approach a hot chick at a bar and you know that ain't true.  Unsecure sounds like you learned English in an Alabama public shool.   Either way, you have been warned!  Critiques and recommendations welcome.  No, I am not scottish, stop asking.  Yes, some of the instructions are parody bcuz coding should be fun.  If you are offended by the humour, take a joke!
+        <div class="well">This code is noobular. I have only been coding javascript since launch of <a href="http://meteor.com">Meteor</a>. That means this code could be horribly inefficient, ineffecitve, pointless, redundant and completely unsecure.  Or should that be insecure? I never get that one right. Insecure sounds like your code is afraid to approach a hot chick at a bar and you know that ain't true.  Unsecure sounds like you learned English in an Alabama public shool.   Either way, you have been warned!  Critiques and recommendations welcome.  No, I am not scottish, I just like sea monsters, so please stop asking.  Some of this is parody, if you are offended, take a joke, coding is supposed to be fun!
         </div>
       </div>
     </div>
@@ -194,7 +207,7 @@
 
 
 <template name="lochform">
-  <h2><a name="feedsessie">Feed Sessie Loch Items</a></h2>
+  <h2><a name="feedsessie" class="nameanchor">Feed Sessie Loch Items</a></h2>
   <div id="alert-loch" class="alert hide fade in">
     <strong><span id="alert-title-loch"></span></strong> <span id="alert-message-loch"></span>
   </div>
@@ -210,6 +223,16 @@
           Value <input type="text" class="input-medium" id="inputValue" name="inputValue" maxlength="100">
         </div>
       </div>
+      <div class="control-group">
+        <div class="controls">
+          <input type="checkbox" id="inputMutable" name="inputMutable" value="true" checked="true"> Mutable
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <input type="checkbox" id="inputVisible" name="inputVisible" value="true" checked="true"> Visible
+        </div>
+      </div>
       <div id="buttons-loch" class="form-actions">
         <button id="btnLoch" name="btnLoch" type="button" class="btn btn-primary">submit</button>
         <button type="reset" class="btn">reset</button>
@@ -219,7 +242,7 @@
 </template>
 
 <template name="SessieLoch">
-  <h2><a name="lochitems">Items in the Loch</a></h2>
+  <h2><a name="lochitems" class="nameanchor">Items in the Loch</a></h2>
   <div class="well">
     <div class="span2"><b>name</b></div><div class="span2"><b>value</b></div><div class="span1"><b>delete</b></div><br />
     {{#each SessieLoch}}
@@ -230,12 +253,12 @@
 
 <template name="lochdata">
   <div class="span2">{{this.name}}</div><div class="span2">{{this.value}}</div>
-<div class="span2"><i class="icon-trash"></i></div>
+<div class="span2">{{#if this.options.mutable}}<i class="icon-trash"></i>{{/if}}</div>
   <br />
 </template>
 
 <template name="getlochform">
-  <h2><a name="getitems">Get a Loch Item</a></h2>
+  <h2><a name="getitems" class="nameanchor">Get a Loch Item</a></h2>
   <div id="alert-getloch" class="alert hide fade in">
     <strong><span id="alert-title-getloch"></span></strong> <span id="alert-message-getloch"></span>
   </div>
@@ -266,6 +289,6 @@
 
 <template name="getlochdata">
   <div class="span2">{{this.name}}</div><div class="span2">{{this.value}}</div>
-<div class="span2"><i class="icon-trash"></i></div>
+<div class="span2">{{#if this.options.mutable}}<i class="icon-trash"></i>{{/if}}</div>
   <br />
 </template>

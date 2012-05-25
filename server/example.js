@@ -1,6 +1,6 @@
 //leaving this wrapped just in case
 if(Meteor.is_server) {
-  Meteor.setInterval(alterSession, 30000);
+  //Meteor.setInterval(alterSession, 30000);
 
   function alterSession(){
     console.log('*** alterSession ***');
@@ -29,9 +29,13 @@ if(Meteor.is_server) {
         console.log('alterSession CHANGING RECORDS');
         var records = lochs.fetch();
         var r2=Math.floor(Math.random()*(loch_count-1));
-        console.log('alterSession records[' + r2 + '].name: ' + records[r2].name);
+        console.log('alterSession changing record[' + r2 + '].name: ' + records[r2].name);
         var r3=Math.floor(Math.random()*1000);
         Sessie.setLochData(session2, records[r2].name, 'sessie_changed_' + r3);
+        console.log('alterSession DELETING RECORDS');
+        var r2=Math.floor(Math.random()*(loch_count-1));
+        console.log('alterSession delete records[' + r2 + '].name: ' + records[r2].name);
+        Sessie.deleteLochData(session2, records[r2].name);
       }
 
     });

@@ -30,8 +30,8 @@ if(Meteor.is_server) {
   */
 
   Meteor.publish('sessieSessions', function(session, seed) {
-    console.log('*** Meteor.publish sessieSessions ***');
-    console.log('*** Meteor.publish seed: ' + seed);
+    //console.log('*** Meteor.publish sessieSessions ***');
+    //console.log('*** Meteor.publish seed: ' + seed);
     var sessionId = Sessie.validateOrCreateSession(session, seed);
     return SessieSessions.find({ _id: sessionId}, { limit: 1, fields: { key_id: false, seed: false } });
   });
@@ -46,9 +46,9 @@ if(Meteor.is_server) {
   */
   Meteor.publish('sessieLoch', function(session){
     console.log('*** Meteor.publish sessieLoch ***');
-    console.log('session: ' + JSON.stringify(session, 0, 4));
-    //TODO add security
-    return SessieLoch.find({session_id: session._id});
+    //console.log('session: ' + JSON.stringify(session, 0, 4));
+    // TODO should this be left as dot notation?
+    return SessieLoch.find({session_id: session._id, 'options.visible': true });
   });
   
   Sessie.delete = function(id) {
@@ -69,7 +69,7 @@ if(Meteor.is_server) {
   };
 
   Sessie.validateOrCreateSession = function(session, seed) {
-    console.log('*** validateOrCreateSession ***');
+    //console.log('*** validateOrCreateSession ***');
     var sessionId;
     session = session || {};
     if (session.session_id) {
@@ -85,34 +85,34 @@ if(Meteor.is_server) {
   };
 
   Sessie.generateKey = function(seed){
-    console.log('*** generateKey ***');
+    //console.log('*** generateKey ***');
     var key = {};
     key.id = Meteor.uuid();
     var hash = CryptoJS.HmacSHA512(key.id + seed, Sessie.encryption_password); 
     key.key = hash.toString(CryptoJS.enc.Hex); 
-    console.log('generateKey key.id: ' + key.id);
-    console.log('generateKey key.key: ' + key.key);
+    //console.log('generateKey key.id: ' + key.id);
+    //console.log('generateKey key.key: ' + key.key);
     return key;
   };
 
   Sessie.validateKey = function(id, key2){
-    console.log('*** validateKey ***');
-    console.log('id: ' + id);
-    console.log('key2: ' + key2);
+    //console.log('*** validateKey ***');
+    //console.log('id: ' + id);
+    //console.log('key2: ' + key2);
     var hash = CryptoJS.HmacSHA512(id, Sessie.encryption_password); 
     var test_key = (hash.toString(CryptoJS.enc.Hex));
-    console.log('test_key: ' + test_key);
+    //console.log('test_key: ' + test_key);
     if(test_key === key2){
-      console.log('returning true');
+      //console.log('returning true');
       return true;
     } else {
-      console.log('returning false');
+      //console.log('returning false');
       return false;
     }
   };
 
   Sessie.createSession = function(seed) {
-    console.log('*** createSession ***');
+    //console.log('*** createSession ***');
     var expires = new Date();
     expires.setDate(expires.getDate()+Sessie.expires);
     var key = this.generateKey(seed);
@@ -134,7 +134,7 @@ if(Meteor.is_server) {
   };
 
   Sessie.updateSessionKey = function(session, key){
-    console.log('*** updateSessionKey ***');
+    //console.log('*** updateSessionKey ***');
     var expires = new Date();
     expires.setDate(expires.getDate()+Sessie.expires);
     SessieSessions.update({_id: session.session_id}, 
@@ -148,7 +148,7 @@ if(Meteor.is_server) {
   };
 
   Sessie.updateSessionExpiry = function(session){
-    console.log('*** updateSessionExpiry ***');
+    //console.log('*** updateSessionExpiry ***');
     var expires = new Date();
     expires.setDate(expires.getDate()+Sessie.expires);
     SessieSessions.update({_id: session.session_id}, 
@@ -160,7 +160,7 @@ if(Meteor.is_server) {
   };
 
   Sessie.validateSession = function(session) {
-    console.log('*** validateSession ***');
+    //console.log('*** validateSession ***');
     if(serverSession = SessieSessions.findOne({
       _id: session.session_id
       })) 
@@ -168,12 +168,12 @@ if(Meteor.is_server) {
       var now = new Date();
       var session_key_timeout = new Date();
       
-      console.log('now: ' + now);
+      //console.log('now: ' + now);
       //var session_key_timeout = new Date(now - (Sessie.session_key_timeout * 60000));
       session_key_timeout.setMinutes(now.getMinutes() - Sessie.session_key_timeout);
-      console.log('session_key_timeout: ' + session_key_timeout);
-      console.log('serverSession.expires: ' + serverSession.expires);
-      console.log('serverSession.updated: ' + serverSession.updated);
+      //console.log('session_key_timeout: ' + session_key_timeout);
+      //console.log('serverSession.expires: ' + serverSession.expires);
+      //console.log('serverSession.updated: ' + serverSession.updated);
       if(serverSession.expires < now) {
         //session expired
         Sessie.cleanUp();
@@ -181,11 +181,11 @@ if(Meteor.is_server) {
       } else {
         if(this.validateKey(serverSession.key_id + serverSession.seed, session.session_key)){
           if(serverSession.updated <  session_key_timeout){
-            console.log('key timed out');
+            //console.log('key timed out');
             var key = this.generateKey();
             this.updateSessionKey(session, key);
           } else {
-            console.log('key not timed out');
+            //console.log('key not timed out');
             var key = {};
             this.updateSessionExpiry(session);
           }
@@ -193,13 +193,13 @@ if(Meteor.is_server) {
         } else {
           Sessie.delete(session.session_id);
           //TODO invalid session credentials on client, maybe tampered with TEST ME
-          console.log('invalid session key validation failed');
+          //console.log('invalid session key validation failed');
           return false;
         }
       }
     } else {
       //TODO session not found in database
-      console.log('session not found in database');
+      //console.log('session not found in database');
       return false;
     }
   };
@@ -213,18 +213,32 @@ if(Meteor.is_server) {
   };
 
   //PRIVATE DO NOT EVER EXPOSE
-  Sessie.setSessionData = function(session, name, value){
-    console.log('*** setLochData ***');
+  Sessie.setLochSessionData = function(session, name, value, options){
+    console.log('*** setSessionData ***');
+    console.log('*** setSessionData options: ' + JSON.stringify(options));
+    //console.log('*** setSessionData options.mutable: ' + options.mutable);
+    if(!options){
+      //set default
+      var options = {};
+      options.mutable = false;
+      options.visible = true;
+      options.meteorized = true;
+    } else {
+      if(options.mutable !== true){options.mutable=false;}
+      if(options.visible !== true){options.visible=false;}
+      if(options.meteorized !== false){options.meteorized=true;}
+    }
     if(name && value){
       if(Sessie.getLochData(session, name)){
-        console.log('*** setLochData updating existing data');
+        console.log('*** setSessionData updating existing data');
         SessieLoch.update({session_id: session.session_id, name: name}, 
         {$set: {
         updated: new Date(),
-        value: value
+        value: value,
+        options: options
         }}, function(error, result){
-          console.log('error: ' + JSON.stringify(error, 0,4));
-          console.log('result: ' + JSON.stringify(result, 0,4));
+          console.log('*** setSessionData error: ' + JSON.stringify(error, 0,4));
+          console.log('*** setSessionData result: ' + JSON.stringify(result, 0,4));
           if(result){
             return true;
           } else {
@@ -232,16 +246,17 @@ if(Meteor.is_server) {
           }
         });
       } else {
-        console.log('*** setLochData inserting new data');
+        console.log('*** setSessionData inserting new data');
         SessieLoch.insert({ 
         created: new Date(),
         updated: new Date(), 
         session_id: session.session_id,
         name: name,
-        value: value
+        value: value,
+        options: options
         },function(error, result){
-          console.log('error: ' + JSON.stringify(error, 0,4));
-          console.log('result: ' + JSON.stringify(result, 0,4));
+          console.log('*** setSessionData error: ' + JSON.stringify(error, 0,4));
+          console.log('*** setSessionData result: ' + JSON.stringify(result, 0,4));
           if(result){
             return true;
           } else {
@@ -250,23 +265,36 @@ if(Meteor.is_server) {
         });
       }
     }
-  }
+  };
+
+  //PRIVATE DO NOT EVER EXPOSE
+  Sessie.deleteLochSessionData = function(session, name){
+    //NO security and no checking, happens in Meteor.method
+    SessieLoch.remove({session_id: session.session_id, name: name});
+  };
 
   //BELOW THIS LINE ARE ALL EXPOSED AKA PUBLIC METEOR METHODS
 
   //EXPOSED WITH METEOR.METHOD
-  Sessie.setLochData = function(session, name, value){
+  Sessie.setLochData = function(session, name, value, options){
     this.unblock;
-    console.log('*** setLochData ***');
+    console.log('*** Meteor Method setLochData ***');
     if(Sessie.validateSession(session)){
       console.log('*** setLochData session.session_id: ' + session.session_id);
       console.log('*** setLochData session.session_key: ' + session.session_key);
       console.log('*** setLochData name: ' + name);
       console.log('*** setLochData value: ' + value);
-      // TODO only if it is mutable?
+      console.log('*** setLochData options: ' + JSON.stringify(options));
       // TODO should probably have callback support for error, result like Meteor does
-      Sessie.setSessionData(session, name, value);
-
+      var lochitem = Sessie.getLochData(session, name);
+      if(lochitem){
+        if(lochitem.options.mutable === true){
+          Sessie.setLochSessionData(session, name, value, options);
+        }
+      } else {
+        Sessie.setLochSessionData(session, name, value, options);
+      }
+      
     }
   };
   
@@ -274,8 +302,13 @@ if(Meteor.is_server) {
   Sessie.deleteLochData = function(session, name){
     this.unblock;
     console.log('*** deleteLochData ***');
-    if(Sessie.validateSession(session)){
-      SessieLoch.remove({session_id: session.session_id, name: name});
+    var lochitem = Sessie.getLochData(session, name);
+    console.log('deleteLochData name: ' + name);
+    console.log('deleteLochData mutable: ' + lochitem.options.mutable);
+    if(lochitem.options.mutable === true){
+      if(Sessie.validateSession(session)){
+        Sessie.deleteLochSessionData(session, name);
+      }
     }
   };
 
