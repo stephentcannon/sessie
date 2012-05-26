@@ -100,21 +100,21 @@ if(Meteor.is_client) {
     //console.log('setLochData stub options.meteorized: ' + options.meteorized);
   };
 
-  Sessie.registerNessCollection = function(name)
+  Sessie.addNessCollection = function(name)
   {
     this.unblock;
     var session = Sessie.getSession();
-    console.log('*** Sessie.registerNessCollection *** ');
+    console.log('*** Sessie.addNessCollection *** ');
 
 
   };
 
-  function registerNessCollection(session, name){
-    console.log('*** registerNessCollection stub ***');
-    console.log('deleteLochData stub session: ' + session);
-    console.log('deleteLochData stub session.session_id: ' + session.session_id);
-    console.log('deleteLochData stub session.session_key: ' + session.session_key);
-    console.log('deleteLochData stub name: ' + name);
+  function addNessCollection(session, name){
+    console.log('*** addNessCollection stub ***');
+    console.log('addNessCollection stub session: ' + session);
+    console.log('addNessCollection stub session.session_id: ' + session.session_id);
+    console.log('addNessCollection stub session.session_key: ' + session.session_key);
+    console.log('addNessCollection stub name: ' + name);
   }
 
   Sessie.deleteLochData = function(name){
@@ -248,7 +248,7 @@ if(Meteor.is_client) {
   Meteor.methods({
     setLochData: setLochData,
     deleteLochData: deleteLochData,
-    registerNessCollection: registerNessCollection
+    addNessCollection: addNessCollection
   });
 
 }

@@ -1,6 +1,6 @@
 //leaving this wrapped just in case
 if(Meteor.is_server) {
-  //Meteor.setInterval(alterSession, 5000);
+  //Meteor.setInterval(alterSession, 30000);
 
   function alterSession(){
     console.log('*** alterSession ***');

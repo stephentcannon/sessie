@@ -320,7 +320,7 @@ if(Meteor.is_server) {
   };
 
   //EXPOSED WITH METEOR.METHOD
-  Sessie.registerNessCollection = function(session, name){
+  Sessie.addNessCollection = function(session, name){
     this.unblock;
     console.log('*** registerNessCollection ***');
     return 'this be bullshit';
@@ -329,7 +329,7 @@ if(Meteor.is_server) {
   Meteor.methods({
     setLochData: Sessie.setLochData,
     deleteLochData: Sessie.deleteLochData,
-    //registerNessCollection: registerNessCollection
+    addNessCollection: Sessie.addNessCollection
   });
 
   

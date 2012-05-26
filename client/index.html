@@ -94,7 +94,7 @@
             <h3>Example sessie-config-server.js</h3>
             <h4>Sessie.expires</h4>
             Set this to the number of days you want the session to expire if the client doesn't return.  If a client returns their session expiration will get reset and extended by this value.<br/>
-            <code>Sessie.expires = 3;</code><br/>
+            <code>Sessie.expires = 1;</code><br/>
             <h4>Sessie.encryption_password</h4>
             This is the passphrase used to SHA512 hmac the combined secret session key id and secret unique phrase which results in a session crypto key aka session key.<br/>
             <code>Sessie.encryption_password = "mak3th1sd1ff1cult";</code><br/>
@@ -238,13 +238,13 @@
           <p>TODO When the session expires the Monster will destroy all sessions variables and Ness collection items marked as belonging to the session unless you protect them from him.  Remember, you can protect an entire session, Loch session variables and Ness session collection items by getting a Permanent Session.</p>
           <p>But you might not dig curly hair and didn't opt for a Permanent Session.  As well, you might want to have Ness mark collection items as session data but you don't want the Monster wrecking your collection item data when the session expires.   Well the good news is your non-Permanent Ness session collection items are Monster safe by default, but you can set them as unsafe and the Monster will wreck the shit out of them.</p>
           <p>So, this is kinda like safe home base right?  Lets review because Monster's scare people and they tend to get confused when scared.</p>
+          <h3>To protect a Sessie session, Loch session variables and Ness session collection items.</h3>
+          Just give the Sessie session a Permanent! Monsters are naturally terrified of curly hair!  Assign a permanent id from your system to the session in the session options.
+          <p><code>{ permanent_id: }//default</code></p><p>OR</p><p><code>{ permanent_id: 'something_uniqie}</code></p>
           <h3>To protect Ness collection items</h3>
           <p>If you are using Permanent sessions then you don't need to do this.</p>
           <p>As part of the sessie_session_options set monster_safe = true</p>
           <p><code>{ monster_safe:true }//default</code></p><p>OR</p><p><code>{ monster_safe: false }</code></p>
-          <h3>To protect a Sessie session, Loch session variables and Ness session collection items.</h3>
-          Just give the Sessie session a Permanent! Monsters are naturally terrified of curly hair!  Assign a permanent id from your system to the session in the session options.
-          <p><code>{ permanent_id: }//default</code></p><p>OR</p><p><code>{ permanent_id: 'something_uniqie}</code></p>
           </ol> 
         </div>
       </div>
