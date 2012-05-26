@@ -54,9 +54,30 @@ if(Meteor.is_client) {
     console.log('*** Sessie.setLochData ***');
     console.log('Sessie.setLochData session.session_id: ' + session.session_id);
     console.log('Sessie.setLochData session.session_key: ' + session.session_key);
-    console.log('setLochData stub options.mutable: ' + options.mutable);
-    console.log('setLochData stub options.visible: ' + options.visible);
-    console.log('setLochData stub options.meteorized: ' + options.meteorized);
+    console.log('Sessie.setLochData name: ' + name);
+    console.log('Sessie.setLochData value: ' + value);
+    console.log('Sessie.setLochData options.mutable: ' + options.mutable);
+    console.log('Sessie.setLochData options.visible: ' + options.visible);
+    console.log('Sessie.setLochData options.meteorized: ' + options.meteorized);
+    
+    var old_item = Sessie.getLochData(name);     
+    if(old_item){
+      if(old_item.value === value && 
+        _.isEqual(old_item.options, options) || 
+        old_item.options.mutable === false){
+        console.log('old item match or non-mutable');
+        return;
+      } else {
+        // TODO remove whole else should be fine
+        console.log('old item does NOT match');
+      }
+    } else {
+      // TODO remove whole else should be fine
+      console.log('no old_item exists');
+    }
+
+    console.log('CALLING METEOR CALL');
+
     Meteor.call('setLochData', session, name, value, options, function (error, result) { 
       if(result){
         console.log('Sessie.setLochData result: ' + JSON.stringify(result, 0,4));
@@ -64,6 +85,7 @@ if(Meteor.is_client) {
         console.log('Sessie.setLochData error: ' + JSON.stringify(error, 0,4));
       }
     });
+
   };
 
   function setLochData(session, name, value, options){
@@ -98,13 +120,13 @@ if(Meteor.is_client) {
   Sessie.deleteLochData = function(name){
     this.unblock;
     var session = Sessie.getSession();
-    console.log('*** Sessie.deleteLochData ***');
+    //console.log('*** Sessie.deleteLochData ***');
     //console.log('Sessie.deleteLochData session.session_id: ' + session.session_id);
     //console.log('Sessie.deleteLochData session.session_key: ' + session.session_key);
     Session.set(name, undefined);
     Meteor.call('deleteLochData', session, name, function (error, result) { 
       if(result){
-        console.log('Sessie.setLochData result: ' + JSON.stringify(result, 0,4));
+        //console.log('Sessie.setLochData result: ' + JSON.stringify(result, 0,4));
         // TODO this is not optimal
         
       } else {
@@ -122,9 +144,13 @@ if(Meteor.is_client) {
   }
   
   Sessie.getLochData = function(name){
-    //console.log('*** in Sessie.getLochData ***');
-    //console.log('Sessie.getLochData name: ' + name);
-    return SessieLoch.find({session_id: Sessie.getSessionId(), name: name});
+    console.log('*** in Sessie.getLochData ***');
+    console.log('Sessie.getLochData name: ' + name);
+    // TODO this should be a findOne but it errors?
+    //return SessieLoch.find({name: name}); OLD
+    var item = SessieLoch.findOne({name: name});
+    //var item = SessieLoch.find({name: name}).fetch()[0];
+    return item;// && item.name;
   }
 
   Meteor.startup(function () {
@@ -146,6 +172,7 @@ if(Meteor.is_client) {
           // TODO do we really need a Meteor Session variable for this?
           Session.set(Sessie.cookie_prefix + "_session_key", clientSession.key);
           Meteor.subscribe("sessieLoch", clientSession);
+          /* 5.25. 5:28 PM trading out for an observe
           var clientLoch = SessieLoch.find();
           if(clientLoch){
             //console.log('Meteor autosubscribe Sessie.Loch.find if(clientLoch)');
@@ -159,13 +186,60 @@ if(Meteor.is_client) {
                 //console.log(Session);
               }
             });
-          }
+          }*/
         } else {
           //console.log('deleting session cookies');
           Sessie.setCookie(Sessie.cookie_prefix + "_session_id", '', 0);
           Session.set(Sessie.cookie_prefix + "_session_id", undefined)
           Sessie.setCookie(Sessie.cookie_prefix + "_session_key", '', 0);
           Session.set(Sessie.cookie_prefix + "_session_key", undefined)
+        }
+      }
+    });
+    // TODO not sure if this belongs here
+    var clientLoch = SessieLoch.find();
+    if(clientLoch){
+      if(clientLoch){
+        //console.log('Meteor startup Sessie.Loch.find if(clientLoch)');
+        clientLoch.forEach(function (lochitem) {
+          //console.log('lochitem: ' + JSON.stringify(lochitem));
+          if(lochitem.options.meteorized){
+            console.log('lochitem.name: ' + lochitem.name);
+            console.log('lochitem.value: ' + lochitem.value);
+            console.log('options.meteorized: ' + lochitem.options.meteorized);
+            console.log(Session);
+            Session.set(lochitem.name, lochitem.value);
+          }
+        });
+      }
+    }
+    var handle = clientLoch.observe({
+      added: function (item) {
+        //console.log('item.options.meteorized: ' + item.options.meteorized);
+        //console.log('observe added called for: ' + JSON.stringify(item));
+        if(item.options.meteorized == true){
+          //console.log('observe added item: ' + JSON.stringify(item));
+          Session.set(item.name, item.value)
+        }
+      },
+      changed: function (item) {
+        //console.log('item.options.meteorized: ' + item.options.meteorized);      
+        //console.log('observe changed called for item: ' + JSON.stringify(item));
+        if(item.options.meteorized == true){
+          //console.log('observe changed item: ' + JSON.stringify(item));
+          Session.set(item.name, item.value);
+        } else if (Session.get(item.name)){
+          Session.set(item.name, undefined);
+        }
+      },
+      removed: function (item) {
+        //console.log('item.options.meteorized: ' + item.options.meteorized);
+        //console.log('observe removed called for item: ' + JSON.stringify(item));
+        if(item.options.meteorized == true){
+          //console.log('observe removed item: ' + JSON.stringify(item));
+          Session.set(item.name, undefined)
+        } else if (Session.get(item.name)){
+          Session.set(item.name, undefined);
         }
       }
     });

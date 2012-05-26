@@ -288,11 +288,17 @@ if(Meteor.is_server) {
       console.log('*** setLochData value: ' + value);
       console.log('*** setLochData options: ' + JSON.stringify(options));
       // TODO should probably have callback support for error, result like Meteor does
-      var lochitem = Sessie.getLochData(session, name);
-      if(lochitem){
-        if(lochitem.options.mutable === true){
+      var old_item  = Sessie.getLochData(session, name);
+      if(old_item ){
+        if(old_item.value === value && 
+        _.isEqual(old_item.options, options) || 
+        old_item.options.mutable === false){
+          console.log('value and option duplicate or non-mutable just return');
+          return;
+        }else{
           Sessie.setLochSessionData(session, name, value, options);
         }
+
       } else {
         Sessie.setLochSessionData(session, name, value, options);
       }

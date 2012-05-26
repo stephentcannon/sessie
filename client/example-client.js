@@ -132,11 +132,20 @@ if (Meteor.is_client) {
   }
 
   Template.GetSessieLoch.GetSessieLoch = function(){
-    //console.log('*** Template.GetSessieLoch.GetSessieLoch ***');
+    console.log('*** Template.GetSessieLoch.GetSessieLoch ***');
     //console.log('session.get("getSessieLochSearchValue"): ' + Session.get("getSessieLochSearchValue"));
-    x =  Sessie.getLochData(Session.get("getSessieLochSearchValue"));
-    //console.log(x);
-    return Sessie.getLochData(Session.get("getSessieLochSearchValue"));
+    var obj = Sessie.getLochData(Session.get("getSessieLochSearchValue"));
+    //console.log('obj: ' + JSON.stringify(obj));
+    // i think this might work too return obj.name && obj.value;
+    if(obj){
+      console.log('obj.name: ' + obj.name);
+      console.log('obj.value: ' + obj.value);
+      //return JSON.stringify(obj);// && obj.name && obj.value;
+      return obj;
+    } else {
+      return null;
+    }
+    
   }
 
   Template.SessieLoch.SessieLoch = function() {
@@ -144,28 +153,16 @@ if (Meteor.is_client) {
     return Sessie.getLoch();
   };
 
-  // TODO explore this
-  Template.meteorsessions.sessions = function(){
-    //console.log('Template.meteorsessions.sessions');
-    //console.log('Session.keys: ' + JSON.stringify(Session.keys,0,4));
-    return Session.keys;
-  }
-
-  // TODO used this instead of next method bcuz could not figure out how to return session
-  Handlebars.registerHelper('getsessions', function() {
-    var a = '<div class="span2"><b>name</b></div><div class="span2"><b>value</b></div><br />';
-    _.each(Session.keys, function(element, index, list){
-      // TODO don't show anything with session_id and session_key in it
-      // this is really ugly code
-      if(index.indexOf('session_id') == -1 && 
-        index.indexOf('session_key') == -1 &&
-        index.indexOf('getSessieLochSearchValue') == -1){
-        Session.get(index);
-        a = a + '<div class="span2">' + index + '</div>' + 
-        '<div class="span2">' + element + '</div><div class="span2"></div><br />';
+  Template.meteorsessionvars.session = function () {
+    map = []
+    for (prop in Session.keys) {
+       if(prop.indexOf('session_id') == -1 && 
+        prop.indexOf('session_key') == -1 &&
+        prop.indexOf('getSessieLochSearchValue') == -1){
+        map.push({key: prop, value: Session.get(prop)})
       }
-    });
-    return a;
-  });
+    }
+    return map
+  }
 
 }

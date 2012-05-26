@@ -10,12 +10,11 @@
   <div class="span12">
     <div class="hero-unit">
     <h1 id="title">SESSIE</h1>
-      <p>Sessie is an <i>attempt</i> at a simple and quite weird server side persistent session management package for Meteor.<br />
+      <p>Sessie is an <i>attempt</i> at a simple server side persistent session management package for Meteor.<br />It is a bit odd, weird and unique.  It is very noobular.<br />
       Sessie creates, validates and manages sessions.<br />
       Loch is where Sessie stores persistent session data when you feed her.<br />
-      Ness stores and tracks Collection items associated with a session.<br />
-      Monster destroys Loch based session objects and Ness based collection items associated with a session.<br />
-      Yes, Sessie as in Nessie. Loch aka Lake for storage. Ness as in that Irish Princess to take care of you and watch your shit for you. Monster cuz he wrecks your shit if you don't control him.</p>
+      Ness stores and tracks external Collection items associated with a session.<br />
+      Monster destroys Sessie sessions, Loch session variables and Ness session collection items.</p>
       Your session id is: {{sessionId}}<br />
       Your session crypto key is: {{sessionKey}}<br />
       Your session expires on: {{sessionExpires}}<br />
@@ -34,18 +33,19 @@
             <li>Automated session creation, session validation and session crypto key authentication and validation.</li>
             <li>Automated session expiration configurable in days.</li>
             <li>Automated session crypto key regeneration configurable in minutes.</li>
-            <li>Configurable sesssion cookie names customizable to your site and domain.</li>
+            <li>Configurable session cookie names customizable to your site and domain.</li>
             <li>Automated session clean up and session variable destruction.</li>
             <li>Associate any collection item with a session for automated session loading or destruction.</li>
-            <li>Permanent session variables aka Loch items.</li>
+            <li>Semi-permanent or permanent session variables aka Loch items.</li>
             <li>Full server side control of sessions and session variables.</li>
             <li>Mutable or immutable session variables aka Loch items.</li>
             <li>Visible of invisible session variables aka Loch items.</li>
             <li>Meteor Session variables can be populated by session Loch variables aka Meteorized.</li> 
             <li>TODO Trigger server or client side events on session and session variables.</li>
+            <li>Simple interface! 3 client side and 3 server side functions!</li>
             <li>See example-client.js and example-server.js for both client and server side example implementations.</li>
-            <li>See /server/sessie-config-server.js and /client/sessie-config-client.js.</li>
-            <li>Just set it and forget it!</li>
+            <li>EZ configuration! Just set it and forget it!</li>
+            <li>See /server/sessie-config-server.js and /client/sessie-config-client.js. for configuration</li>
           </ul>
         </div>
       </div>
@@ -55,7 +55,7 @@
       <div class="span12">
         <h2>Quick spin</h2>
         <div class="well">
-          Add a Loch Item in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Use the <a href="#getitems">Get a Loch Item</a>. Change the Loch Item by submitting an existing Loch Item name with a different values in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Do it a few times. Use the delete icon in the <a href="#lochitems">Items in your Loch</a> table to delete session items. <b>Warning!</b> In this example demonstration, Sessie will add, update, delete, change mutability and change visibility of items every 30 seconds to demonstrate server side control of the session. So don't be alarmed if your session variables change without your interaction.  See example-client.js and example-servers.hs for some ways you could use Sessie server side.
+          Add a Loch Item in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Use the <a href="#getitems">Get a Loch Item</a>. Change the Loch Item by submitting an existing Loch Item name with a different values in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Do it a few times. Use the delete icon in the <a href="#lochitems">Items in your Loch</a> table to delete session items. <b>Warning!</b> In this example demonstration, Sessie will add, update, delete, change mutability and change visibility of items every 30 seconds to demonstrate server side control of the session. So don't be alarmed if your session variables change without your interaction.  See example-client.js and example-servers.js for some ways you could use Sessie.
         </div>
       </div>
     </div>
@@ -65,14 +65,13 @@
       <div class="span8">{{> SessieLoch}}</div>
     </div>
 
-
     <div class="row">
       <div class="span4">{{> getlochform}}</div>
       <div class="span8">{{> GetSessieLoch}}</div>
     </div>
 
     <div class="row">
-      <div class="span12">{{> meteorsessions }}</div>
+      <div class="span12">{{> meteorsessionvars }}</div>
     </div>
 
     <div class="row">
@@ -81,7 +80,7 @@
         <div class="well">
           Sessie comes packaged inside this example applicaton.  Inside of the example application you will see a /sessie/ sub-directory.  You will know you have the correct sub-directory because there is a package.json file in it and three directories (server, client and lib).  Copy that sessie directory to your Meteor packages directory.  This will probably be at /usr/lib/meteor/packages.<br/>Then from your project directory type: <br />
           <code>meteor add sessie</code><br />
-          Create a /client/config-sessie-client.js and a /server/config-sessie-server.js in your project and set your own configuration settings.  DO NOT ever use <code>is_server</code> and <code>is_client</code> to protect your configuration settings.  Always use the /server/ and /client/ directories in your project to protect these configuration files.  Files not put in the /server/ directory will get pushed to the client and your configuration settings will be publicly visible even if they are surrouded by <code>is_server</code>.  Example files are included with this example application that comes with the Sessie project.
+          Create a /client/config-sessie-client.js and a /server/config-sessie-server.js in your project and set your own configuration settings.  DO NOT ever use <code>is_server</code> and <code>is_client</code> to protect your configuration settings.  Always use the /server/ and /client/ directories in your project to protect these configuration files.  Files not put in the /server/ directory will get pushed to the client and your configuration settings will be publicly visible even if they are surrounded by <code>is_server</code>.  Example files are included with this example application that comes with the Sessie project.
         </div>
       </div>
     </div>
@@ -91,18 +90,27 @@
         <h2>Configuration: Set it and forget it!</h2>
         <div class="well">
           <p>You can use Sessie out of the box with the default settings or you can create your own custom settings.  See the example application example-client.js and example-server.js for an example implementation and /server/sessie-config-server.js and /client/sessie-config-client.js for basic configuation settings. Just set it and forget it!</p>
-          <h3>Example sessie-config-server.js</h3>
-          Set Sessie.expires in days.<br/>
-          <code>Sessie.expires = 3;</code><br/>
-          Change the crypto key Sessie.encryption_password, this encrypts the secret session key id and secret unique phrase to create the session crypto key.<br/>
-          <code>Sessie.encryption_password = "mak3th1sd1ff1cult";</code><br/>
-          Set the Sessie.session_key_timeout in minutes.  This is how often the session crypto keys are regenerated.<br />
-          <code>Sessie.session_key_timeout = 60;</code><br />
-          <h3>Example sessie-config-client.js</h3>
-          Set the Sessie.cookie_prefix to your application or site.<br />
-          <code>Sessie.cookie_prefix = 'sessie'; </code><br/>
-          Set the Sessie.cookie_seed to a unique id, function or environment variable.<br/>
-          <code>Sessie.cookie_seed = navigator.userAgent;</code>
+          <div class="well">
+            <h3>Example sessie-config-server.js</h3>
+            <h4>Sessie.expires</h4>
+            Set this to the number of days you want the session to expire if the client doesn't return.  If a client returns their session expiration will get reset and extended by this value.<br/>
+            <code>Sessie.expires = 3;</code><br/>
+            <h4>Sessie.encryption_password</h4>
+            This is the passphrase used to SHA512 hmac the combined secret session key id and secret unique phrase which results in a session crypto key aka session key.<br/>
+            <code>Sessie.encryption_password = "mak3th1sd1ff1cult";</code><br/>
+            <h4>Sessie.session_key_timeout</h4>
+            This is how often the session crypto keys are regenerated. This is set in minutes.<br />
+            <code>Sessie.session_key_timeout = 60;</code>
+          </div>
+          <div class="well">
+            <h3>Example sessie-config-client.js</h3>
+            <h4>Sessie.cookie_prefix </h4>
+            Set the Sessie.cookie_prefix to your application or site name if you want.<br />
+            <code>Sessie.cookie_prefix = 'sessie'; </code><br/>
+            <h4>Sessie.cookie_seed</h4>
+            Set the Sessie.cookie_seed to a unique id, function or environment variable. This is used to seed the crypto key along with the secret key id server side.<br/>
+            <code>Sessie.cookie_seed = navigator.userAgent;</code>
+          </div>
         </div>
       </div>
     </div>
@@ -110,7 +118,42 @@
       <div class="span12">
         <h2>Set, Get and Delete</h2>
         <div class="well">
-          Feed Sessie and she stores items in the Loch. <b>Set</b> a name value pair. Use a name to <b>get</b> a value. To update a value use the same name and <b>set</b> it. If the name already exists the values and options get updated. If the name is new, then a new item is stored.  <b>Delete</b> items by name.  See example-client.js and example-server.js for basic usage.
+          <p>Feed Sessie and she stores items in the Loch. <b>Set</b> a name value pair. Use a name to <b>get</b> a value. To update a value use the same name and <b>set</b> it. If the name already exists the values and options get updated. If the name is new, then a new item is stored.  <b>Delete</b> items by name.  See example-client.js and example-server.js for basic usage.</p>
+          <div class="well">
+            <h2>Client Side Methods</h2>
+            <p>These are the client side methods that can be called and will operate on the current active client session.</p>
+            <h3>Sessie.getLochData(name)</h3>
+            <p>Returns a Loch session variable for the active client session.</p>
+
+            <h3>Sessie.setLochData(name, value, options)</h3>
+            <p>Sets a Loch session variable for the active client session.</p>
+
+            <h3>Sessie.deleteLochData(name)</h3>
+            <p>Deletes a Loch session for the active client session if mutability is set to true.</p>
+          </div>
+          <div class="well">
+            <h2>Server Side Methods</h2>
+            <p>These are server side only methods that cannot be reached by client side methods.</p>
+            
+            <h3>Sessie.getLochData(session, name)</h3>
+            <p>Returns a Loch session variable.  Session = {session.session_id and session.session_key}</p>
+
+            <h3>Sessie.setLochSessionData(session, name, value, options)</h3>
+            <p>Sets Loch session variables.  Session = {session.session_id and session.session_key}.</p>
+
+            <h3>Sessie.deleteLochSessionData(session, name)</h3>
+            <p>Deletes Loch session variables.  Session = {session.session_id and session.session_key}.</p>
+          </div>
+          <div class="well">
+            <h2>Options</h2>
+            <ul>
+              <li>mutable: boolean (default true)</li>
+              <li>visible: boolean (default true)</li>
+              <li>meteorized: boolean (default true)</li>
+            </ul>
+            <h4>Options example</h4>
+            <p><code>var options = {};<br />options.mutable = true;<br />options.visible = true;<br />options.meteorized = true;</code></p>
+          </div>
         </div>
       </div>
     </div>
@@ -278,7 +321,10 @@
 <template name="SessieLoch">
   <h2><a name="lochitems" class="nameanchor">Items in the Loch</a></h2>
   <div class="well">
-    <div class="span2"><b>name</b></div><div class="span2"><b>value</b></div><div class="span1"><b>delete</b></div><br />
+    <div class="span2"><b>name</b></div>
+    <div class="span2"><b>value</b></div>
+    <div class="span2"><b>meteorized</b></div>
+    <div class="span1"><b>delete</b></div><br />
     {{#each SessieLoch}}
       {{> lochdata}}
     {{/each}}
@@ -286,17 +332,13 @@
 </template>
 
 <template name="lochdata">
-  <div class="span2">{{this.name}}</div><div class="span2">{{this.value}}</div>
-<div class="span2">{{#if this.options.mutable}}<i class="icon-trash"></i>{{/if}}</div>
+  <div class="span2">{{this.name}}</div>
+  <div class="span2">{{this.value}}</div>
+  <div class="span2">{{this.options.meteorized}}</div>
+  <div class="span1">{{#if this.options.mutable}}<i class="icon-trash"></i>{{/if}}</div>
   <br />
 </template>
 
-<template name="meteorsessions">
-  <h2>Meteorized! Meteor Session Variables</h2>
-  <div class="well">
-  {{#getsessions }}{{/getsessions}}
-  </div>
-</template>
 
 <template name="getlochform">
   <h2><a name="getitems" class="nameanchor">Get a Loch Item</a></h2>
@@ -321,15 +363,32 @@
 <template name="GetSessieLoch">
   <h2>Item retrieved from the Loch</h2>
   <div class="well">
-    <div class="span2"><b>name</b></div><div class="span2"><b>value</b></div><div class="span2"><b>delete</b></div><br />
-    {{#each GetSessieLoch}}
-      {{> getlochdata}}
-    {{/each}}
+    <div class="span2"><b>name</b></div>
+    <div class="span2"><b>value</b></div>
+    <div class="span2"><b>meteorized</b></div>
+    <div class="span1"><b>delete</b></div><br />
+    {{#if GetSessieLoch}}
+      {{#with GetSessieLoch}}      
+        {{> getlochdata}}
+      {{/with}}
+    {{/if}}
   </div>
 </template>
 
 <template name="getlochdata">
-  <div class="span2">{{this.name}}</div><div class="span2">{{this.value}}</div>
-<div class="span2">{{#if this.options.mutable}}<i class="icon-trash"></i>{{/if}}</div>
+  <div class="span2">{{this.name}}</div>
+  <div class="span2">{{this.value}}</div>
+  <div class="span2">{{this.options.meteorized}}</div>
+  <div class="span1">{{#if this.options.mutable}}<i class="icon-trash"></i>{{/if}}</div>
   <br />
+</template>
+
+<template name="meteorsessionvars">
+  <h2>Meteorized! Meteor Session Variables</h2>
+  <div class="well">
+    <div class="span2"><b>name</b></div><div class="span2"><b>value</b></div><br />
+    {{#each session}}
+      <div class="span2">{{key}}</div><div class="span2">{{value}}</div><br />
+    {{/each}}
+  </div>
 </template>
