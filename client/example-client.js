@@ -9,11 +9,17 @@ if (Meteor.is_client) {
   });
 
   Template.main.sessionId = function () {
-    return Sessie.getSessionId();
+    var session = SessieSessions.findOne();
+    if (session) {
+      return session._id;
+    }
   };
 
   Template.main.sessionKey = function () {
-    return Sessie.getSessionKey();
+    var session = SessieSessions.findOne();
+    if (session) {
+      return session.key;
+    }
   };
   
   Template.main.sessionCreated = function() {

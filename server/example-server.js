@@ -138,7 +138,7 @@ if(Meteor.is_server) {
 
   unsetPermanence = function(session){
     //normally you would not wire this up to the front end
-    //this is a demo
+    //this is just a demo
     this.unblock();
     console.log('*** example-server.js unsetPermanence ***');
     Sessie.unsetPermanent(session);

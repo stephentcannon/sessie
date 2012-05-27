@@ -47,9 +47,10 @@ if(Meteor.is_server) {
   */
   Meteor.publish('sessieLoch', function(session){
     console.log('*** Meteor.publish sessieLoch ***');
-    //console.log('session: ' + JSON.stringify(session, 0, 4));
+    console.log('*** Meteor.publish sessieLoch session: ' + JSON.stringify(session, 0, 4));
     // TODO should this be left as dot notation?
-    return SessieLoch.find({session_id: session._id, 'options.visible': true });
+    //return SessieLoch.find({session_id: session._id, 'options.visible': true });
+    return SessieLoch.find({session_id: session.session_id, 'options.visible': true });
   });
   
   Sessie.delete = function(id) {
@@ -76,10 +77,6 @@ if(Meteor.is_server) {
     var sessionId;
     session = session || {};
     if (session.session_id) {
-      var load_session;
-      // TODO could we just check the active session for this?
-      // like if(session.load_session)
-      //if(load_session = this.loadPermanentSession(session)){
       if(session.load_session){
         console.log('*** validateOrCreateSession found session.load_session: ' + JSON.stringify(session.load_session));
         sessionId = load_session.session_id;
@@ -202,6 +199,8 @@ if(Meteor.is_server) {
       //we believe that permanent id is the only thing to update
       console.log('validateSession serverSession.permanent_id: ' + serverSession.permanent_id);
       session.permanent_id = serverSession.permanent_id;
+      console.log('validateSession serverSession.load_session: ' + serverSession.load_session);
+      session.load_session = serverSession.load_session;
       //console.log('now: ' + now);
       //var session_key_timeout = new Date(now - (Sessie.session_key_timeout * 60000));
       session_key_timeout.setMinutes(now.getMinutes() - Sessie.session_key_timeout);

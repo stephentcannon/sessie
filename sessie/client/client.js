@@ -29,12 +29,26 @@ if(Meteor.is_client) {
       }
   };
   
-  Sessie.getSessionId = function() {
+  Sessie.getCookieSessionId = function() {
     return Sessie.getCookie(Sessie.cookie_prefix + "_session_id");
   };
 
-  Sessie.getSessionKey = function() {
+  Sessie.getSessionId = function() {
+    var session = SessieSessions.findOne();
+    if (session) {
+      return session._id;
+    }
+  };
+
+  Sessie.getCookieSessionKey = function() {
     return Sessie.getCookie(Sessie.cookie_prefix + "_session_key");
+  };
+
+  Sessie.getSessionKey = function() {
+    var session = SessieSessions.findOne();
+    if (session) {
+      return session.key;
+    }
   };
 
   Sessie.getSessionCreated = function(){
@@ -74,8 +88,8 @@ if(Meteor.is_client) {
 
   Sessie.getSession = function(){
     var session = {};
-    session.session_id = Sessie.getSessionId();  //must come from cookie in case preexisting, sessionr._id; //this could be a problem
-    session.session_key = Sessie.getSessionKey(); //must come from cookie in case preexisting, sessionr._key; //this could be a problem
+    session.session_id = Sessie.getCookieSessionId();  //must come from cookie in case preexisting, sessionr._id; //this could be a problem
+    session.session_key = Sessie.getCookieSessionKey(); //must come from cookie in case preexisting, sessionr._key; //this could be a problem
     session.created = Sessie.getSessionCreated ();
     session.expires = Sessie.getSessionExpires();
     session.expiry = Sessie.getSessionExpiry();
@@ -190,12 +204,26 @@ if(Meteor.is_client) {
   }
 
   Meteor.startup(function () {
-    Meteor.subscribe("sessieSessions", Sessie.getSession(), Sessie.cookie_seed);
+    //TODO gotta put the check up here before subscribing to the session!
 
+    Meteor.subscribe("sessieSessions", Sessie.getSession(), Sessie.cookie_seed);
+    console.log('Sessie client.js Meteor.startup');
     Meteor.autosubscribe(function() {
+      console.log('Sessie client.js Meteor.autosubscribe');
       var clientSession = SessieSessions.findOne();
       if (clientSession) {
-        if (clientSession._id && clientSession.key && clientSession.key) {
+        console.log('Sessie client.js clientSession.load_session: ' + JSON.stringify(clientSession.load_session));
+        if(clientSession.load_session){
+          //console.log('Sessie client.js we have a .load_session');
+          //console.log('clientSession._id: ' + clientSession.load_session.session_id);
+          //console.log('clientSession.key: ' + clientSession.load_session.session_key);
+          //console.log('clientSession.expiry: ' + clientSession.load_session.expiry);
+          Sessie.setCookie(Sessie.cookie_prefix + "_session_id", clientSession.load_session.session_id, clientSession.load_session.expiry);
+          Session.set(Sessie.cookie_prefix + "_session_id", clientSession.load_session.session_id);
+          Sessie.setCookie(Sessie.cookie_prefix + "_session_key", clientSession.load_session.session_key, clientSession.load_session.expiry);
+          Session.set(Sessie.cookie_prefix + "_session_key", clientSession.load_session.session_key);
+          Meteor.subscribe("sessieLoch", clientSession.load_session);
+        }else if (clientSession._id && clientSession.key && clientSession.key) {
           //console.log('setting session cookies');
           //console.log('clientSession._id: ' + clientSession._id);
           //console.log('clientSession.key: ' + clientSession.key);
@@ -207,7 +235,8 @@ if(Meteor.is_client) {
           Sessie.setCookie(Sessie.cookie_prefix + "_session_key", clientSession.key, clientSession.expiry);
           // TODO do we really need a Meteor Session variable for this?
           Session.set(Sessie.cookie_prefix + "_session_key", clientSession.key);
-          Meteor.subscribe("sessieLoch", clientSession);
+          Meteor.subscribe("sessieLoch", Sessie.getSession());
+          //Meteor.subscribe("sessieLoch", clientSession);
           /* 5.25. 5:28 PM trading out for an observe
           var clientLoch = SessieLoch.find();
           if(clientLoch){
