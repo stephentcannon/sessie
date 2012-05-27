@@ -192,8 +192,6 @@ if(Meteor.is_client) {
   Meteor.startup(function () {
     Meteor.subscribe("sessieSessions", Sessie.getSession(), Sessie.cookie_seed);
     
-    console.log('startup up after subscribe but before autosubscribe');
-    
     Meteor.autosubscribe(function() {
       var clientSession = SessieSessions.findOne();
       console.log('startup clientSession: ' + clientSession);
