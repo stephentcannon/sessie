@@ -141,17 +141,25 @@ if (Meteor.is_client) {
       event.stopImmediatePropagation();
       var params = $('#reg-form').toJSON();
       try{
-        validateParams(params);
+        //validateParams(params);
         Meteor.call(event.target.textContent+'User', params, Sessie.getSession(), function (error, result) { 
+          console.log('result: ' + result);
+          console.log('error: ' + error);
           if(result){
-            Alert.setAlert('SUCCESS', result, 'alert-success', 'reg');
+            console.log('registerUser SUCCESS: ' + result);
+            Alert.setAlert('SUCCESS', 'Success', 'alert-success', 'reg');
           } else {
-            Alert.setAlert('ERROR', error.reason, 'alert-error', 'reg');
+            console.log('registerUser ERROR: ' + JSON.stringify(error));
+            if(error.reason){
+              Alert.setAlert('ERROR', error.reason, 'alert-error', 'reg');
+            } else {
+              Alert.setAlert('ERROR', 'Unknown error', 'alert-error', 'reg');
+            }
           }
         });
         $("#username").focus();
       }catch(error){
-        Alert.setAlert('ERROR', error.reason, 'alert-error', 'reg');
+        Alert.setAlert('ERROR', 'Unknown error', 'alert-error', 'reg');
       }
     }
   };

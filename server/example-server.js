@@ -22,8 +22,8 @@ if(Meteor.is_server) {
   });
 
   registerUser = function(params, session){
+    //this.unblock();
     console.log('*** registerUser ***');
-    this.unblock();
     console.log('*** example-server.js registerUser ***');
     validateParams(params);
     console.log('example-server.js registerUser params: ' + JSON.stringify(params));
@@ -37,16 +37,14 @@ if(Meteor.is_server) {
         username: params.username,
         password: params.password,
         session_id: session.session_id
-      }, function(error, result){
-        if(result){
-          console.log('registerUser result: ' + result);
-          // we are setting the session permanent here
-          Sessie.setPermanent(session, params.username);
-          return 'Successful Signup';      
-        } else {
-          throw new Meteor.Error(500, 'Internal Server Error.');
-        }
       });
+      if(id){
+        console.log('registerUser result: ' + id);
+        Sessie.setPermanent(session, params.username);
+        return "Successful registration";
+      } else{
+        throw new Meteor.Error(500, 'Internal Server Error.');
+      }
     } else {
       throw new Meteor.Error(500, 'User already exists');
     }

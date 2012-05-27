@@ -91,7 +91,7 @@ if(Meteor.is_server) {
     if (session.session_id) {
       if(session.load_session){
         console.log('*** validateOrCreateSession found session.load_session: ' + JSON.stringify(session.load_session));
-        //Sessie.cleanUpLoadSession(session);
+        this.cleanUpLoadSession(session);
         sessionId = load_session.session_id;
       }else if(this.validateSession(session, seed)){
         sessionId = session.session_id;

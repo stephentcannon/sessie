@@ -204,8 +204,6 @@ if(Meteor.is_client) {
   }
 
   Meteor.startup(function () {
-    //TODO gotta put the check up here before subscribing to the session!
-
     Meteor.subscribe("sessieSessions", Sessie.getSession(), Sessie.cookie_seed);
     console.log('Sessie client.js Meteor.startup');
     Meteor.autosubscribe(function() {
