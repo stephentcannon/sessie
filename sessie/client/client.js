@@ -191,18 +191,16 @@ if(Meteor.is_client) {
 
   Meteor.startup(function () {
     Meteor.subscribe("sessieSessions", Sessie.getSession(), Sessie.cookie_seed);
-    
+
     Meteor.autosubscribe(function() {
       var clientSession = SessieSessions.findOne();
-      console.log('startup clientSession: ' + clientSession);
       if (clientSession) {
-        console.log('clientSession.load_session: ' + clientSession.load_session);
-         if (clientSession._id && clientSession.key && clientSession.key) {
-          console.log('setting session cookies');
-          console.log('clientSession._id: ' + clientSession._id);
-          console.log('clientSession.key: ' + clientSession.key);
-          console.log('clientSession.expires: ' + clientSession.expires);
-          console.log('clientSession.expiry: ' + clientSession.expiry);
+        if (clientSession._id && clientSession.key && clientSession.key) {
+          //console.log('setting session cookies');
+          //console.log('clientSession._id: ' + clientSession._id);
+          //console.log('clientSession.key: ' + clientSession.key);
+          //console.log('clientSession.expires: ' + clientSession.expires);
+          //console.log('clientSession.expiry: ' + clientSession.expiry);
           Sessie.setCookie(Sessie.cookie_prefix + "_session_id", clientSession._id, clientSession.expiry);
           // TODO do we really need a Meteor Session variable for this?
           Session.set(Sessie.cookie_prefix + "_session_id", clientSession._id);
@@ -210,9 +208,23 @@ if(Meteor.is_client) {
           // TODO do we really need a Meteor Session variable for this?
           Session.set(Sessie.cookie_prefix + "_session_key", clientSession.key);
           Meteor.subscribe("sessieLoch", clientSession);
-          //Meteor.subscribe("sessieLoch", clientSession._id);
+          /* 5.25. 5:28 PM trading out for an observe
+          var clientLoch = SessieLoch.find();
+          if(clientLoch){
+            //console.log('Meteor autosubscribe Sessie.Loch.find if(clientLoch)');
+            clientLoch.forEach(function (lochitem) {
+              //console.log('lochitem: ' + JSON.stringify(lochitem));
+              if(lochitem.options.meteorized){
+                //console.log('lochitem.name: ' + lochitem.name);
+                //console.log('lochitem.value: ' + lochitem.value);
+                //console.log('options.meteorized: ' + lochitem.options.meteorized);
+                Session.set(lochitem.name, lochitem.value);
+                //console.log(Session);
+              }
+            });
+          }*/
         } else {
-          console.log('deleting session cookies');
+          //console.log('deleting session cookies');
           Sessie.setCookie(Sessie.cookie_prefix + "_session_id", '', 0);
           Session.set(Sessie.cookie_prefix + "_session_id", undefined)
           Sessie.setCookie(Sessie.cookie_prefix + "_session_key", '', 0);

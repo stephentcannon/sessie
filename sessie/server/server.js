@@ -31,9 +31,8 @@ if(Meteor.is_server) {
   */
 
   Meteor.publish('sessieSessions', function(session, seed) {
-    console.log('*** Meteor.publish sessieSessions ***');
-    console.log('*** Meteor.publish sessieSessions session: ' + JSON.stringify(session, 0, 4));
-    console.log('*** Meteor.publish sessieSessions seed: ' + seed);
+    //console.log('*** Meteor.publish sessieSessions ***');
+    //console.log('*** Meteor.publish seed: ' + seed);
     var sessionId = Sessie.validateOrCreateSession(session, seed);
     return SessieSessions.find({ _id: sessionId}, { limit: 1, fields: { key_id: false, seed: false } });
   });
@@ -47,10 +46,9 @@ if(Meteor.is_server) {
   * or anything really
   */
   Meteor.publish('sessieLoch', function(session){
-    // TODO why didn't ID work?
     console.log('*** Meteor.publish sessieLoch ***');
-    console.log('*** Meteor.publish sessieLoch session: ' + JSON.stringify(session, 0, 4));
-    //return SessieLoch.find({session_id: id, 'options.visible': true });
+    //console.log('session: ' + JSON.stringify(session, 0, 4));
+    // TODO should this be left as dot notation?
     return SessieLoch.find({session_id: session._id, 'options.visible': true });
   });
   
