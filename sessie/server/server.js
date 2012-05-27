@@ -70,20 +70,11 @@ if(Meteor.is_server) {
   };
 
   Sessie.validateOrCreateSession = function(session, seed) {
-    console.log('*** validateOrCreateSession ***');
-    //this could use some optimization
-    //maybe collapse loadPermanentSession actions into validateSession
+    //console.log('*** validateOrCreateSession ***');
     var sessionId;
     session = session || {};
     if (session.session_id) {
-      var load_session;
-      // TODO could we just check the active session for this?
-      // like if(session.load_session)
-      //if(load_session = this.loadPermanentSession(session)){
-      if(session.load_session){
-        console.log('*** validateOrCreateSession found session.load_session: ' + JSON.stringify(session.load_session));
-        sessionId = load_session.session_id;
-      }else if(this.validateSession(session, seed)){
+      if(this.validateSession(session, seed)){
         sessionId = session.session_id;
       } else {
         sessionId = this.createSession(seed);
