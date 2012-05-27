@@ -70,6 +70,18 @@ if(Meteor.is_server) {
     SessieSessions.remove({expires: {$lt: now}})
   };
 
+  Sessie.cleanUpLoadSession = function(session){
+    console.log('*** Sessie.cleanUpLoadSession ***');
+     SessieSessions.update({_id: session.session_id}, 
+      {$set: {
+      load_session: null 
+    }},function(error){
+      if(error){
+        console.log('Sessie.cleanUpLoadSession error: ' + error)
+      }
+    });
+  }
+
   Sessie.validateOrCreateSession = function(session, seed) {
     console.log('*** validateOrCreateSession ***');
     //this could use some optimization
@@ -79,6 +91,7 @@ if(Meteor.is_server) {
     if (session.session_id) {
       if(session.load_session){
         console.log('*** validateOrCreateSession found session.load_session: ' + JSON.stringify(session.load_session));
+        //Sessie.cleanUpLoadSession(session);
         sessionId = load_session.session_id;
       }else if(this.validateSession(session, seed)){
         sessionId = session.session_id;
@@ -273,25 +286,12 @@ if(Meteor.is_server) {
     });
   };
 
-  //TODO may not be needed
-  //this returns a permanent session id if there is one or false
-  Sessie.loadPermanentSession = function(session){
-    console.log('*** Sessie.loadPermanentSession ***');
-    var serverSession;
-    if(serverSession = SessieSessions.findOne({
-      _id: session.session_id
-      })){
-      //console.log('*** Sessie.loadPermanentSession serverSession: ' + JSON.stringify(serverSession));
-      return serverSession.load_session;
-    } else {
-      return false;
-    }
-  }
-
   // this can be called by other server code to set the sesion that should be loaded
   // by a temporary session
   Sessie.setLoadPermanentSession = function(permanent_id, session){
     console.log('*** Sessie.setLoadPermanentSession ***');
+    console.log('*** Sessie.setLoadPermanentSession permanent_id: ' + permanent_id);
+    console.log('*** Sessie.setLoadPermanentSession permanent_id session: ' + session);
     var serverSession;
     if(serverSession = SessieSessions.findOne({
       permanent_id: permanent_id

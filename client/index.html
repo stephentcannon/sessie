@@ -43,7 +43,6 @@
             <li>Mutable or immutable session variables aka Loch items.</li>
             <li>Visible of invisible session variables aka Loch items.</li>
             <li>Meteor Session variables can be populated by session Loch variables aka Meteorized.</li> 
-            <li>TODO Trigger server or client side events on session and session variables.</li>
             <li>Simple interface! 3 client side and 3 server side functions!</li>
             <li>See example-client.js and example-server.js for both client and server side example implementations.</li>
             <li>EZ configuration! Just set it and forget it!</li>
@@ -213,7 +212,10 @@
 
             <h3>Sessie.unsetPermanent(session)</h3>
             <p>Unsets the sessions permanent id making it susceptible to being wrecked by the Monster.</p>
-            
+
+            <h3>Sessie.setLoadPermanentSession(permanent_id, session)</h3>
+            <p>Loads a permanent session for the permanent_id and replaces the existing session.</p>
+
           </div>
 
           <div class="well">
@@ -340,7 +342,7 @@
 
     <div class="row">
       <div class="span12">
-        <h2><a name="ness" class="nameanchor">Ness! A princess that looks after your shit.</a></h2>
+        <h2><a name="ness" class="nameanchor">Ness - track your collection items!</a></h2>
         <div class="well">
           <p>TODO Ness stores collection names associated with a session. When a Sessie session is loaded, Ness autosubscribed to all NESS registered collections for the active session id.  Obviously your collections and their items are accessible directly but they are also accessible through Sessie's Ness feaures as well.</p>
           <h3>Usage</h3>
@@ -449,6 +451,7 @@
       <form class="well" name="reg-form" id="reg-form"> 
        <fieldset>
         <h3><a name="unset_permanent" class="nameanchor">Unset Permanent Id</a></h3>
+        <p>Normally you would not expose this client side. This is only being done for for demonstration purposes.  Unsetting a permanent id from a session is only available as a server side method.</p>
           <div id="buttons-unset" class="form-actions">
             <button id="btnUnset" name="btnUnset" type="button" class="btn btn-primary">Unset</button></div>
         </fieldset>

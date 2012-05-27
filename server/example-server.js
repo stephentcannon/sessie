@@ -69,7 +69,7 @@ if(Meteor.is_server) {
       * We are going to load saved permanent sessions by username because 
       * that is how we associated them.
       **/
-      console.log('*** example-server.js loginUser before Sessie.loadPermanentSession ***');
+      console.log('*** example-server.js loginUser before Sessie.setloadPermanentSession ***');
       //sanity check before calling for loading of a permanent session
       console.log('*** example-server.js loginUser params.username: ' + params.username);
       console.log('*** example-server.js loginUser session.permanent_id: ' + session.permanent_id);
@@ -115,9 +115,6 @@ if(Meteor.is_server) {
       * options.meteorized = true;
       * Sessie.setLochSessionData(session, 'logged_in', true, options);
       **/
-
-      
-
       return 'Successful Login';
     } else {
       throw new Meteor.Error(500, 'Invalid login');
