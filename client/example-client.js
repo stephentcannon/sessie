@@ -1,33 +1,68 @@
 //leaving this wrapped just in case
 if (Meteor.is_client) {
+  Meteor.startup(function () {
+    Meteor.autosubscribe(function() {
+      if(Sessie.getLochData('logged_in') === true){
+        Meteor.subscribe("Users", Sessie.getSessionPermanentId());
+      }
+    });
+  });
 
   Template.main.sessionId = function () {
-    var session = SessieSessions.findOne();
-    if (session) {
-      return session._id;
-    }
+    return Sessie.getSessionId();
   };
 
   Template.main.sessionKey = function () {
-    var session = SessieSessions.findOne();
-    if (session) {
-      return session.key;
-    }
+    return Sessie.getSessionKey();
   };
+  
+  Template.main.sessionCreated = function() {
+    return Sessie.getSessionCreated();
+  }
 
   Template.main.sessionExpires = function () {
-    var session = SessieSessions.findOne();
-    if (session) {
-      return session.expires;
-    }
+    return Sessie.getSessionExpires();
   };
 
   Template.main.sessionExpiry = function () {
-    var session = SessieSessions.findOne();
-    if (session) {
-      return session.expiry;
+    return Sessie.getSessionExpiry();
+  };
+
+  Template.main.sessionPermanent = function () {
+    return Sessie.getSessionPermanentId();
+  };
+
+  Template.permanents_output.sessionPermanent = function () {
+    return Sessie.getSessionPermanentId();
+  };
+
+  Template.permanents_output.sessionExpires = function () {
+    return Sessie.getSessionExpires();
+  };
+
+  Template.permanents_output.sessionExpiry = function () {
+    return Sessie.getSessionExpiry();
+  };
+
+  Template.permanents_output.loggedin = function () {
+    var sessionData = Sessie.getLochData('logged_in');
+    if (sessionData) {
+      return sessionData.value;
+    } else {
+      return null;
     }
   };
+
+  Template.main.is_loggedin = function(){
+    //console.log('*** is_loggedin ***');
+    var sessionData = Sessie.getLochData('logged_in');
+    if (sessionData) {
+      //console.log('returning: ' + sessionData.value);
+      return sessionData.value;
+    } else {
+      return false;
+    }
+  }
 
   //An example of storing data in a Sessie.Loch
   Template.lochform.events = {
@@ -46,7 +81,7 @@ if (Meteor.is_client) {
       options.mutable = (params.inputMutable === "true")? true:false;
       options.visible = (params.inputVisible === "true")? true:false;
       options.meteorized = (params.inputMeteorized === "true")? true:false;
-      //console.log('options.mutable: ' + options.mutable);
+      //console.log('options: ' + options);
       try{
         validateParams(params);
         //console.log('after lochform validate params');
@@ -58,6 +93,64 @@ if (Meteor.is_client) {
       }
     }
   };
+
+  //example of unsetting permance from front, normally just call it on back end
+  Template.permanents_output.events = {
+    'click #btnUnset': function(event){
+      console.log('*** Template.permanents_output.events btnUnset click***');
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      Meteor.call('unsetPermanence', Sessie.getSession(), function(error, result){
+        if(result){
+          console.log('unsetPermanence worked?' + result);
+        } else {
+          console.log('unsetPermanence did not work' + JSON.stringify(error));
+        }
+      });
+    }
+  };
+
+  //example of logging out
+  Template.logout_form.events = {
+    'click #btnLogout': function(event){
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      Meteor.call('logoutUser', Sessie.getSession(), function (error, result) { 
+        if(result){
+          console.log('logout worked?' + result);
+        } else {
+          console.log('logout did not work' + error);
+        }
+      });
+    }
+  };
+
+  //example of user registration to create permanent session
+  Template.permanents_form.events = {
+    'click .btn': function(event){
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      var params = $('#reg-form').toJSON();
+      try{
+        validateParams(params);
+        Meteor.call(event.target.textContent+'User', params, Sessie.getSession(), function (error, result) { 
+          if(result){
+            Alert.setAlert('SUCCESS', result, 'alert-success', 'reg');
+          } else {
+            Alert.setAlert('ERROR', error.reason, 'alert-error', 'reg');
+          }
+        });
+        $("#username").focus();
+      }catch(error){
+        Alert.setAlert('ERROR', error.reason, 'alert-error', 'reg');
+      }
+    }
+  };
+
+
   //example of delete items from the front end
   Template.lochdata.events = {
     'click i': function(event){
@@ -119,34 +212,25 @@ if (Meteor.is_client) {
       //console.log('this: ' + JSON.stringify(this,0,4));
       Sessie.deleteLochData(this.name);
     }
-  }
+  };
 
-  validateParams = function(params) {
-    for (var key in params) {
-      value = params[key];
-      if(_.isEmpty(value) || _.isUndefined(value) || 
-      _.isNull(value)) {
-        throw new Meteor.Error(600, 'Please enter your "'+ key + '".');
-      }
-    }
-  }
-
+  
   Template.GetSessieLoch.GetSessieLoch = function(){
-    console.log('*** Template.GetSessieLoch.GetSessieLoch ***');
+    //console.log('*** Template.GetSessieLoch.GetSessieLoch ***');
     //console.log('session.get("getSessieLochSearchValue"): ' + Session.get("getSessieLochSearchValue"));
     var obj = Sessie.getLochData(Session.get("getSessieLochSearchValue"));
     //console.log('obj: ' + JSON.stringify(obj));
     // i think this might work too return obj.name && obj.value;
     if(obj){
-      console.log('obj.name: ' + obj.name);
-      console.log('obj.value: ' + obj.value);
+      //console.log('obj.name: ' + obj.name);
+      //console.log('obj.value: ' + obj.value);
       //return JSON.stringify(obj);// && obj.name && obj.value;
       return obj;
     } else {
       return null;
     }
     
-  }
+  };
 
   Template.SessieLoch.SessieLoch = function() {
     //console.log('*** Template.SessieLoch.SessieLoch  ***');
@@ -163,6 +247,32 @@ if (Meteor.is_client) {
       }
     }
     return map
+  };
+
+  function loginUser(params){
+    //this is just a client stub
+    //console.log('STUB loginUser');
   }
+
+  function logoutUser(params){
+    //this is just a client stub
+    //console.log('STUB logoutUser');
+  }
+
+  function registerUser(params){
+    //this is just a client stub
+    //console.log('STUB registerUser');
+  }
+
+  function unsetPermanence(params){
+    //this is just a client stub
+  }
+
+
+  Meteor.methods({
+    registerUser: registerUser,
+    loginUser: loginUser,
+    unsetPermanence: unsetPermanence
+  });
 
 }

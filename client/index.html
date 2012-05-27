@@ -17,8 +17,10 @@
       Monster destroys Sessie sessions, Loch session variables and Ness session collection items.</p>
       Your session id is: {{sessionId}}<br />
       Your session crypto key is: {{sessionKey}}<br />
+      Your session created on: {{sessionCreated}}<br />
       Your session expires on: {{sessionExpires}}<br />
       Your session expires in <b>{{sessionExpiry}}</b> days from your expiry date unless you visit again.<br />
+      Your session permanent id: {{sessionPermanent}}<Br />
     </div>
 
     <div class="row">
@@ -55,7 +57,12 @@
       <div class="span12">
         <h2>Quick spin</h2>
         <div class="well">
-          Add a Loch Item in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Use the <a href="#getitems">Get a Loch Item</a>. Change the Loch Item by submitting an existing Loch Item name with a different values in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Do it a few times. Use the delete icon in the <a href="#lochitems">Items in your Loch</a> table to delete session items. <b>Warning!</b> In this example demonstration, Sessie will add, update, delete, change mutability and change visibility of items every 30 seconds to demonstrate server side control of the session. So don't be alarmed if your session variables change without your interaction.  See example-client.js and example-servers.js for some ways you could use Sessie.
+          <p>Add a Loch Item in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Use the <a href="#getitems">Get a Loch Item</a>. Change the Loch Item by submitting an existing Loch Item name with a different values in the <a href="#feedsessie">Feed Sessie Loch Items</a> form. Do it a few times. Use the delete icon in the <a href="#lochitems">Items in your Loch</a> table to delete session items.</p>
+          <p>You can control the mutability, visibility and meteorization of the Loch session variable items.  Read the <a href="#mutability">mutability</a>, <a href="#visibility">visbility</a> and <a href="#meteorized">meteorization</a> docs so you understand how those options work.</p>
+          <p>You can make your Sessie session or your Loch session variables a permanent!  Read the <a href="#permanents">docs on creating permanent sessions</a> so you understand how to make the Sessie session, Loch session variables and Ness session collection items permanent.</p>
+          <p>You can associate items in other collections with your Sessie sessions through Ness!  Read the <a href="#ness">docs on using Ness</a>!</p>
+          <p>You make your session Monster Safe!  Read the <a href="#monstersafe">docs on making your session Monster safe!</a>!</p>
+          <b>Warning!</b> In this example demonstration, Sessie will add, update, delete, change mutability and change visibility of items every 30 seconds to demonstrate server side control of the session. So don't be alarmed if your session variables change without your interaction.  See example-client.js and example-servers.js for some ways you could use Sessie.
         </div>
       </div>
     </div>
@@ -100,7 +107,10 @@
             <code>Sessie.encryption_password = "mak3th1sd1ff1cult";</code><br/>
             <h4>Sessie.session_key_timeout</h4>
             This is how often the session crypto keys are regenerated. This is set in minutes.<br />
-            <code>Sessie.session_key_timeout = 60;</code>
+            <code>Sessie.session_key_timeout = 60;</code><br/>
+            <h4>Sessie.permanent_expires</h4>
+            Set this to the number of days you want a permanent session to expire if the client doesn't return.  If a client returns their session expiration will get reset and extended by this value.<br />
+            <code>Sessie.permanent_expires = 365;</code>
           </div>
           <div class="well">
             <h3>Example sessie-config-client.js</h3>
@@ -122,30 +132,104 @@
           <div class="well">
             <h2>Client Side Methods</h2>
             <p>These are the client side methods that can be called and will operate on the current active client session.</p>
+            <h3>Sessie.getSession()</h3>
+            <p>Returns the currently active session object.</p>
+            <code>var session = Sessie.getSession();<br/>
+              console.log(session.session_id);<br/>
+              console.log(session.session_key);<br/>
+              console.log(session.created);<br/>
+              console.log(session.expires);<br/>
+              console.log(session.expiry);<br/>
+              console.log(session.permanent_id);<br/>
+            </code>
+            
+            <h3>Sessie.getSessionId()</h3>
+            <p>Returns the currencty active session id.</p>
+            <code>var session_id = Sessie.getSessionId();<br/></code>
+
+            <h3>Sessie.getSessionKey()</h3>
+            <p>Returns the currencty active session key.</p>
+            <code>var session_key = Sessie.getSessionKey();<br/></code>
+
+            <h3>Sessie.getSessionCreated()</h3>
+            <p>Returns when the session was created.</p>
+            <code>var session_created = Sessie.getSessionCreated();<br/></code>
+
+            <h3>Sessie.getSessionExpires()</h3>
+            <p>Returns when the session will expire.</p>
+            <code>var session_expires = Sessie.getSessionExpires();<br/></code>
+
+            <h3>Sessie.getSessionExpiry()</h3>
+            <p>Returns when the session expiry days.</p>
+            <code>var session_expiry = Sessie.getSessionExpiry();<br/></code>
+
+            <h3>Sessie.getSessionPermanentId()</h3>
+            <p>Returns when the permanent id you gave the session.</p>
+            <code>var permanent_id = Sessie.getSessionPermanentId();<br/></code>
+
+            <h3>Sessie.getLoch()</h3>
+            <p>Returns the currencty active session Loch.</p>
+            <code>var session_loch = Sessie.getLoch();<br/></code>
+
             <h3>Sessie.getLochData(name)</h3>
             <p>Returns a Loch session variable for the active client session.</p>
+            <code>var item = Sessie.getLochData("favorite color");<br/>
+              console.log(item);<br/>
+              {"_id":"b5c00e2f-4ad7-47c3-81a1-e0133ca45a8b",<br />
+              "created":"2012-05-26T20:16:31.413Z",<br />
+              "updated":"2012-05-26T20:16:31.413Z",<br />
+              "session_id":"fc3df86d-e825-4b5b-84a4-36fa85343e54",<br />
+              "name":"favorite color",<br />
+              "value":"red",<br />
+                "options":{<br/>
+                "mutable":true,<br/>
+                "visible":true,<br/>
+                "meteorized":true}}<br/>
+            </code>
 
             <h3>Sessie.setLochData(name, value, options)</h3>
             <p>Sets a Loch session variable for the active client session.</p>
+            <code>Sessie.setLochData('favorite color', 'red', options);<br/></code>
 
             <h3>Sessie.deleteLochData(name)</h3>
-            <p>Deletes a Loch session for the active client session if mutability is set to true.</p>
+            <p>Deletes a Loch session variable for the active client session if mutability of the Loch session variable is set to true.</p>
+            <code>Sessie.deleteLochData('red');<br /></code>
           </div>
           <div class="well">
             <h2>Server Side Methods</h2>
-            <p>These are server side only methods that cannot be reached by client side methods.</p>
+            <p>These are server side only methods that cannot be reached by client side calls to Meteor methods.</p>
             
             <h3>Sessie.getLochData(session, name)</h3>
-            <p>Returns a Loch session variable.  Session = {session.session_id and session.session_key}</p>
+            <p>Returns a Loch session variable.</p>
 
             <h3>Sessie.setLochSessionData(session, name, value, options)</h3>
-            <p>Sets Loch session variables.  Session = {session.session_id and session.session_key}.</p>
+            <p>Sets Loch session variables.</p>
 
             <h3>Sessie.deleteLochSessionData(session, name)</h3>
-            <p>Deletes Loch session variables.  Session = {session.session_id and session.session_key}.</p>
+            <p>Deletes Loch session variables.</p>
+
+            <h3>Sessie.setPermanent(session, permanent_id)</h3>
+            <p>Set the sessions permanent id and gives it a set of curlies!  Makes it permanent.</p>
+
+            <h3>Sessie.unsetPermanent(session)</h3>
+            <p>Unsets the sessions permanent id making it susceptible to being wrecked by the Monster.</p>
+            
           </div>
+
           <div class="well">
-            <h2>Options</h2>
+            <h2>Session Object</h2>
+            <ul>
+              <li>session_id: uuid</li>
+              <li>session_key: cryptokey</li>
+              <li>session.created: when the session was originally created</li>
+              <li>session.expires: when the session is slated to expire and destroyed by  the Monster.  If no revisit.</li>
+              <li>session.expiry: expiry in days.</li>
+              <li>session.permanent_id: whatever permanent id you have assigned server side.</li>
+            </ul>
+          </div>
+
+          <div class="well">
+            <h2>Options Object</h2>
             <ul>
               <li>mutable: boolean (default true)</li>
               <li>visible: boolean (default true)</li>
@@ -178,7 +262,7 @@
 
     <div class="row">
       <div class="span12">
-        <h2>Meteorize your session Loch data items</h2>
+        <h2><a name="meteorized" class="nameanchor">Meteorize your session Loch data items</a></h2>
         <div class="well">
           <p>Want your session's Loch session variables to be automatically avialable as Meteor Session variables? Then just do nothing!  They are by default.  If you don't want them to be you must set them the meteorized option to false.</p>
           <br /><p><code>{ meteorized:true }//default</code></p><p>OR</p><code>{ meteorized: false }</code>
@@ -188,19 +272,18 @@
 
     <div class="row">
       <div class="span12">
-        <h2>Mutable or immutable? That is the question!</h2>
+        <h2><a name="mutability" class="nameanchor">Mutable or immutable? That is the question!</a></h2>
         <div class="well">
           <p>Want to protect some session variables from being altered?  Then make them immutable! Once you do the client cannot alter them.  Server side you can do whatever you want to sessions and session variables.  Mutability must be explicitly set as FALSE when you set Loch session variable items.  By defaeult all session variables are mutable.  Mutability is controlled by passing an options object when setting a Loch session variable item.</p>
-          <br /><p><code>{ mutable:true }//default</code></p><p>OR</p><code>{ mutable: false } t</code></p>
+          <br /><p><code>{ mutable:true }//default</code></p><p>OR</p><code>{ mutable: false }</code></p>
         </div>
       </div>
     </div>
 
     <div class="row">
       <div class="span12">
-        <h2>Visible or invisible? Houdini would be proud!</h2>
+        <h2><a name="visibility" class="nameanchor">Visible or invisible? Houdini would be proud!</a></h2>
         <div class="well">
-          TODO
           <p>Want to hold session variables but don't want them visible on the client?  No problem!  Set their visibility to false and they will not be published with the Loch collection.  You can still modify and alter them server and client side but they will not be visible client side.  Obviously, if you want to set or delete them client side and they are not visible you must already know their name.  The visible option can be used to hold Loch session variable data items instead of deleting it.</p>
           <br /><p><code>{ visible: true } //default</code></p><p>OR</p><code>{ visible:false }</code>
         </div>
@@ -209,7 +292,55 @@
 
     <div class="row">
       <div class="span12">
-        <h2>Ness! A princess that looks after your shit.</h2>
+        <h2><a name="permanents" class="nameanchor">Permanents did not die with the 70s!</a></h2>
+        <div class="well">
+          <p>TODO Out of the box, Sessie has semi-permanent session lifetimes based on session configuration parameters you control. Basically, if you set a session to expire and the session is not refreshed by a visit then Monster wrecks it.  But wait!  You need session data to persist for your users so it is available when they log back in. But you don't want to be tied to a specific user registration and authorization system? No problem. Sit down and we will have your permanent done in seconds! Permanent sessions that is! Unless of course you want curls!</p>
+
+          <p>Just register a permanent unique id with a session and it won't get expired, deleted, destroyed and the Monster won't wreck shit associated with any permanent sessions! If you register permanent sessions, you are in charge of housekeeping and clean up.  Just remove the permanent unique id from the session record and the Sessie session, Loch session variables and Ness session collection items will get wrecked by the Monster.  Optionally you can protect Ness session collection items by making them <a href="#monstersafe">Monster safe</a>.</p>
+
+          <p>For example, you can use an email, userid, username, uuid, Meteor _id and pretty much any unique id associated with some kind of profile or account from an external system to create a Permanent session. No fuss, no muss and you can either feather your hair or keep it curled, we don't care, just rock your permanents like a supastar!</p>
+
+          <p>In case you didn't catch the pun and it went over your head, <i>permanents</i> is a pun for the word <i>permanence</i>.</p>
+    
+          <h3>Sessie Permanent Sessions Demo</h3>
+          <p>In order to simulate a permanent sessions demo we have created a mock-up user registration and login system.  This is very basic and is not meant as a real user registration and login system.  It is merely meant to demonstrate the use of Permanent sessions. To make it very clear how one might do this we will register the username you choose with your session as the session's permanent id. We will also created a logged_in Loch session variable that is is immutable, visible and meteorized.  You could use a uuid or the _id from the User collection item or whatever you choose. The code is in this example application that ships with the Sessie package for your reference.</p>
+          <p>We recommend the follwing test.
+            <ol>
+              <li><a href="#feedsessie">Add some Loch session variable items.</a></li>
+              <li><a href="#permanent_demo_output">Watch the permanent demo output</a></li>
+              <li><a href="#signup">Sign up</a></li>
+              <li><a href="#signup">Login</a></li>
+              <li><a href="#logout">Logout</a></li>
+              <li><a href="#signup">Login again</a></li>
+              <li><a href="#unset_permanent">Unset permanent</a></li>
+              <li>Delete your cookies to start a new session</li>
+              <li><a href="#feedsessie">Add some Loch session variable items to the new session.</a></li>
+              <li><a href="#signup">Login</a></li>
+              <li><a href="#permanent_demo_output">Watch the permanent demo output</a></li>
+              <li><a href="#lochitems">Your Loch Items will be loaded from a permanent session.</a></li>
+              <li>Notice that your session is reloaded from your login profile and not the second anonymous one.</li>
+              <li>Try created more than one User profile, deleting cookies, visiting with different browsers and logging in and out.</li>
+            </ol>
+          </p>
+
+          <div class="row">
+            <div class="span4">
+              {{#if is_loggedin}}
+                {{> logout_form }}
+              {{else}}
+                {{> permanents_form}}
+              {{/if}}
+            </div>
+            <div class="span7">{{> permanents_output}}</div>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span12">
+        <h2><a name="ness" class="nameanchor">Ness! A princess that looks after your shit.</a></h2>
         <div class="well">
           <p>TODO Ness stores collection names associated with a session. When a Sessie session is loaded, Ness autosubscribed to all NESS registered collections for the active session id.  Obviously your collections and their items are accessible directly but they are also accessible through Sessie's Ness feaures as well.</p>
           <h3>Usage</h3>
@@ -220,29 +351,20 @@
       </div>
     </div>
     
-    <div class="row">
-      <div class="span12">
-        <h2>Permanents did not die with the 70s!</h2>
-        <div class="well">
-          <p>TODO Out of the box, Sessie has semi-permanent session lifetimes based on session configuration parameters you control. Basically, if you set a session to expire and the session is not refreshed by a visit then Monster wrecks it.  But wait!  You need session data to persist for your users so it is available when they log back in. But you don't want to be tied to a specific user registration and authorization system? No problem. Sit down and we will have your permanent done in seconds! Permanent sessions that is! Unless of course you want curls!</p>
-
-          <p>Just register a permanent unique id with a session and it won't get expired, deleted, destroyed and the Monster won't wreck shit associated with any permanent sessions! If you register permanent sessions, you are in charge of housekeeping and clean up. Hint, just remove the permanent unique id from the session record and it will get wrecked by the Monster. For example, register an email, userid, username or pretty much any unique id associated with some kind of profile or account from an external system. No fuss, no muss and you can either feather your hair or keep it curled, we don't care, just rock your permanents like a supastar!</p>
-        </div>
-      </div>
-    </div>
+    
 
     <div class="row">
       <div class="span12">
-        <h2>Monster safe your session objects!</h2>
+        <h2><a name="monstersafe" class="nameanchor">Monster safe your session objects!</a></h2>
         <div class="well">
           <p>TODO When the session expires the Monster will destroy all sessions variables and Ness collection items marked as belonging to the session unless you protect them from him.  Remember, you can protect an entire session, Loch session variables and Ness session collection items by getting a Permanent Session.</p>
           <p>But you might not dig curly hair and didn't opt for a Permanent Session.  As well, you might want to have Ness mark collection items as session data but you don't want the Monster wrecking your collection item data when the session expires.   Well the good news is your non-Permanent Ness session collection items are Monster safe by default, but you can set them as unsafe and the Monster will wreck the shit out of them.</p>
           <p>So, this is kinda like safe home base right?  Lets review because Monster's scare people and they tend to get confused when scared.</p>
           <h3>To protect a Sessie session, Loch session variables and Ness session collection items.</h3>
-          Just give the Sessie session a Permanent! Monsters are naturally terrified of curly hair!  Assign a permanent id from your system to the session in the session options.
-          <p><code>{ permanent_id: }//default</code></p><p>OR</p><p><code>{ permanent_id: 'something_uniqie}</code></p>
+          Just give the Sessie session a Permanent! Monsters are naturally terrified of curly hair!  Assign a permanent id from your system to the session in the session options. See <a href="#permanents">Permanents</a> for more information.
           <h3>To protect Ness collection items</h3>
           <p>If you are using Permanent sessions then you don't need to do this.</p>
+          <p>If you are not using Permanents and you don't want collection items deleted when Monster destroys a Sessie session and Loch session variables then use monster_safe options</p>
           <p>As part of the sessie_session_options set monster_safe = true</p>
           <p><code>{ monster_safe:true }//default</code></p><p>OR</p><p><code>{ monster_safe: false }</code></p>
           </ol> 
@@ -252,7 +374,7 @@
 
     <div class="row">
       <div class="span12">
-        <h2>Let the reactivity sparks fly in both direction!</h2>
+        <h2>Let the reactivity sparks fly!</h2>
         <div class="well">
           TODO Let the reactivity spark and fly in both directions.
           will this be an _extend or just calling Sessions.set
@@ -260,8 +382,6 @@
         </div>
       </div>
     </div>
-
-    
 
     <div class="row">
       <div class="span12">
@@ -277,6 +397,66 @@
   </div> 
 </template>
 
+<template name="logout_form">
+  <form class="well" name="logout-form" id="logout-form"> 
+    <fieldset>
+      <h3><a name="logout" class="nameanchor">Logout</a></h3>
+      <div id="buttons-logout" class="form-actions">
+        <button id="btnLogout" name="btnLogout" type="button" class="btn btn-primary">logout</button>
+      </div>
+    </fieldset>
+  </form>
+</template>
+
+<template name="permanents_form">
+  <div id="alert-reg" class="alert hide fade in">
+    <strong><span id="alert-title-reg"></span></strong> <span id="alert-message-reg"></span>
+  </div>
+  <form class="well" name="reg-form" id="reg-form"> 
+   <fieldset>
+    <h3><a name="signup" class="nameanchor">Sign Up or Login</a></h3>
+      <div class="control-group">
+        <div class="controls">
+          Username <input type="text" class="input-medium" id="username" name="username" maxlength="20">
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          Password <input type="text" class="input-medium" id="password" name="password" maxlength="8">
+        </div>
+      </div>
+      <div id="buttons-reg" class="form-actions">
+        <button id="btnRegister" name="btnRegister" type="button" class="btn btn-primary">register</button>
+        <button id="btnLogin" name="btnLogin" type="button" class="btn btn-primary">login</button>
+      </div>
+    </fieldset>
+  </form>
+</template>
+
+<template name="permanents_output">
+  <div class="well">
+    <h3><a name="permanent_demo_output" class="nameanchor">Permanent Demo Output</a></h3>
+    <p>
+      Your session permanent id: {{sessionPermanent}}<br/>
+      Your session expires on: {{sessionExpires}}<br />
+      Your session expires in <b>{{sessionExpiry}}</b> days from your expiry date unless you visit again.<br />
+      Logged in: {{loggedin}}<br />
+    </p>
+  </div>
+
+  {{#if sessionPermanent}} 
+    <div class="well">
+      <form class="well" name="reg-form" id="reg-form"> 
+       <fieldset>
+        <h3><a name="unset_permanent" class="nameanchor">Unset Permanent Id</a></h3>
+          <div id="buttons-unset" class="form-actions">
+            <button id="btnUnset" name="btnUnset" type="button" class="btn btn-primary">Unset</button></div>
+        </fieldset>
+      </form>
+    </div>
+  {{/if}}
+
+</template>
 
 <template name="lochform">
   <h2><a name="feedsessie" class="nameanchor">Feed Sessie Loch Items</a></h2>

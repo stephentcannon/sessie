@@ -5,4 +5,5 @@ if(Meteor.is_server) {
   Sessie.encryption_password = "mak3th1sd1ff1cult"; //you should change this
   // set in minutes, causes new key generation, must always be less than session_timeout
   Sessie.session_key_timeout = 60; 
+  Sessie.permanent_expires = 365; //Set in days
 }
