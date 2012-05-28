@@ -12,8 +12,8 @@ if(Meteor.is_server) {
 
   //Users publish for demo of user registration and session permanency
   Meteor.publish('Users', function(username){
-    console.log('*** Meteor.publish Users ***');
-    console.log('user: ' + username);
+    //console.log('*** Meteor.publish Users ***');
+    //console.log('user: ' + username);
     if(username){
       return Users.find( { username: username });
     } else {
@@ -77,19 +77,19 @@ if(Meteor.is_server) {
         console.log('*** example-server.js NOT EQUAL calling setLoadPermanentSession');
         var loaded_session = Sessie.setLoadPermanentSession(params.username, session);
         if(loaded_session){
-          console.log('we have a loaded session');
-          console.log('loaded session: ' + JSON.stringify(loaded_session));
+          console.log('*** example-server.js we have a loaded session');
+          console.log('*** example-server.jsloaded session: ' + JSON.stringify(loaded_session));
           var options = {};
           options.mutable = false;
           options.visible = true;
           options.meteorized = true;
           Sessie.setLochSessionData(loaded_session, 'logged_in', true, options);
         } else {
-          console.log('no loaded session');
-          console.log('loaded session: ' + JSON.stringify(loaded_session));
+          console.log('*** example-server.js no loaded session');
+          console.log('*** example-server.js loaded session: ' + JSON.stringify(loaded_session));
         }
       } else {
-        console.log('*** example-server.js EQUAL');
+        console.log('*** example-server.js EQUAL no loading crap');
         var options = {};
         options.mutable = false;
         options.visible = true;
