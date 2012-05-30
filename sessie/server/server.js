@@ -2,7 +2,7 @@
 if(Meteor.is_server) {
   
   Meteor.startup(function () {
-  _.each(['sessieSessions', 'sessieLoch'], function(collection) {
+  _.each(['sessieSession', 'sessieSessions', 'sessieLoch'], function(collection) {
     _.each(['insert', 'update', 'remove'], function(method) {
       Meteor.default_server.method_handlers['/' + collection + '/' + method] = function() {};
       });
@@ -16,46 +16,39 @@ if(Meteor.is_server) {
   Sessie.session_key_timeout = 60; //in minutes, causes new key generation, must always be less than session_timeout
   Sessie.permanent_expires = 365;
 
-  /*
-  * { "created" : ISODate("2012-05-18T22:28:22.517Z"), 
-  * "updated" : ISODate("2012-05-18T22:28:22.517Z"),
-  * "expires" : ISODate("2012-05-21T22:28:22.499Z"), 
-  * "expiry" : 3 //from Sessie.expires
-  * "key_id" : "229e5a1a-fb27-4e17-8580-80c67efc9313", 
-  * "key" : "asdhf7ehadfuhaksduhfakeufhaksdufasdf",    
-  * "_id" : "9ad1a292-7e9e-45f7-82fb-530734f1de01" }   
-  */
-  /*  session object structure from client through subscription
-  * session.session_id
-  * session.session_key
-  */
-
-  Meteor.publish('sessieSessions', function(session, seed) {
-    console.log('*** Meteor.publish sessieSessions ***');
-    console.log('*** Meteor.publish session: ' + JSON.stringify(session, 0, 4));;
-    console.log('*** Meteor.publish seed: ' + seed);
-    var sessionId = Sessie.validateOrCreateSession(session, seed);
-    return SessieSessions.find({ _id: sessionId}, { limit: 1, fields: { key_id: false, seed: false } });
+  Meteor.publish('sessieSession', function(sessie_id, session, seed){
+    console.log('***Meteor.publish sessieSession ***');
+    console.log('***Meteor.publish sessieSession id: ' + sessie_id);
+    var sessieId = Sessie.validateOrCreateSessie(sessie_id, session, seed);
+    return SessieSession.find({_id: sessieId }, { limit: 1 });
   });
 
-  /* sessieLoch - where Sessie stores session data
-  * { "created" : ISODate("2012-05-18T22:28:22.517Z"), 
-  * "updated" : ISODate("2012-05-18T22:28:22.517Z"),
-  * "session_id" : "229e5a1a-fb27-4e17-8580-80c67efc9313", 
-  * "name" : "firstName",    
-  * "value" : "John" }   
-  * or anything really
-  */
-  Meteor.publish('sessieLoch', function(session){
+  // Meteor.publish('sessieSessions', function(sessieSession, session, seed) {
+  //   console.log('*** Meteor.publish sessieSessions ***');
+  //   console.log('*** Meteor.publish sessieSessions sessie_session: ' + JSON.stringify(sessie_session._id, 0, 4));
+  //   console.log('*** Meteor.publish sessieSessions session: ' + JSON.stringify(session, 0, 4));
+  //   console.log('*** Meteor.publish sessieSessions  seed: ' + seed);
+  //   var sessionId = Sessie.validateOrCreateSession(sessieSession, session, seed);
+  //   return SessieSessions.find({ _id: sessionId}, { limit: 1, fields: { key_id: false, seed: false } });
+  // });
+
+  Meteor.publish('sessieSessions', function(session_id, session, seed){
+    console.log('*** Meteor.publish sessieSessions ***');
+    console.log('*** Meteor.publish sessieSessions session_id: ' + session_id);
+    console.log('*** Meteor.publish sessieSessions session: ' + JSON.stringify(session));
+    console.log('*** Meteor.publish sessieSessions seed: ' + seed);
+    //TODO I could still validate it here and return a boolean maybe?
+    return SessieSessions.find({_id: session_id}, { limit: 1, fields: { key_id: false, seed: false } });
+  });
+
+  Meteor.publish('sessieLoch', function(session_id){
     console.log('*** Meteor.publish sessieLoch ***');
-    console.log('*** Meteor.publish sessieLoch session: ' + JSON.stringify(session, 0, 4));
-    // TODO should this be left as dot notation?
-    //return SessieLoch.find({session_id: session._id, 'options.visible': true });
-    return SessieLoch.find({session_id: session.session_id, 'options.visible': true });
+    return SessieLoch.find({session_id: session_id, 'options.visible': true });
   });
   
   Sessie.delete = function(id) {
     // TODO pass session_id to Monster to clean up colleciton items IF turned on.
+    // TODO here not permanent
     console.log('*** Sessie.delete sessieLoch ***');
     SessieLoch.remove({session_id: id});
     SessieSessions.remove({_id: id});
@@ -66,19 +59,107 @@ if(Meteor.is_server) {
     console.log('*** Sessie.cleanUp sessieLoch ***');
     now = new Date();
     // TODO get collection of expired sessions to handle the two TODOs below.
-    // TODO delete expired session Loch data
+    // TODO delete expired session Loch data through Monster
     // TODO pass session_id to Monster to clean up colleciton items IF turned on.
+    // TODO where NOT permanent
+    SessieSession.remove({expires: {$lt: now}});
     SessieSessions.remove({expires: {$lt: now}})
   };
 
-  Sessie.validateOrCreateSession = function(session, seed) {
+  // this returns the SessieSession tracker or creates on if it doesn't exist
+  Sessie.validateOrCreateSessie = function(id, session, seed){
+    // TODO this could be improved and be more elegant
+    console.log('*** validateOrCreateSessie***');
+    var sessieId;
+    var sessie;
+    if( sessie = SessieSession.findOne({_id: id}) ) {
+      if(session.session_id){
+        console.log('*** validateOrCreateSessie session.session_id found: ' + JSON.stringify(session));
+        if(sessie.session_id == session.session_id){
+          console.log('*** validateOrCreateSessie sessie.session_id + session.session_id MATCH'); 
+          if(!this.validateSession(session, seed)){
+            // Condition = invalid sessoin, create and assign to sessie
+            console.log('*** validateOrCreateSessie invalid session creating a new one'); 
+            sessionId = this.createSession(seed);
+            console.log('*** validateOrCreateSessie new session: ' + sessionId);
+            console.log('*** validateOrCreateSessie calling setSessieSessionId: ' + sessionId);
+            this.setSessieSessionId(id, sessionId);
+            sessieId = sessie._id;
+          } else {
+            // Condition = sessie, session_id and session_key validated successfully, good condition
+            console.log('*** validateOrCreateSessie this.validateSession(session, seed) returned true'); 
+            sessieId = sessie._id;
+          }
+        } else {
+          // Condition = invalid session_id, changed server side, load new session
+          console.log('*** validateOrCreateSessie sessie.session_id + session.session_id DO NOT MATCH'); 
+          sessieId = sessie._id;
+        }
+      } else {
+        // Condition = situation where sessie_id may have been compromised, create new Session to prevent session hijacking
+        console.log('*** validateOrCreateSessie session.session_id is undefined? ' + session.session_id); 
+        sessionId = this.createSession(seed);
+        this.setSessieSessionId(id, sessionId);
+        sessieId = sessie._id;
+      } 
+    } else {
+      // Condition = sessie record does not exist, create sessie and session
+      console.log('*** validateOrCreateSessie record not found calling Sessie.createSessie creates SessieSessoin and SessieSessions record for now');
+      sessieId = this.createSessie(seed);
+    }
+    return sessieId;
+  };
+
+  // this creates a Sessie session tracker
+  Sessie.createSessie = function(seed){
+    console.log('*** Sessie.createSessie ***');
+    var expires = new Date();
+    expires.setDate(expires.getDate()+Sessie.expires);
+    //create a session for now because the client subscribes to it this way
+    sessionId = this.createSession(seed);
+    id = SessieSession.insert({ 
+      created: new Date(),
+      updated: new Date(), 
+      expires: expires,
+      expiry: Sessie.expires,
+      session_id: sessionId
+    });
+    if(id){
+      return id;      
+    }else{
+      //throw new Meteor.Error(600, 'Internal Server Error. Session creation failed.');
+      return null;
+    }  
+  };
+
+  //TODO this is ONLY needed SERVER SIDE
+  Sessie.setSessieSessionId = function(sessie_id, session_id){
+    console.log('*** Sessie.setSessieSessionId *** ');
+    console.log('*** Sessie.setSessieSessionId sessie_id: ' + sessie_id);
+    console.log('*** Sessie.setSessieSessionId session_id: ' + session_id);
+    var expires = new Date();
+    expires.setDate(expires.getDate()+Sessie.expires);
+    SessieSession.update({_id: sessie_id}, 
+      {$set: {
+       expires: expires, 
+       expiry: Sessie.expires,
+       updated: new Date(),
+       session_id: session_id
+     }},function(error){});
+  }
+
+  // TODO this can be removed, search first, not called from anywhere
+  Sessie.validateOrCreateSession = function(sessieSession, session, seed) {
+    //sessieSession is the collection record subscribe to on the client
+    //session is the cookie session object
+    //seed is the key seed
     console.log('*** validateOrCreateSession ***');
-    //this could use some optimization
-    var sessionId;
-    session = session || {};
+    console.log('*** validateOrCreateSession sessieSession._id: ' + sessieSession._id);
+    console.log('*** validateOrCreateSession sessieSession.session_id: ' + sessieSession.session_id);
+    console.log('*** validateOrCreateSession session.sessie_id: ' + session.sessie_id);
+    console.log('*** validateOrCreateSession session.session_key: ' + session.session_key);
     if (session.session_id) {
       if(this.validateSession(session, seed)){
-        console.log('*** validateOrCreateSession after validateSession ***');
         sessionId = session.session_id;
       } else {
         sessionId = this.createSession(seed);
@@ -89,8 +170,30 @@ if(Meteor.is_server) {
     return sessionId;
   };
 
+  Sessie.createSession = function(seed) {
+    console.log('*** createSession ***');
+    var expires = new Date();
+    expires.setDate(expires.getDate()+Sessie.expires);
+    var key = this.generateKey(seed);
+    id = SessieSessions.insert({ 
+      created: new Date(),
+      updated: new Date(), 
+      expires: expires,
+      expiry: Sessie.expires,
+      key_id: key.id,
+      seed: seed,
+      key: key.key
+    });
+    if(id){
+      return id;      
+    }else{
+      //throw new Meteor.Error(600, 'Internal Server Error. Session creation failed.');
+      return null;
+    }  
+  };
+
   Sessie.generateKey = function(seed){
-    //console.log('*** generateKey ***');
+    console.log('*** generateKey ***');
     var key = {};
     key.id = Meteor.uuid();
     var hash = CryptoJS.HmacSHA512(key.id + seed, Sessie.encryption_password); 
@@ -116,28 +219,7 @@ if(Meteor.is_server) {
     }
   };
 
-  Sessie.createSession = function(seed) {
-    console.log('*** createSession ***');
-    var expires = new Date();
-    expires.setDate(expires.getDate()+Sessie.expires);
-    var key = this.generateKey(seed);
-    id = SessieSessions.insert({ 
-      created: new Date(),
-      updated: new Date(), 
-      expires: expires,
-      expiry: Sessie.expires,
-      key_id: key.id,
-      seed: seed,
-      key: key.key
-    });
-    if(id){
-      return id;      
-    }else{
-      //throw new Meteor.Error(600, 'Internal Server Error. Session creation failed.');
-      return null;
-    }  
-  };
-
+  
   Sessie.updateSessionKey = function(session, key){
     console.log('*** updateSessionKey ***');
     var expires = new Date();
@@ -160,7 +242,7 @@ if(Meteor.is_server) {
   };
 
   Sessie.updateSessionExpiry = function(session){
-    //console.log('*** updateSessionExpiry ***');
+    console.log('*** updateSessionExpiry ***');
     //console.log('session: ' + JSON.stringify(session));
     var expires = new Date();
     var expiry;
@@ -173,6 +255,11 @@ if(Meteor.is_server) {
     }
     //console.log('expires: ' + expires);
     //console.log('expiry: ' + expiry);
+    SessieSession.update({_id: session.sessie_id},
+      {$set: {
+        expires: expires,
+        expiry: expiry,
+      }}, function(error){});
     SessieSessions.update({_id: session.session_id}, 
       {$set: {
       expires: expires, 
@@ -203,7 +290,7 @@ if(Meteor.is_server) {
       //console.log('session_key_timeout: ' + session_key_timeout);
       //console.log('serverSession.expires: ' + serverSession.expires);
       //console.log('serverSession.updated: ' + serverSession.updated);
-      if(serverSession.expires < now) {
+      if(serverSession.expires < now && !session.permanent_id) {
         //session expired
         Sessie.cleanUp();
         return false;
@@ -269,40 +356,46 @@ if(Meteor.is_server) {
     });
   };
 
-  Sessie.cleanUpLoadSession = function(session){
-    console.log('*** Sessie.cleanUpLoadSession ***');
-    
-  }
-
   // this can be called by other server code to set the sesion that should be loaded
   // by a temporary session
   Sessie.loadPermanentSession = function(permanent_id, session){
-    console.log('*** Sessie.setLoadPermanentSession ***');
+    console.log('*** Sessie.loadPermanentSession ***');
+    var serverSessie;
     var serverSession;
-    if(serverSession = SessieSessions.findOne({
-      permanent_id: permanent_id
-      })){
-      //console.log('*** Sessie.setLoadPermanentSession serverSession: ' + JSON.stringify(serverSession));
-      console.log('*** Sessie.setLoadPermanentSession permanent_id: ' + permanent_id);
-      console.log('*** Sessie.setLoadPermanentSession session.permanent_id: ' + session.permanent_id);
-      console.log('*** Sessie.setLoadPermanentSession serverSession.permanent_id: ' + serverSession.permanent_id);
-      //this is a sanity check, no need to do this if the permanent_id already matches the session
-      if(permanent_id !== session.permanent_id){
-        console.log('*** Sessie.setLoadPermanentSession setting load_session');
-        var load_session = {};
-        load_session.session_id = serverSession._id;
-        load_session.session_key = serverSession.key;
-        load_session.created = serverSession.created;
-        load_session.expires = serverSession.expires;
-        load_session.expiry = serverSession.expiry;
-        load_session.permanent_id = serverSession.permanent_id;
-        return load_session;
-      }
-    } 
-  }
+    //sanity check if the incomine permanent_id already matches the session.permanent_id do nothing
+    if(permanent_id !== session.permanent_id){
+      if(serverSessie = SessieSession.findOne({session_id: session.session_id}) ){
+        console.log('*** Sessie.loadPermanentSession serverSessie: ' + JSON.stringify(serverSessie));
+        if(serverSession = SessieSessions.findOne({permanent_id: permanent_id}) ){
+          // TODO should I check whether the serverSessie.session_id matches the serverSession._id ?
+          // ABOVE that should have already been caught by checking the submitted permanent_id and session.permanent_id
+          console.log('*** Sessie.loadPermanentSession serverSession: ' + JSON.stringify(serverSession));
+          console.log('*** Sessie.loadPermanentSession permanent_id: ' + permanent_id);
+          console.log('*** Sessie.loadPermanentSession session.permanent_id: ' + session.permanent_id);
+          console.log('*** Sessie.loadPermanentSession serverSession.permanent_id: ' + serverSession.permanent_id);
+          //this is a sanity check, no need to do this if the permanent_id already matches the session
+            console.log('*** Sessie.loadPermanentSession setting load_session');
+            //set the new session
+            this.setSessieSessionId(session.sessie_id, serverSession._id);
+            var load_session = {};
+            load_session.session_id = serverSession._id;
+            load_session.session_key = serverSession.key;
+            load_session.created = serverSession.created;
+            load_session.expires = serverSession.expires;
+            load_session.expiry = serverSession.expiry;
+            load_session.permanent_id = serverSession.permanent_id;
+            return load_session;
+        }
+      } 
+    } else {
+      //return session if the permanent_id and session sent into method matches
+      //mistake of caller
+      return session;
+    }
+  };
 
   Sessie.getLochData = function(session, name){
-    //console.log('*** getLochData ***');
+    console.log('*** Sessie.getLochData ***');
     if(Sessie.validateSession(session)){
       return SessieLoch.findOne({session_id: session.session_id, name: name});
     }
@@ -311,7 +404,7 @@ if(Meteor.is_server) {
   // PRIVATE DO NOT EVER 
   // USE SERVER SIDE
   Sessie.setLochSessionData = function(session, name, value, options){
-    console.log('*** setSessionData ***');
+    console.log('*** Sessie.setSessionData ***');
     //console.log('*** setSessionData options: ' + JSON.stringify(options));
     //console.log('*** setSessionData session: ' + JSON.stringify(session));
     //console.log('*** setSessionData name: ' + name);
@@ -371,7 +464,6 @@ if(Meteor.is_server) {
   // PRIVATE DO NOT EVER EXPOSE
   // USE SERVER SIDE
   Sessie.deleteLochSessionData = function(session, name){
-    // NO security and no checking, happens in Meteor.method
     SessieLoch.remove({session_id: session.session_id, name: name});
   };
 
@@ -380,7 +472,8 @@ if(Meteor.is_server) {
   // EXPOSED WITH METEOR.METHOD
   Sessie.setLochData = function(session, name, value, options){
     this.unblock();
-    //console.log('*** Meteor Method setLochData ***');
+    console.log('*** Meteor Method setLochData ***');
+    console.log('*** Meteor Method setLochData calling Sessie.validateSession ***');
     if(Sessie.validateSession(session)){
       //console.log('*** setLochData session.session_id: ' + session.session_id);
       //console.log('*** setLochData session.session_key: ' + session.session_key);

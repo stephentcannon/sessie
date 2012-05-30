@@ -79,9 +79,15 @@ if(Meteor.is_client) {
     }
   };
 
+  Sessie.getSessieId = function(){
+    console.log('Sessie Sessie.getSessieId');
+    return Sessie.getCookie("sessie_id");
+  }
+
   Sessie.getSession = function(){
     console.log('Sessie client.js Sessie.getSession');
     var session = {};
+    session.sessie_id = Sessie.getSessieId();
     session.session_id = Sessie.getCookieSessionId();  //must come from cookie in case preexisting, sessionr._id; //this could be a problem
     session.session_key = Sessie.getCookieSessionKey(); //must come from cookie in case preexisting, sessionr._key; //this could be a problem
     session.created = Sessie.getSessionCreated ();
@@ -96,8 +102,10 @@ if(Meteor.is_client) {
   }
 
   Sessie.setLochData = function(name, value, options){
+    console.log('*** Sessie.setLochData ***');
+    console.log('*** Sessie.setLochData calling Sessie.getSession()');
     var session = Sessie.getSession();
-    //console.log('*** Sessie.setLochData ***');
+    
     //console.log('Sessie.setLochData session.session_id: ' + session.session_id);
     //console.log('Sessie.setLochData session.session_key: ' + session.session_key);
     //console.log('Sessie.setLochData name: ' + name);
@@ -197,34 +205,61 @@ if(Meteor.is_client) {
   }
 
   Meteor.startup(function () {
-    Meteor.subscribe("sessieSessions", Sessie.getSession(), Sessie.cookie_seed);
-    console.log('Sessie client.js Meteor.startup');
+    console.log('Sessie client.js Meteor.startup before subscribe to sessieSession');
+    // TODO we need to get the active session based on the sessie_id
+    //  sessie_id will be generated if one doesn't exist
+    //  sessie_id will be set as a cookie as well
+    // TODO we need to move this into the autosubscribe
+    // this needs to return a sessie_id, and session_id
+    Meteor.subscribe('sessieSession', Sessie.getSessieId(), Sessie.getSession(), Sessie.cookie_seed);
+    console.log('Sessie client.js Meteor.startup after subscribe to sessieSession');
+    
     Meteor.autosubscribe(function() {
       console.log('Sessie client.js Meteor.autosubscribe');
-      var clientSession = SessieSessions.findOne();
-      if (clientSession) {
-        if (clientSession._id && clientSession.key) {
-          console.log('Sessie client.js clientSession id');
-          console.log('setting session cookies');
-          console.log('clientSession._id: ' + clientSession._id);
-          console.log('clientSession.key: ' + clientSession.key);
-          console.log('clientSession.expires: ' + clientSession.expires);
-          console.log('clientSession.expiry: ' + clientSession.expiry);
-          Sessie.setCookie(Sessie.cookie_prefix + "_session_id", clientSession._id, clientSession.expiry);
-          // TODO do we really need a Meteor Session variable for this?
-          Session.set(Sessie.cookie_prefix + "_session_id", clientSession._id);
-          Sessie.setCookie(Sessie.cookie_prefix + "_session_key", clientSession.key, clientSession.expiry);
-          // TODO do we really need a Meteor Session variable for this?
-          Session.set(Sessie.cookie_prefix + "_session_key", clientSession.key);
-          Meteor.subscribe("sessieLoch", Sessie.getSession());
-        } else {
-          //console.log('deleting session cookies');
-          Sessie.setCookie(Sessie.cookie_prefix + "_session_id", '', 0);
-          Session.set(Sessie.cookie_prefix + "_session_id", undefined)
-          Sessie.setCookie(Sessie.cookie_prefix + "_session_key", '', 0);
-          Session.set(Sessie.cookie_prefix + "_session_key", undefined)
-        }
-      }
+      var sessieSession = SessieSession.findOne();
+      console.log('Sessie client.js sessieSession: ' + JSON.stringify(sessieSession));
+
+      if(sessieSession){
+        console.log('sessieSession Session cookie');
+        console.log('sessieSession._id: ' + sessieSession._id);
+        console.log('sessieSession.expiry: ' + sessieSession.expiry);
+        Sessie.setCookie("sessie_id", sessieSession._id, sessieSession.expiry);
+        Session.set("sessie_id", sessieSession._id);
+
+        //subscribe to the actual session now 
+        console.log('Sessie client.js before subscribe to sessieSessions');
+        //TODO TEST BOTH WAYS sessionSession or this might have to be sessieSession.session_id 
+        //Meteor.subscribe("sessieSessions", sessieSession, Sessie.getSession(), Sessie.cookie_seed);
+        Meteor.subscribe("sessieSessions", sessieSession.session_id, Sessie.getSession(), Sessie.cookie_seed);
+        console.log('Sessie client.js after subscribe to sessieSessions'); 
+
+        var clientSession = SessieSessions.findOne();
+        if (clientSession) {
+          if (clientSession._id && clientSession.key) {
+            console.log('Sessie client.js if clientSession._id && clientSession.key section');
+            console.log('setting session cookies');
+            console.log('clientSession._id: ' + clientSession._id);
+            console.log('clientSession.key: ' + clientSession.key);
+            console.log('clientSession.expires: ' + clientSession.expires);
+            console.log('clientSession.expiry: ' + clientSession.expiry);
+            Sessie.setCookie(Sessie.cookie_prefix + "_session_id", clientSession._id, clientSession.expiry);
+            // TODO do we really need a Meteor Session variable for this?
+            Session.set(Sessie.cookie_prefix + "_session_id", clientSession._id);
+            Sessie.setCookie(Sessie.cookie_prefix + "_session_key", clientSession.key, clientSession.expiry);
+            // TODO do we really need a Meteor Session variable for this?
+            Session.set(Sessie.cookie_prefix + "_session_key", clientSession.key);
+            // TODO might have to turn this into a collection.find
+            //Meteor.subscribe("sessieLoch", Sessie.getSession());
+            Meteor.subscribe("sessieLoch", clientSession._id);
+          } else {
+            //console.log('deleting session cookies');
+            Sessie.setCookie(Sessie.cookie_prefix + "_session_id", '', 0);
+            Session.set(Sessie.cookie_prefix + "_session_id", undefined)
+            Sessie.setCookie(Sessie.cookie_prefix + "_session_key", '', 0);
+            Session.set(Sessie.cookie_prefix + "_session_key", undefined)
+          }
+        } //end if(clientSession)
+      } // end if(sessieSession)
     });
 
     
@@ -250,13 +285,13 @@ if(Meteor.is_client) {
 
     var handle1 = clientSession.observe({
       added: function (session) {
-        console.log('clientSession.observe added: ' + JSON.stringify(session));
+        //console.log('clientSession.observe added: ' + JSON.stringify(session));
       },
       changed: function (session) {
-        console.log('clientSession.observe changed: ' + JSON.stringify(session));
+        //console.log('clientSession.observe changed: ' + JSON.stringify(session));
       },
       removed: function (session) {
-        console.log('clientSession.observe removed: ' + JSON.stringify(session));
+        //console.log('clientSession.observe removed: ' + JSON.stringify(session));
       }
     });
     var handle = clientLoch.observe({

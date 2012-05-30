@@ -67,15 +67,15 @@ if(Meteor.is_server) {
       * We are going to load saved permanent sessions by username because 
       * that is how we associated them.
       **/
-      console.log('*** example-server.js loginUser before Sessie.setloadPermanentSession ***');
+      console.log('*** example-server.js loginUser before Sessie.loadPermanentSession ***');
       //sanity check before calling for loading of a permanent session
       console.log('*** example-server.js loginUser params.username: ' + params.username);
       console.log('*** example-server.js loginUser session.permanent_id: ' + session.permanent_id);
       //we are doing a sanity check and not calling the server function to reduce work load
       //the server does the same sanity check
       if(params.username !== session.permanent_id){
-        console.log('*** example-server.js NOT EQUAL calling setLoadPermanentSession');
-        var loaded_session = Sessie.setLoadPermanentSession(params.username, session);
+        console.log('*** example-server.js NOT EQUAL calling loadPermanentSession');
+        var loaded_session = Sessie.loadPermanentSession(params.username, session);
         if(loaded_session){
           console.log('*** example-server.js we have a loaded session');
           console.log('*** example-server.jsloaded session: ' + JSON.stringify(loaded_session));

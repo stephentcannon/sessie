@@ -250,7 +250,8 @@ if (Meteor.is_client) {
     for (prop in Session.keys) {
        if(prop.indexOf('session_id') == -1 && 
         prop.indexOf('session_key') == -1 &&
-        prop.indexOf('getSessieLochSearchValue') == -1){
+        prop.indexOf('getSessieLochSearchValue') == -1 &&
+        prop.indexOf('sessie_id') == -1){
         map.push({key: prop, value: Session.get(prop)})
       }
     }
