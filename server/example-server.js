@@ -23,13 +23,13 @@ if(Meteor.is_server) {
 
   registerUser = function(params, session){
     //this.unblock();
-    console.log('*** registerUser ***');
-    console.log('*** example-server.js registerUser ***');
+    //console.log('*** registerUser ***');
+    //console.log('*** example-server.js registerUser ***');
     validateParams(params);
-    console.log('example-server.js registerUser params: ' + JSON.stringify(params));
-    console.log('session: ' + JSON.stringify(session));
+    //console.log('example-server.js registerUser params: ' + JSON.stringify(params));
+    //console.log('session: ' + JSON.stringify(session));
     if( Users.find({username: params.username}).count() === 0 ){
-      console.log('creating user');
+      //console.log('creating user');
       //we are going to insert the Sessie session_id in with our Users records just for the sake of it
       //you might want to consider making sure the session isn't already registered to another user
       id = Users.insert({ 
@@ -39,7 +39,7 @@ if(Meteor.is_server) {
         session_id: session.session_id
       });
       if(id){
-        console.log('registerUser result: ' + id);
+        //console.log('registerUser result: ' + id);
         Sessie.setPermanent(session, params.username);
         return "Successful registration";
       } else{
@@ -52,9 +52,9 @@ if(Meteor.is_server) {
 
   loginUser = function(params, session){
     this.unblock();
-    console.log('*** example-server.js loginUser ***');
-    console.log('example-server.js loginUser params: ' + JSON.stringify(params));
-    console.log('session: ' + JSON.stringify(session));
+    //console.log('*** example-server.js loginUser ***');
+    //console.log('example-server.js loginUser params: ' + JSON.stringify(params));
+    //console.log('session: ' + JSON.stringify(session));
     var user = Users.findOne({username: params.username, password: params.password});
     if( user ){
 
@@ -67,29 +67,29 @@ if(Meteor.is_server) {
       * We are going to load saved permanent sessions by username because 
       * that is how we associated them.
       **/
-      console.log('*** example-server.js loginUser before Sessie.loadPermanentSession ***');
+      //console.log('*** example-server.js loginUser before Sessie.loadPermanentSession ***');
       //sanity check before calling for loading of a permanent session
-      console.log('*** example-server.js loginUser params.username: ' + params.username);
-      console.log('*** example-server.js loginUser session.permanent_id: ' + session.permanent_id);
+      //console.log('*** example-server.js loginUser params.username: ' + params.username);
+      //console.log('*** example-server.js loginUser session.permanent_id: ' + session.permanent_id);
       //we are doing a sanity check and not calling the server function to reduce work load
       //the server does the same sanity check
       if(params.username !== session.permanent_id){
-        console.log('*** example-server.js NOT EQUAL calling loadPermanentSession');
+        //console.log('*** example-server.js NOT EQUAL calling loadPermanentSession');
         var loaded_session = Sessie.loadPermanentSession(params.username, session);
         if(loaded_session){
-          console.log('*** example-server.js we have a loaded session');
-          console.log('*** example-server.jsloaded session: ' + JSON.stringify(loaded_session));
+          //console.log('*** example-server.js we have a loaded session');
+          //console.log('*** example-server.jsloaded session: ' + JSON.stringify(loaded_session));
           var options = {};
           options.mutable = false;
           options.visible = true;
           options.meteorized = true;
           Sessie.setLochSessionData(loaded_session, 'logged_in', true, options);
         } else {
-          console.log('*** example-server.js no loaded session');
-          console.log('*** example-server.js loaded session: ' + JSON.stringify(loaded_session));
+          //console.log('*** example-server.js no loaded session');
+          //console.log('*** example-server.js loaded session: ' + JSON.stringify(loaded_session));
         }
       } else {
-        console.log('*** example-server.js EQUAL no loading crap');
+        //console.log('*** example-server.js EQUAL no loading crap');
         var options = {};
         options.mutable = false;
         options.visible = true;
@@ -122,7 +122,7 @@ if(Meteor.is_server) {
   logoutUser = function(session){
     //this could be done client side but would not be as secure
     this.unblock();
-    console.log('*** example-server.js logoutUser ***');
+    //console.log('*** example-server.js logoutUser ***');
     var options = {};
     options.mutable = false;
     options.visible = true;
@@ -135,8 +135,21 @@ if(Meteor.is_server) {
     //normally you would not wire this up to the front end
     //this is just a demo
     this.unblock();
-    console.log('*** example-server.js unsetPermanence ***');
-    Sessie.unsetPermanent(session);
+    //console.log('*** example-server.js unsetPermanence ***');
+    if(session.permanent_id){
+      Sessie.unsetPermanent(session);
+    }
+    return 'Successfully unset permanence';
+  };
+
+  unloadPermanent = function(session){
+    //normally you would not wire this up to the front end
+    //this is just a demo
+    this.unblock();
+    //console.log('*** example-server.js unloadPermanent ***');
+    if(session.permanent_id){
+      Sessie.unloadPermanentSession(session);
+    }
     return 'Successfully unset permanence';
   };
 
@@ -144,17 +157,18 @@ if(Meteor.is_server) {
     registerUser: registerUser,
     loginUser: loginUser,
     logoutUser: logoutUser,
-    unsetPermanence: unsetPermanence
+    unsetPermanence: unsetPermanence,
+    unloadPermanent: unloadPermanent,
   });
 
 
 
   //below is all the All Your Sessions Belong to Us automation
 
-  //Meteor.setInterval(alterSession, 30000);
+  Meteor.setInterval(alterSession, 30000);
 
   function alterSession(){
-    console.log('*** alterSession ***');
+    //console.log('*** alterSession ***');
     // This is merely for purposes of an example
     // it is not intended for real purposes in your production code
     // it uses the SessieSessions collection in order to loop over all active sessions
@@ -164,10 +178,10 @@ if(Meteor.is_server) {
     sessions.forEach(function (session) {
       //NOT WORKING NOW
       var session2 = {};
-      console.log('alterSession session._id: ' + session._id);
+      //console.log('alterSession session._id: ' + session._id);
       var lochs = SessieLoch.find({session_id: session._id});
       var loch_count = lochs.count();
-      console.log('alterSession Loch COUNT: ' + loch_count);
+      //console.log('alterSession Loch COUNT: ' + loch_count);
       //we had to do this to pass the correct structure to setLochData
       session2.session_id = session._id;
       session2.session_key = session.key;
@@ -189,7 +203,7 @@ if(Meteor.is_server) {
         var records = lochs.fetch();
 
         var r2=Math.floor(Math.random()*(loch_count-1));
-        console.log('alterSession changing record[' + r2 + '].name value: ' + records[r2].name);
+        //console.log('alterSession changing record[' + r2 + '].name value: ' + records[r2].name);
         var r3=Math.floor(Math.random()*1000);
         var r =  Math.floor(Math.random()*11);
         console.log('mutable r: ' + r);
@@ -199,14 +213,14 @@ if(Meteor.is_server) {
           options.mutable = true;
         }
         r =  Math.floor(Math.random()*11);
-        console.log('visible r: ' + r);
+        //console.log('visible r: ' + r);
         if(r <= 3){
           options.visible = false;
         } else {
           options.visible = true;
         }
         r =  Math.floor(Math.random()*11);
-        console.log('meteorized r: ' + r);
+        //console.log('meteorized r: ' + r);
         if(r <= 3){
           options.meteorized=false;
         } else {
@@ -217,7 +231,7 @@ if(Meteor.is_server) {
 
         console.log('alterSession DELETING RECORDS');
         var r2=Math.floor(Math.random()*(loch_count-1));
-        console.log('alterSession delete records[' + r2 + '].name: ' + records[r2].name);
+        //console.log('alterSession delete records[' + r2 + '].name: ' + records[r2].name);
         // this is the server side sessie loch session variable delete
         Sessie.deleteLochSessionData(session2, records[r2].name);
       }

@@ -108,8 +108,25 @@ if (Meteor.is_client) {
           console.log('unsetPermanence did not work' + JSON.stringify(error));
         }
       });
+    },
+    'click #btnUnload': function(event){
+      console.log('*** Template.permanents_output.events btnUnload click***');
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      Meteor.call('unloadPermanent', Sessie.getSession(), function(error, result){
+        if(result){
+          console.log('unloadPermanent?' + result);
+        } else {
+          console.log('unloadPermanent' + JSON.stringify(error));
+        }
+      });
     }
   };
+
+
+    
+
 
   //example of logging out
   Template.logout_form.events = {
@@ -277,11 +294,16 @@ if (Meteor.is_client) {
     //this is just a client stub
   }
 
+  function unloadPermanent(params){
+    //this is just a client stub
+  }
+
 
   Meteor.methods({
     registerUser: registerUser,
     loginUser: loginUser,
-    unsetPermanence: unsetPermanence
+    unsetPermanence: unsetPermanence,
+    unloadPermanent: unloadPermanent
   });
 
 }

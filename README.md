@@ -15,21 +15,17 @@ Install Meteor:
     or
     [meteor on github](https://github.com/meteor/meteor)
 
-Then you can clone the code onto your system:
+Clone Code:
 
     git clone git://github.com/stephentcannon/sessie.git
 
-Run or deploy:
+Run Demponstration:
     
     To run
     cd sessie
     meteor 
 
-    To deploy
-    cd sessie
-    meteor deploy [yourlocation].meteor.com
-
-Reset data:
+Reset Demonstration Data:
   
   To reset all data
   cd sessie
@@ -37,15 +33,20 @@ Reset data:
 
 How to Use
 ------------
-copy the sessie directory to your meteor packages directory
-in your project directory
-  meteor add sessie
-  create a /client/config-sessie-client.js
-  create a /server/config-sessie-server.js
+  copy the sessie directory to your meteor packages directory
+  in your project directory
+    meteor add sessie
+    create a /client/config-sessie-client.js
+    create a /server/config-sessie-server.js
 
-Todo
-------------
+TODO
+--------
 
+  1.  Need to work on the Meteor Session stuff.
+
+  2.  Expand Loch session variables to support editable and deletable instead or in addition to mutable.
+
+  3.  
 
 License
 ------------
