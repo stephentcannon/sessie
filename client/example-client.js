@@ -54,10 +54,8 @@ if (Meteor.is_client) {
   };
 
   Template.main.is_loggedin = function(){
-    //console.log('*** is_loggedin ***');
     var sessionData = Sessie.getLochData('logged_in');
     if (sessionData) {
-      //console.log('returning: ' + sessionData.value);
       return sessionData.value;
     } else {
       return false;
@@ -70,21 +68,13 @@ if (Meteor.is_client) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      //console.log('lochform button clicked');
       var params = $('#loch-form').toJSON();
-      //console.log('params.inputName: ' + params.inputName);
-      //console.log('params.inputValue: ' + params.inputValue);
-      //console.log('params.inputMutable: ' + params.inputMutable);
-      //console.log('params.inputVisible: ' + params.inputVisible);
-      //console.log('params.inputMeteorized: '+ params.inputMeteorized);
       var options = {};
       options.mutable = (params.inputMutable === "true")? true:false;
       options.visible = (params.inputVisible === "true")? true:false;
       options.meteorized = (params.inputMeteorized === "true")? true:false;
-      //console.log('options: ' + options);
       try{
         validateParams(params);
-        //console.log('after lochform validate params');
         Sessie.setLochData(params.inputName, params.inputValue, options);
         $("#loch-form").reset();
         $("#inputName").focus();
@@ -97,36 +87,32 @@ if (Meteor.is_client) {
   //example of unsetting permance from front, normally just call it on back end
   Template.permanents_output.events = {
     'click #btnUnset': function(event){
-      console.log('*** Template.permanents_output.events btnUnset click***');
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
       Meteor.call('unsetPermanence', Sessie.getSession(), function(error, result){
         if(result){
-          console.log('unsetPermanence worked?' + result);
+          //console.log('unsetPermanence worked result: ' + result);
         } else {
-          console.log('unsetPermanence did not work' + JSON.stringify(error));
+          //console.log('unsetPermanence did not work error: ' + JSON.stringify(error));
         }
       });
     },
     'click #btnUnload': function(event){
-      console.log('*** Template.permanents_output.events btnUnload click***');
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
+      // we are clearing the Meteor.session elements here and did not feel it belongs in the package
+      clearMeteorSession();
       Meteor.call('unloadPermanent', Sessie.getSession(), function(error, result){
         if(result){
-          console.log('unloadPermanent?' + result);
+          //console.log('unloadPermanent worked result: ' + result);
         } else {
-          console.log('unloadPermanent' + JSON.stringify(error));
+          //console.log('unloadPermanent did now work error: ' + JSON.stringify(error));
         }
       });
     }
   };
-
-
-    
-
 
   //example of logging out
   Template.logout_form.events = {
@@ -136,9 +122,9 @@ if (Meteor.is_client) {
       event.stopImmediatePropagation();
       Meteor.call('logoutUser', Sessie.getSession(), function (error, result) { 
         if(result){
-          console.log('logout worked?' + result);
+          //console.log('logout worked result: ' + result);
         } else {
-          console.log('logout did not work' + error);
+          //console.log('logout did not work error: ' + error);
         }
       });
     }
@@ -152,15 +138,11 @@ if (Meteor.is_client) {
       event.stopImmediatePropagation();
       var params = $('#reg-form').toJSON();
       try{
-        //validateParams(params);
+        validateParams(params);
         Meteor.call(event.target.textContent+'User', params, Sessie.getSession(), function (error, result) { 
-          console.log('result: ' + result);
-          console.log('error: ' + error);
           if(result){
-            console.log('registerUser SUCCESS: ' + result);
             Alert.setAlert('SUCCESS', 'Success', 'alert-success', 'reg');
           } else {
-            console.log('registerUser ERROR: ' + JSON.stringify(error));
             if(error.reason){
               Alert.setAlert('ERROR', error.reason, 'alert-error', 'reg');
             } else {
@@ -182,14 +164,8 @@ if (Meteor.is_client) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      //console.log('i clicked');
       var curT = event.currentTarget; 
-      //console.log('curT.id: ' + curT.id);
-      //console.log('curT.className: ' + curT.className);
       var clickedElement = event.target; 
-      //console.log('clickedElement.id: ' + clickedElement.id);
-      //console.log('clickedElement.className: ' + clickedElement.className);
-      //console.log('this: ' + JSON.stringify(this,0,4));
       Sessie.deleteLochData(this.name);
     }
   }
@@ -199,12 +175,9 @@ if (Meteor.is_client) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      //console.log('getlochform button clicked');
       var params = $('#getloch-form').toJSON();
       try{
         validateParams(params);
-        //console.log('after getlochform validate params');
-        //console.log('getlochform params.searchName: ' + params.searchName);
         Session.set("getSessieLochSearchValue", params.searchName);
         $("#getloch-form").reset();
         $("#searchName").focus();
@@ -227,29 +200,16 @@ if (Meteor.is_client) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      //console.log('i clicked');
       var curT = event.currentTarget; 
-      //console.log('curT.id: ' + curT.id);
-      //console.log('curT.className: ' + curT.className);
       var clickedElement = event.target; 
-      //console.log('clickedElement.id: ' + clickedElement.id);
-      //console.log('clickedElement.className: ' + clickedElement.className);
-      //console.log('this: ' + JSON.stringify(this,0,4));
       Sessie.deleteLochData(this.name);
     }
   };
 
   
   Template.GetSessieLoch.GetSessieLoch = function(){
-    //console.log('*** Template.GetSessieLoch.GetSessieLoch ***');
-    //console.log('session.get("getSessieLochSearchValue"): ' + Session.get("getSessieLochSearchValue"));
     var obj = Sessie.getLochData(Session.get("getSessieLochSearchValue"));
-    //console.log('obj: ' + JSON.stringify(obj));
-    // i think this might work too return obj.name && obj.value;
     if(obj){
-      //console.log('obj.name: ' + obj.name);
-      //console.log('obj.value: ' + obj.value);
-      //return JSON.stringify(obj);// && obj.name && obj.value;
       return obj;
     } else {
       return null;
@@ -258,9 +218,20 @@ if (Meteor.is_client) {
   };
 
   Template.SessieLoch.SessieLoch = function() {
-    //console.log('*** Template.SessieLoch.SessieLoch  ***');
     return Sessie.getLoch();
   };
+
+  function clearMeteorSession() {
+    //best we can do for now because can't delete session.key/value parameters
+    //they seem to expire when set to undefined
+    for (key in Session.keys) {
+      if(prop.indexOf('session_id') == -1 && 
+        prop.indexOf('session_key') == -1 &&
+        prop.indexOf('sessie_id') == -1){
+          Session.set(key, undefined);
+      }
+    }
+  }
 
   Template.meteorsessionvars.session = function () {
     map = []
@@ -277,17 +248,14 @@ if (Meteor.is_client) {
 
   function loginUser(params){
     //this is just a client stub
-    //console.log('STUB loginUser');
   }
 
   function logoutUser(params){
     //this is just a client stub
-    //console.log('STUB logoutUser');
   }
 
   function registerUser(params){
     //this is just a client stub
-    //console.log('STUB registerUser');
   }
 
   function unsetPermanence(params){

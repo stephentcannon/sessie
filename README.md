@@ -1,6 +1,6 @@
 Sessie
 ------------
-Sessie is a weird and simple attempt at a server side session management package for Meteor. [meteor.com](http://www.meteor.com).
+Sessie is a weird and simple attempt at a server side session management package for Meteor. [Meteor](http://www.meteor.com).
 
 View live
 ------------
@@ -21,19 +21,17 @@ Clone Code:
 
 Run Demponstration:
     
-    To run
     cd sessie
     meteor 
 
 Reset Demonstration Data:
   
-  To reset all data
   cd sessie
   meteor reset
 
 How to Use
 ------------
-  copy the sessie directory to your meteor packages directory
+  copy or symlink the lowest level sessie directory to your meteor packages directory
   in your project directory
     meteor add sessie
     create a /client/config-sessie-client.js
@@ -42,11 +40,9 @@ How to Use
 TODO
 --------
 
-  1.  Need to work on the Meteor Session stuff.
+  1.  Need to work on the Meteor Session stuff.  It doesn't clear between changes of permanet session loads.
 
-  2.  Expand Loch session variables to support editable and deletable instead or in addition to mutable.
-
-  3.  
+  2.  Expand Loch session variables to support editable and deletable instead or in addition to mutable. 
 
 License
 ------------

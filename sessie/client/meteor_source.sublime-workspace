@@ -1,0 +1,509 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"getSessi",
+				"getSessieId"
+			],
+			[
+				"exampe",
+				"example-server"
+			],
+			[
+				"permanent",
+				"permanent_id"
+			],
+			[
+				"va",
+				"validateKey"
+			],
+			[
+				"Va",
+				"validateKey"
+			],
+			[
+				"session_key",
+				"session_key_timeout"
+			],
+			[
+				"sessi",
+				"session_key_timeout"
+			],
+			[
+				"session",
+				"session_id"
+			],
+			[
+				"Sessionator",
+				"Sessionator_session_start"
+			],
+			[
+				"is",
+				"is_sumlation"
+			],
+			[
+				"s",
+				"stringify"
+			],
+			[
+				"ti",
+				"tfields"
+			],
+			[
+				"ser",
+				"serializeArray"
+			],
+			[
+				"con",
+				"contact"
+			],
+			[
+				"Htt",
+				"HTTParty"
+			],
+			[
+				"make",
+				"make_btnclick_handler"
+			],
+			[
+				"ok",
+				"okcancel_events"
+			],
+			[
+				"Boot",
+				"Bootstrapping"
+			],
+			[
+				"group",
+				"groupPublicId"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"if",
+				"Code Folding: Fold Tag Attributes"
+			]
+		],
+		"width": 467.0
+	},
+	"console":
+	{
+		"height": 139.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/steeve/meteor_projects/sessie/sessie/server/example-server.js",
+		"/home/steeve/meteor_projects/sessie/sessie/sessie/client/client.js",
+		"/home/steeve/meteor_projects/sessie/sessie/sessie/lib/a.js",
+		"/home/steeve/meteor_projects/sessie/sessie/sessie/server/server.js",
+		"/home/steeve/meteor_projects/sessie/sessie/server/config-sessie-server.js",
+		"/home/steeve/meteor_projects/sessie/sessie/lib/a.js",
+		"/home/steeve/meteor_projects/sessie/sessie/client/example-client.js",
+		"/home/steeve/meteor_projects/sessie/sessie/client/config-sessie-client.js",
+		"/home/steeve/meteor_projects/sessie/sessie/client/alerts/alert.js",
+		"/home/steeve/meteor_projects/sessie/sessie/.meteor/local/build/app/server/example-server.js",
+		"/home/steeve/meteor_projects/sessie/sessie/client/index.html",
+		"/home/steeve/meteor_projects/sessie/sessie/README.md",
+		"/home/steeve/meteor_projects/sessie/test script",
+		"/home/steeve/meteor_projects/sessie/TODO.md",
+		"/home/steeve/meteor_projects/sessie/sessie/TODO.md",
+		"/home/steeve/meteor_projects/sessie/code.dump.sessie_session2sessie_sessions.js",
+		"/home/steeve/meteor_projects/auth",
+		"/home/steeve/meteor_projects/sessie/sessie/client/styles.css",
+		"/home/steeve/meteor_projects/sessie/TESTS.md",
+		"/home/steeve/meteor_projects/sessie/backups/5.26.sessie.permanents/sessie/server/server.js",
+		"/home/steeve/meteor_projects/others/meteor-client-sessions/src/client-sessions/client.js",
+		"/home/steeve/meteor_projects/others/meteor-client-sessions/src/client-sessions/server.js",
+		"/home/steeve/meteor_projects/others/meteor-user-sessions/src/user-sessions/server.js",
+		"/home/steeve/meteor_projects/others/meteor-user-sessions/src/user-sessions/client.js",
+		"/home/steeve/meteor_projects/others/meteor-user-sessions/demo/client/client.js",
+		"/home/steeve/meteor_projects/others/meteor-client-sessions/src/client-sessions/common.js",
+		"/home/steeve/meteor_projects/others/meteor-client-sessions/src/client-sessions/package.js",
+		"/home/steeve/meteor_projects/contactus/contact_us/server/server-contactus.js",
+		"/home/steeve/meteor_projects/sessie/backups/5.26.sessie.master/client/example-client.js",
+		"/home/steeve/meteor_projects/sessie/backups/5.26.sessie.permanents/client/example-client.js",
+		"/home/steeve/meteor_projects/sessie/backups/5.26.sessie.permanents/server/example-server.js",
+		"/home/steeve/meteor_projects/sessie/backups/5.26.sessie.permanents/server/config-sessie-server.js",
+		"/home/steeve/meteor_projects/sessie/backups/5.26.sessie.permanents/sessie/client/client.js",
+		"/home/steeve/meteor_projects/sessie/backups/5.26.sessie.master/sessie/server/server.js",
+		"/home/steeve/meteor_projects/sessie/backups/527/client.527.js",
+		"/home/steeve/meteor_projects/sessie/backups/527/server.527.js",
+		"/home/steeve/meteor_projects/sessie/backups/527/server.js",
+		"/home/steeve/meteor_projects/sessie/sessie/server/example.js",
+		"/home/steeve/meteor_projects/sessie/code.dump.decrypt.js",
+		"/home/steeve/meteor_projects/others/britto1/client/templating/main.html",
+		"/home/steeve/meteor_projects/others/britto1/client/templating/britto.html",
+		"/home/steeve/meteor_projects/others/britto1/client/templating/templates.html",
+		"/home/steeve/meteor_projects/others/britto/client/js/helpers.js",
+		"/home/steeve/meteor_projects/others/britto/client/templating/britto.html",
+		"/home/steeve/meteor_projects/others/britto/client/templating/main.html",
+		"/home/steeve/meteor_projects/others/britto/client/templating/home/list_view.html",
+		"/home/steeve/meteor_projects/others/britto/client/templating/blog/postView.html",
+		"/home/steeve/meteor_projects/others/meteor-user-sessions/src/user-sessions/common.js",
+		"/home/steeve/meteor_projects/others/meteor-user-sessions/src/user-sessions/package.js",
+		"/home/steeve/meteor_projects/others/britto1/client/js/helpers.js",
+		"/home/steeve/meteor_projects/sessie/sessie/client/example.js",
+		"/home/steeve/meteor_projects/anonistreamr/anonistreamr/client/index.html",
+		"/home/steeve/meteor_projects/sessie/sessie/sessie/lib/amodels.js",
+		"/home/steeve/meteor_projects/tests/server_security_test/server_security_test.html",
+		"/home/steeve/meteor_projects/tests/server_security_test/server/server.js",
+		"/home/steeve/meteor_projects/tests/server_security_test/server_security_test.js",
+		"/home/steeve/meteor_projects/sessie/sessie/.gitignore",
+		"/home/steeve/meteor_projects/contactus/index.html",
+		"/home/steeve/meteor_projects/sessie/sessie/server/config-sessie-server.renameme",
+		"/home/steeve/meteor_projects/sessie/sessie/sessie_config.js",
+		"/home/steeve/meteor_projects/sessie/sessie/example.html",
+		"/home/steeve/meteor_projects/sessie/sessie/example.js",
+		"/home/steeve/meteor_projects/contactus/contact_us/common/model.js",
+		"/home/steeve/meteor_projects/sessie/sessie/sessie/common/models.js",
+		"/home/steeve/meteor_projects/contactus/.gitignore",
+		"/home/steeve/meteor_projects/contactus/contact_us/server/config.js",
+		"/home/steeve/meteor_projects/contactus/contact_us/server/config-contactus.js",
+		"/home/steeve/meteor_projects/contactus/contact_us/client/client.js",
+		"/home/steeve/meteor_projects/contactus/contact_us/server/server.js",
+		"/home/steeve/meteor_projects/contactus/contact_us/contactus.html",
+		"/home/steeve/meteor_projects/contactus/README.md",
+		"/home/steeve/meteor_projects/contactus/contact_us/model.js",
+		"/home/steeve/meteor_projects/contactus/contact_us/contactus.js",
+		"/home/steeve/meteor_projects/contactus/contact_us/README.md",
+		"/home/steeve/meteor_projects/contactus/alerts/alert.js",
+		"/home/steeve/meteor_projects/chatastic/chatastic/README.md",
+		"/home/steeve/meteor_projects/contactus/contact_us/config.js",
+		"/home/steeve/meteor_projects/chatastic/chatastic/.gitignore",
+		"/home/steeve/meteor_projects/chatastic/chatastic/server/server.js",
+		"/home/steeve/meteor_projects/chatastic/chatastic/client/client.js",
+		"/home/steeve/meteor_projects/contactus/contact_us/jquery.to_json.js",
+		"/home/steeve/meteor_projects/contactus/contact_us/jquery.resetform.js",
+		"/home/steeve/meteor_projects/chatastic/chatastic/client/index.html",
+		"/home/steeve/meteor_projects/chatastic/chatastic/server/startup.js",
+		"/home/steeve/meteor_projects/chatastic/chatastic/server/config.js",
+		"/home/steeve/meteor_projects/contactus/index.js",
+		"/home/steeve/meteor_projects/contactus/contact_us/utils.js",
+		"/home/steeve/meteor_projects/sessie/sessie/sessie/client.js",
+		"/home/steeve/meteor_projects/chatastic/chatastic/common/lib/utils.js",
+		"/home/steeve/meteor_projects/chatastic/chatastic/common/models/ContactUs.js",
+		"/home/steeve/meteor_projects/contactus/contactus.js",
+		"/home/steeve/meteor_projects/tuts/contactus/contactus.html",
+		"/home/steeve/meteor_projects/tuts/contactus/contactus.css",
+		"/home/steeve/meteor_projects/tuts/contactus/contactus.js",
+		"/home/steeve/meteor_projects/chatastic/chatastic/client/templates/footer.html",
+		"/home/steeve/meteor_projects/chatastic/chatastic/client/modules/contact_us/contactus.html",
+		"/home/steeve/meteor_projects/contactus/contactus/contactus.js",
+		"/home/steeve/meteor_projects/contactus/contactus/contactus.css",
+		"/home/steeve/meteor_projects/contactus/contactus/contactus.html",
+		"/home/steeve/meteor_projects/myapp/myapp.html",
+		"/home/steeve/meteor_projects/chatastic/chatastic/client/styles.css",
+		"/home/steeve/meteor_projects/chatastic/chatastic/client/templates/navbar.html",
+		"/home/steeve/meteor_projects/others/twbootstraptest1/hero.html",
+		"/home/steeve/meteor_projects/tests/browsertest/myapp.html",
+		"/home/steeve/meteor_projects/tests/browsertest/myapp.js",
+		"/home/steeve/meteor_projects/sessie/sessie/sessie/server.js",
+		"/home/steeve/meteor_projects/myapp/myapp.js",
+		"/home/steeve/meteor_projects/anonistreamr/anonistreamr/client/js/entry.js",
+		"/home/steeve/meteor_projects/anonistreamr/anonistreamr/common/models/Questions.js",
+		"/home/steeve/meteor_projects/sessie/sessie/client/bootstrap-popover.js",
+		"/home/steeve/meteor_projects/chatastic/chatastic/client/modules/contact_us/contactus.js",
+		"/home/steeve/meteor_projects/chatastic/code_dump.js",
+		"/home/steeve/meteor_projects/sessie/sessie/example.css",
+		"/home/steeve/meteor_projects/others/twbootstrapfluid/fluid.html",
+		"/home/steeve/meteor_projects/anonistreamr/anonistreamr/client/style.css",
+		"/home/steeve/meteor_projects/others/britto/client/js/britto.js",
+		"/home/steeve/meteor_projects/sessie/sessie/client/alerts/alert.html",
+		"/home/steeve/meteor_projects/anonistreamr/anonistreamr/client/templates/entry.html",
+		"/home/steeve/meteor_projects/sessie/backups/sessie/example.html",
+		"/home/steeve/meteor_projects/sessie/backups/sessie/sessie/server.js",
+		"/home/steeve/meteor_projects/sessie/backups/sessie/sessie/client.js",
+		"/home/steeve/meteor_projects/sessie/backups/sessie/example.js",
+		"/home/steeve/meteor_projects/sessie/backups/sessie/example.css",
+		"/home/steeve/meteor_projects/chatastic/chatastic/client/js/messages.js",
+		"/home/steeve/meteor_projects/anonistreamr/anonistreamr/server/publish.js",
+		"/home/steeve/meteor_projects/anonistreamr/anonistreamr/client/js/post.js",
+		"/home/steeve/meteor_projects/anonistreamr/anonistreamr/client/js/posts.js",
+		"/home/steeve/meteor_projects/chatastic/chatastic/server/publish.js"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"/home/steeve/meteor_projects/sessie/sessie",
+			"/home/steeve/meteor_projects/sessie/sessie/client",
+			"/home/steeve/meteor_projects/sessie/sessie/",
+			"/home/steeve/meteor_projects/sessie/sessie/client",
+			"/home/steeve/meteor_projects/anonistreamr",
+			"/home/steeve/meteor_projects/anonistream",
+			"/home/steeve/meteor_projects/anonisream",
+			"/home/steeve/meteor_projects/others/britto",
+			"/home/steeve/meteor_projects/anonistream",
+			"/home/steeve/meteor_projects/others",
+			"/home/steeve/meteor_projects/arae",
+			"<open folders>"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"unload",
+			"console.log",
+			"unblock",
+			"console.log",
+			"consol.elog",
+			"//validateParams(params)",
+			"console.log",
+			"monster",
+			"////console.log",
+			"monster",
+			"daf",
+			"expires",
+			"date()",
+			"date",
+			"monster",
+			"////console.log",
+			"console.log",
+			"Monster",
+			"unset",
+			"ness",
+			"Todo",
+			"safe",
+			"Ness",
+			"Monster",
+			".cleanU",
+			".delete",
+			"Monster",
+			"delete",
+			".delete",
+			"SessieSessions.insert",
+			"SessieSession.insert",
+			"insert",
+			"cleanUp",
+			"<li",
+			"this.createSessio",
+			"unloadPermanentSession",
+			"Returns when the",
+			"login",
+			"setSessieSessionId",
+			"btnUnset",
+			"Sessie.setLochSessionData",
+			"Sessie.deleteLochSessionData",
+			"Sessie.setPermanent",
+			"setSessieSessionId",
+			"Sessie.unsetPermanent(session)",
+			"We recommend the follwing test.",
+			"if(!session.permanent_id",
+			"session.permanent_id",
+			"delete",
+			"fluid",
+			"setLoadPermanentSession",
+			"Sessie",
+			"setSessieSessionId",
+			"validateSession",
+			"validate",
+			"generateKey",
+			"updateSessionKey",
+			"validateOrCreateSessie",
+			"validateOrCreateSession",
+			"validateOrCreateSessie",
+			"validateSession",
+			"Sessie.delete",
+			"validateSession",
+			"Sessie.delete",
+			"validateSession",
+			"validateOrCreateSessie",
+			"cleanUp",
+			"validateSession",
+			"validate",
+			"set",
+			"validate",
+			"validated",
+			"Sessie.validateOrCreateSessie",
+			"publish sessieSession ",
+			"{ \"created\" : ISODate(\"2012-05-29T23:56:08.237Z\"), \"updated\" : ISODate(\"2012-05-29T23:56:08.237Z\"), \"expires\" : ISODate(\"2012-05-30T23:56:08.045Z\"), \"expiry\" : 1, \"session_id\" : \"ccf0982e-e4f4-4299-bd09-d358808424c9\", \"_id\" : \"b178d714-cf90-4862-84e7-eaba9d27b71c\" }\n{ \"created\" : ISODate(\"2012-05-29T23:56:08.237Z\"), \"updated\" : ISODate(\"2012-05-29T23:56:08.237Z\"), \"expires\" : ISODate(\"2012-05-30T23:56:08.045Z\"), \"expiry\" : 1, \"session_id\" : \"ccf0982e-e4f4-4299-bd09-d358808424c9\", \"_id\" : \"b178d714-cf90-4862-84e7-eaba9d27b71c\" }\n***Meteor.publish sessieSession ",
+			"{ \"created\" : ISODate(\"2012-05-29T23:56:08.237Z\"), \"updated\" : ISODate(\"2012-05-29T23:56:08.237Z\"), \"expires\" : ISODate(\"2012-05-30T23:56:08.045Z\"), \"expiry\" : 1, \"session_id\" : \"ccf0982e-e4f4-4299-bd09-d358808424c9\", \"_id\" : \"b178d714-cf90-4862-84e7-eaba9d27b71c\" }\n{ \"created\" : ISODate(\"2012-05-29T23:56:08.237Z\"), \"updated\" : ISODate(\"2012-05-29T23:56:08.237Z\"), \"expires\" : ISODate(\"2012-05-30T23:56:08.045Z\"), \"expiry\" : 1, \"session_id\" : \"ccf0982e-e4f4-4299-bd09-d358808424c9\", \"_id\" : \"b178d714-cf90-4862-84e7-eaba9d27b71c\" }\n***Meteor.publish sessieSession id:",
+			"validateOrCreateSessie",
+			"session_key_timeout",
+			"setSessieSessionId",
+			"sessieSession",
+			"validateOrCreateSessie",
+			"createSessie",
+			"validateOrCreateSession",
+			"sessieSession",
+			"publish sessieSessions",
+			"updateSessionExpiry",
+			"updateSessionKey",
+			"Sessie.cleanUp",
+			"validateSession",
+			"publish",
+			"update",
+			"validateOrCreateSession",
+			"session",
+			"session2",
+			"validateSession",
+			"validateOrCreateSession",
+			"Sessie.getSessieId",
+			"validateOrCreateSession",
+			"publish",
+			".findOne",
+			"Sessie.getSessie",
+			"Sessie.getSession",
+			"getLoch",
+			"Meteor.call",
+			"Sessie.setLochSessionData",
+			"Sessie.getLochData",
+			"Meteor.call",
+			"addLoch",
+			"validateSession",
+			"validateOrCreateSession",
+			"subscribe",
+			"publish",
+			"deleteLoch",
+			"validate",
+			"delete",
+			"sessie_id",
+			"Meteor.call",
+			"validateSession",
+			"getLochData",
+			"Sessie.getLochData ",
+			"validateSession",
+			"createSession",
+			"Sessie.validateOrCreateSession",
+			"insert",
+			"flush",
+			"publish",
+			"load_session",
+			"Sessie.cleanUpLoadSession"
+		],
+		"highlight": false,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"//console.log",
+			"<h2>",
+			"",
+			"//console.log",
+			"Sessie",
+			"Sessionator.Sessions",
+			"Sessionator",
+			"Chatastic",
+			"Chatastic.log",
+			"",
+			"setAlert",
+			"Alert",
+			"Chatastic.",
+			"insert",
+			"name",
+			"chatastic",
+			"createMenu",
+			"createMenuItem",
+			"createSection",
+			"assets",
+			"Realo",
+			"alias",
+			"createComponent(",
+			"componentComponent(",
+			"component"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 69.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 274.0,
+	"status_bar_visible": true
+}
